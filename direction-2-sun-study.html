@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quest Drafting &amp; Design | Residential architectural drafting in Gilbert, Arizona</title>
+<meta name="description" content="Quest Drafting and Design takes a house from first sketch through 3D, through a coordinated construction set, and through plan review until the city stamps the permit.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   SUN STUDY
+   A sun study is a real deliverable: the same house drawn and
+   rendered at different hours, so the client can approve how it
+   sits in the light. The studio renders day and twilight. So the
+   page runs the evening: it starts warm and ends at night, and
+   the opener moves the light by hand.
+
+   Material  : raking light. One low sun, so every plate throws a
+               long shadow at the same angle
+   Depth     : that single light source. Plates overlap and cast
+               onto each other, never a flat drop shadow
+   Motion    : the sun. Two set pieces, both driven by scroll
+               position itself, not by a scroll listener:
+               the ground moving from evening to night, and the
+               six steps travelling sideways on a pinned track
+   Shape     : square. 0px radius everywhere
+   ============================================================ */
+
+:root{
+  --bone:#F2EEE6;
+  --bone-2:#E9E3D7;
+  --sand:#E3CDB0;
+  --ember:#C9702F;
+  --night:#111524;
+  --night-2:#090C16;
+  --moon:#E9EBF2;
+  --moon-dim:#B7BCCB;
+  --ink:#1A1713;
+  --ink-soft:#4E483F;
+  --orange:#E8552B;
+  --rule-day:rgba(26,23,19,.16);
+  --rule-night:rgba(233,235,242,.22);
+
+  --disp:'Syne','Outfit',Georgia,serif;
+  --body:'Outfit',Helvetica,sans-serif;
+
+  --wrap:1320px;
+  --pad:32px;
+
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:48px;
+  --s6:64px; --s7:96px; --s8:128px;
+
+  /* one sun, one angle, for every shadow on the page */
+  --cast:56px 44px 88px -44px rgba(38,26,16,.50);
+  --cast-night:56px 44px 92px -46px rgba(3,5,12,.86);
+  --ease:cubic-bezier(.32,.72,0,1);
+}
+@media (max-width:760px){ :root{ --pad:20px; --cast:22px 20px 44px -22px rgba(38,26,16,.5); } }
+
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; overflow-x:clip; }
+body{
+  margin:0; background:var(--bone); color:var(--ink);
+  font-family:var(--body); font-size:17px; line-height:1.62;
+  overflow-x:clip;
+}
+img{ display:block; max-width:100%; }
+a{ color:inherit; }
+h1,h2,h3{ margin:0; }
+p{ margin:0; }
+button{ font:inherit; color:inherit; }
+:focus-visible{ outline:3px solid var(--orange); outline-offset:3px; }
+
+.wrap{ width:100%; max-width:var(--wrap); margin-inline:auto; padding-inline:var(--pad); }
+.sec{ padding-block:var(--s8); position:relative; }
+@media (max-width:880px){ .sec{ padding-block:var(--s7); } }
+
+/* ---------- the one material: raking light ---------- */
+.lit{ box-shadow:var(--cast); }
+.night .lit{ box-shadow:var(--cast-night); }
+.bloom{ position:relative; }
+.bloom::before{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(120% 90% at 8% 0%, rgba(255,214,160,.42), transparent 58%),
+    radial-gradient(70% 60% at 96% 6%, rgba(232,85,43,.12), transparent 60%);
+}
+.bloom > *{ position:relative; }
+.night.bloom::before{
+  background:
+    radial-gradient(110% 80% at 12% 0%, rgba(120,150,255,.16), transparent 60%),
+    radial-gradient(80% 70% at 92% 4%, rgba(232,85,43,.14), transparent 62%);
+}
+
+/* ---------- grounds ---------- */
+.day{ background:var(--bone); }
+.day-2{ background:var(--bone-2); }
+.golden{ background:linear-gradient(176deg, var(--bone-2) 0%, var(--sand) 62%, #C7A277 100%); }
+/* the warm end holds long enough for the heading to sit on it at 5.9 to 1 */
+.dusk-to-night{ background:linear-gradient(180deg, #C0956A 0%, #B98D62 20%, #5A5068 50%, #232842 76%, var(--night) 100%); color:var(--ink); }
+.dusk-to-night .lede{ color:var(--ink); }
+.night{ background:var(--night); color:var(--moon); }
+.night-2{ background:var(--night-2); color:var(--moon); }
+
+/* ---------- type ---------- */
+.h2{
+  font-family:var(--disp); font-weight:800;
+  font-size:clamp(30px, calc(var(--k,6.4) * var(--kx,1) * 1cqw), 150px);
+  line-height:.94; letter-spacing:-.03em;
+}
+.h3{ font-family:var(--disp); font-weight:700; font-size:clamp(23px,2.2vw,31px); line-height:1.06; letter-spacing:-.02em; }
+.lede{ color:var(--ink-soft); font-size:clamp(17px,1.35vw,20px); max-width:58ch; }
+.night .lede,.night-2 .lede{ color:var(--moon-dim); }
+.no{ font-family:var(--disp); font-weight:800; letter-spacing:-.05em; color:var(--orange); }
+.sec-head{ container-type:inline-size; --kx:1; display:grid; grid-template-columns:minmax(0,1.42fr) minmax(0,1fr); gap:var(--s5); align-items:end; margin-bottom:var(--s7); }
+@media (max-width:980px){ .sec-head{ grid-template-columns:1fr; gap:var(--s3); --kx:1.62; margin-bottom:var(--s6); } }
+
+/* ---------- actions ---------- */
+.btn{
+  display:inline-flex; align-items:center; gap:10px;
+  padding:16px 28px; border:0; border-radius:0;
+  font-weight:600; font-size:16px; text-decoration:none; cursor:pointer;
+  transition:transform .2s var(--ease), background-color .2s;
+}
+.btn:active{ transform:translateY(1px); }
+.btn-orange{ background:var(--orange); color:#14100E; }
+.btn-orange:hover{ background:#FF6A3D; }
+.btn-ink{ background:var(--ink); color:var(--bone); }
+.btn-ink:hover{ background:#2C2721; }
+.btn-moon{ background:var(--moon); color:var(--night); }
+.btn-sm{ padding:11px 18px; font-size:15px; }
+
+/* ---------- the island nav ---------- */
+/* a floating island: zero height in flow, so the opener runs to the top */
+.bar{ position:sticky; top:14px; z-index:70; height:0; padding-inline:var(--pad); }
+.bar-in{
+  max-width:var(--wrap); margin-inline:auto;
+  display:flex; align-items:center; gap:var(--s4);
+  padding:10px 12px 10px 16px;
+  background:rgba(14,17,28,.90);
+  box-shadow:inset 0 1px 0 rgba(233,235,242,.22), 0 18px 40px -22px rgba(6,9,18,.9);
+  color:var(--moon);
+}
+.brand{ display:flex; align-items:center; margin-right:auto; text-decoration:none; }
+.brand img{ height:30px; width:auto; background:var(--bone); padding:5px 8px; }
+.nav-links{ display:flex; align-items:center; gap:24px; }
+.nav-links a:not(.btn){ text-decoration:none; font-size:15px; font-weight:400; color:var(--moon); }
+.nav-links a:not(.btn):hover{ color:var(--orange); }
+@media (max-width:1010px){ .nav-links a:not(.btn){ display:none; } }
+
+/* ============================================================
+   OPENER. Move the light
+   ============================================================ */
+.hero{ position:relative; min-height:100dvh; max-height:1000px; display:flex; flex-direction:column; justify-content:flex-end; overflow:hidden; background:var(--night-2); }
+@media (max-height:700px){ .hero{ min-height:660px; } }
+.sky{ position:absolute; inset:0; }
+.sky img{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 56%;
+  opacity:0; transition:opacity 1.1s var(--ease), transform 9s var(--ease);
+  transform:scale(1.04);
+}
+.sky img.on{ opacity:1; transform:scale(1); }
+.sky-veil{
+  position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(to top, rgba(8,10,16,.92) 0%, rgba(10,12,20,.74) 26%, rgba(12,14,24,.30) 58%, rgba(14,16,26,.16) 100%);
+  transition:background 1.1s var(--ease);
+}
+.hero[data-hour="0"] .sky-veil{ background:linear-gradient(to top, rgba(28,14,6,.92) 0%, rgba(38,20,10,.70) 26%, rgba(52,28,14,.26) 58%, rgba(60,34,18,.14) 100%); }
+.hero[data-hour="1"] .sky-veil{ background:linear-gradient(to top, rgba(18,12,20,.92) 0%, rgba(30,18,28,.72) 26%, rgba(46,28,40,.28) 58%, rgba(52,32,46,.16) 100%); }
+
+.hero-in{ position:relative; container-type:inline-size; width:100%; max-width:var(--wrap); margin-inline:auto; padding:0 var(--pad) var(--s6); color:var(--moon); }
+.hero h1{
+  font-family:var(--disp); font-weight:800;
+  font-size:clamp(34px, calc(10.4 * 1cqw), 168px);
+  line-height:.92; letter-spacing:-.04em;
+  text-shadow:0 2px 30px rgba(6,8,14,.6);
+}
+.hero h1 em{ font-style:normal; color:var(--orange); }
+.hero h1 span{ display:block; white-space:nowrap; }
+
+/* the sun path: three real hours the studio renders */
+.sunpath{ display:flex; flex-wrap:wrap; gap:2px; margin:var(--s5) 0 var(--s4); }
+.sunpath button{
+  flex:1 1 180px; text-align:left; border:0; cursor:pointer;
+  background:rgba(10,12,20,.52); color:var(--moon);
+  padding:14px 18px 15px;
+  box-shadow:inset 0 1px 0 rgba(233,235,242,.16);
+  transition:background-color .35s var(--ease), padding-left .35s var(--ease);
+}
+.sunpath button b{ display:block; font-family:var(--disp); font-weight:700; font-size:19px; letter-spacing:-.01em; }
+.sunpath button span{ display:block; font-size:13.5px; color:var(--moon-dim); margin-top:2px; }
+.sunpath button:hover{ background:rgba(10,12,20,.74); padding-left:24px; }
+.sunpath button[aria-pressed="true"]{ background:var(--orange); color:#14100E; }
+.sunpath button[aria-pressed="true"] span{ color:rgba(20,16,14,.78); }
+.hero-foot{ display:flex; flex-wrap:wrap; align-items:flex-end; gap:var(--s5); padding-top:var(--s3); border-top:1px solid rgba(233,235,242,.3); }
+.hero-foot p{ flex:1 1 400px; max-width:56ch; font-size:clamp(16px,1.2vw,19px); color:rgba(233,235,242,.92); text-shadow:0 1px 14px rgba(6,8,14,.8); }
+.hero-acts{ display:flex; flex-wrap:wrap; gap:14px; align-items:center; }
+.hero-acts .tel{ font-family:var(--disp); font-weight:700; font-size:22px; text-decoration:none; color:var(--moon); border-bottom:3px solid var(--orange); padding-bottom:2px; }
+
+/* ============================================================
+   SERVICES. Four tall columns on one mirrored offset
+   ============================================================ */
+.cols{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:var(--s4); align-items:start; }
+.col{ display:flex; flex-direction:column; }
+/* mirrored about the centre line, never one diagonal stagger */
+.col:nth-child(1),.col:nth-child(4){ margin-top:var(--s7); }
+.col figure{ margin:0 0 var(--s3); overflow:hidden; }
+.col img{ width:100%; height:auto; aspect-ratio:3/4; object-fit:cover; transition:transform 1.2s var(--ease); }
+.col:hover img{ transform:scale(1.05); }
+.col .no{ font-size:44px; line-height:.8; display:block; margin-bottom:12px; }
+.col h3{ margin-bottom:10px; }
+.col p{ color:var(--ink-soft); font-size:15.5px; }
+@media (max-width:1100px){
+  .cols{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--s5) var(--s4); }
+  .col:nth-child(1),.col:nth-child(4){ margin-top:0; }
+  .col:nth-child(2),.col:nth-child(3){ margin-top:var(--s5); }
+}
+@media (max-width:620px){
+  .cols{ grid-template-columns:1fr; }
+  .col:nth-child(n){ margin-top:0; }
+}
+
+/* ============================================================
+   PROCESS. The pinned track
+   ============================================================ */
+.track{ padding-block:var(--s8) 0; }
+.track-head{ margin-bottom:var(--s5); }
+.track-rail{
+  display:flex; gap:var(--s4);
+  padding-inline:max(var(--pad), calc((100vw - var(--wrap)) / 2 + var(--pad)));
+  overflow-x:auto; scroll-snap-type:x proximity;
+  padding-bottom:var(--s5);
+  scrollbar-width:thin;
+}
+.station{
+  flex:0 0 clamp(260px, 30vw, 380px);
+  scroll-snap-align:center;
+  background:rgba(255,252,246,.72);
+  padding:var(--s4);
+  box-shadow:var(--cast), inset 0 1px 0 rgba(255,255,255,.7);
+  display:flex; flex-direction:column; gap:12px;
+  min-height:clamp(300px, 42dvh, 400px);
+}
+.station .no{ font-size:clamp(52px,6vw,84px); line-height:.78; }
+.station h3{ font-family:var(--disp); font-weight:700; font-size:clamp(20px,1.9vw,26px); line-height:1.06; letter-spacing:-.02em; }
+.station p{ color:var(--ink-soft); font-size:15.5px; margin-top:auto; }
+.station .mark{ height:2px; background:var(--ink); width:100%; }
+
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion: no-preference){
+    .track{ height:400vh; padding-block:0; view-timeline:--trk block; }
+    /* a column flexbox, not a grid: a grid track would stretch to the rail's
+       own width and drag the heading out with it */
+    .track-sticky{
+      position:sticky; top:0; height:100dvh; overflow:hidden;
+      display:flex; flex-direction:column; justify-content:center; gap:var(--s5);
+      padding-block:var(--s5);
+    }
+    .track-head{ flex:0 0 auto; padding-inline:max(var(--pad), calc((100vw - var(--wrap)) / 2 + var(--pad))); }
+    .track-rail{
+      width:max-content; flex:0 0 auto;
+      overflow:visible; padding-bottom:0;
+      animation:travel linear both;
+      animation-timeline:--trk;
+      animation-range:contain 0% contain 100%;
+    }
+  }
+}
+@keyframes travel{ from{ translate:0 0; } to{ translate:calc(100vw - 100%) 0; } }
+
+/* ============================================================
+   THE WORK. A skyline. Different heights, one baseline
+   ============================================================ */
+.skyline{ display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:var(--s3); align-items:end; }
+.sky-plate{ margin:0; position:relative; }
+.sky-plate img{ width:100%; height:100%; object-fit:cover; }
+.sky-plate figcaption{
+  margin-top:12px; font-size:13.5px; line-height:1.45;
+  background:rgba(10,12,20,.84); color:var(--moon); padding:10px 13px;
+}
+.sky-plate b{ display:block; font-family:var(--disp); font-weight:700; font-size:16px; color:#fff; letter-spacing:-.01em; margin-bottom:2px; }
+.p1{ grid-column:span 5; aspect-ratio:4/5; }
+.p2{ grid-column:span 4; aspect-ratio:3/4; }
+.p3{ grid-column:span 3; aspect-ratio:2/3; }
+.p4{ grid-column:span 4; aspect-ratio:16/10; }
+.p5{ grid-column:span 8; aspect-ratio:1080/364; }
+.sky-plate img{ aspect-ratio:inherit; }
+.skyline-base{ height:2px; background:var(--moon); margin-top:var(--s5); opacity:.3; }
+@media (max-width:980px){
+  .skyline{ grid-template-columns:repeat(6,minmax(0,1fr)); }
+  .p1,.p2{ grid-column:span 3; aspect-ratio:3/4; }
+  .p3{ grid-column:span 2; }
+  .p4{ grid-column:span 4; }
+  .p5{ grid-column:span 6; }
+}
+@media (max-width:620px){
+  .skyline{ grid-template-columns:1fr; }
+  .p1,.p2,.p3,.p4,.p5{ grid-column:span 1; aspect-ratio:4/3; }
+}
+
+/* ============================================================
+   THE SET. Four sheets fanned
+   ============================================================ */
+.fan{ display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); gap:var(--s6); align-items:center; }
+.fan-stage{ position:relative; aspect-ratio:7/5; }
+.fan-leaf{
+  position:absolute; inset:8% 10% 12% 10%;
+  background:#fff; overflow:hidden;
+  box-shadow:var(--cast-night);
+  transition:rotate .8s var(--ease), translate .8s var(--ease);
+}
+.fan-leaf img{ width:100%; height:100%; object-fit:cover; }
+.fan-leaf:nth-child(1){ rotate:-9deg;  translate:-9% 2%; }
+.fan-leaf:nth-child(2){ rotate:-3deg;  translate:-3% 0; }
+.fan-leaf:nth-child(3){ rotate:3deg;   translate:3% 1%; }
+.fan-leaf:nth-child(4){ rotate:9deg;   translate:9% 3%; }
+.fan-list{ display:grid; gap:0; border-top:2px solid var(--rule-night); }
+.fan-row{ display:grid; grid-template-columns:120px 1fr; gap:var(--s3); align-items:baseline; padding:18px 4px; border-bottom:1px solid var(--rule-night); }
+.fan-row b{ font-family:var(--disp); font-weight:800; font-size:28px; letter-spacing:-.03em; color:var(--orange); }
+.fan-row span{ color:var(--moon-dim); font-size:16px; }
+.fan-note{ margin-top:var(--s4); color:var(--moon-dim); font-size:16px; max-width:44ch; }
+@media (max-width:980px){ .fan{ grid-template-columns:1fr; gap:var(--s5); } }
+
+/* ============================================================
+   THE ARGUMENT
+   ============================================================ */
+.argue{ position:relative; overflow:hidden; padding-block:var(--s8); }
+.argue-bg{ position:absolute; inset:0; }
+.argue-bg img{ width:100%; height:100%; object-fit:cover; opacity:.5; }
+.argue-bg::after{ content:""; position:absolute; inset:0; background:linear-gradient(105deg, rgba(9,12,22,.94) 28%, rgba(9,12,22,.62) 100%); }
+.argue .wrap{ position:relative; container-type:inline-size; }
+.argue h2{
+  font-family:var(--disp); font-weight:800;
+  font-size:clamp(28px, calc(7.0 * var(--kx,1) * 1cqw), 120px);
+  line-height:1.0; letter-spacing:-.032em; max-width:20em;
+}
+.argue h2 em{ font-style:normal; color:var(--orange); }
+.argue-foot{ margin-top:var(--s6); padding-top:var(--s4); border-top:1px solid var(--rule-night); display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--s5); }
+.argue-foot p{ color:var(--moon-dim); font-size:clamp(16px,1.3vw,19px); }
+@media (max-width:880px){ .argue-foot{ grid-template-columns:1fr; gap:var(--s3); } .argue .wrap{ --kx:1.1; } }
+
+/* ============================================================
+   QUESTIONS
+   ============================================================ */
+.qs{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--s6) var(--s7); }
+.qs article{ border-top:2px solid var(--rule-night); padding-top:var(--s3); }
+.qs h3{ margin-bottom:12px; }
+.qs p{ color:var(--moon-dim); font-size:16px; }
+@media (max-width:880px){ .qs{ grid-template-columns:1fr; gap:var(--s4); } }
+
+/* ============================================================
+   CLOSING
+   ============================================================ */
+.close{ padding-bottom:0; }
+.close .wrap{ container-type:inline-size; }
+.close h2{
+  font-family:var(--disp); font-weight:800;
+  font-size:clamp(38px, calc(var(--kc,8.09) * 1cqw), 150px);
+  line-height:.88; letter-spacing:-.045em;
+}
+.close h2 span{ display:block; white-space:nowrap; }
+.close h2 span:last-child{ color:var(--orange); }
+.close-sub{ margin-top:var(--s4); max-width:52ch; color:var(--moon-dim); font-size:18px; }
+.close-areas{ margin-top:var(--s6); border-top:1px solid var(--rule-night); padding-top:var(--s3); display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:var(--s2); font-size:15px; color:var(--moon-dim); }
+.close-strip{ margin-top:var(--s7); background:var(--orange); color:#14100E; }
+.close-strip-in{ max-width:var(--wrap); margin-inline:auto; padding:var(--s5) var(--pad); display:flex; flex-wrap:wrap; gap:var(--s4); align-items:center; justify-content:space-between; }
+.close-strip .tel{ font-family:var(--disp); font-weight:800; font-size:clamp(28px,3.8vw,52px); letter-spacing:-.035em; text-decoration:none; color:#14100E; }
+@media (max-width:760px){ .close-areas{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+
+/* ---------- footer ---------- */
+.foot{ background:var(--night-2); color:var(--moon-dim); padding-block:var(--s6); border-top:1px solid var(--rule-night); }
+.foot-in{ display:grid; grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(0,1fr)); gap:var(--s5); }
+.foot h4{ margin:0 0 12px; font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--moon); font-weight:600; }
+.foot a{ overflow-wrap:anywhere; color:var(--moon-dim); text-decoration:none; display:block; padding-block:3px; font-size:15px; }
+.foot a:hover{ color:var(--orange); }
+.foot-brand img{ height:32px; width:auto; background:var(--bone); padding:6px 10px; }
+.foot-brand p{ margin-top:var(--s2); font-size:15px; max-width:34ch; }
+.foot-base{ margin-top:var(--s5); border-top:1px solid var(--rule-night); padding-top:var(--s3); font-size:14px; }
+@media (max-width:880px){ .foot-in{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+
+/* ---------- entrances ---------- */
+.js .rv{ opacity:0; translate:0 24px; }
+.js .rv.in{ opacity:1; translate:0 0; transition:opacity .9s var(--ease), translate .9s var(--ease); }
+@media (prefers-reduced-motion:reduce){
+  .js .rv{ opacity:1; translate:0 0; }
+  *{ transition-duration:.001ms !important; animation-duration:.001ms !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar-in">
+    <a class="brand" href="#top"><img src="assets/logo.png" alt="Quest Drafting and Design"></a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="#about">About</a>
+      <a href="/blog">Blog</a>
+      <a href="#faq">FAQ</a>
+      <a href="#quote">Contact</a>
+      <a class="btn btn-orange btn-sm" href="#quote">Get a Quote</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ================= OPENER ================= -->
+  <section class="hero" id="hero" data-hour="0">
+    <div class="sky" id="sky">
+      <img class="on" src="assets/render-motorcourt.webp" alt="Contemporary stone estate designed around a motor court, shown at dusk" fetchpriority="high">
+      <img src="assets/render-pool-twilight.webp" alt="Twilight render of a modern estate above a pool terrace" loading="lazy">
+      <img src="assets/render-night-stars.webp" alt="Desert home glowing beneath a starry night sky" loading="lazy">
+      <div class="sky-veil"></div>
+    </div>
+
+    <div class="hero-in">
+      <h1><span>From vision,</span><span>to model,</span><span>to <em>permit.</em></span></h1>
+
+      <div class="sunpath" role="group" aria-label="Move the light through the evening">
+        <button type="button" data-i="0" aria-pressed="true"><b>Dusk</b><span>Motor court estate</span></button>
+        <button type="button" data-i="1" aria-pressed="false"><b>Twilight</b><span>Pool terrace</span></button>
+        <button type="button" data-i="2" aria-pressed="false"><b>Night</b><span>Desert home</span></button>
+      </div>
+
+      <div class="hero-foot">
+        <p>We turn a property and an idea into a home that is resolved on paper, modeled, documented and permitted, before the first shovel hits the ground.</p>
+        <div class="hero-acts">
+          <a class="btn btn-orange" href="#quote">Get a Quote</a>
+          <a class="tel" href="tel:+16023396455">(602) 339-6455</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SERVICES ================= -->
+  <section class="sec day bloom" id="services">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <h2 class="h2" style="--k:5.40">Four services, one studio.</h2>
+        <p class="lede">Residential architectural drafting in Gilbert, Arizona. Nothing is handed to anybody else along the way.</p>
+      </div>
+
+      <div class="cols">
+        <article class="col rv">
+          <figure class="lit"><img src="assets/model-massing-terrain.webp" alt="Three dimensional massing model of a residence set into its sloped lot" loading="lazy"></figure>
+          <span class="no">01</span>
+          <h3 class="h3">Architectural Design</h3>
+          <p>From first massing study to a resolved floor plan, shaped by your lot, your zoning, and how you actually live. Custom homes, hillside and desert estates, additions, casitas, guest houses and site structures.</p>
+        </article>
+        <article class="col rv">
+          <figure class="lit"><img src="assets/render-greatroom.webp" alt="Great room interior render with a glass wall onto mountains at dusk" loading="lazy"></figure>
+          <span class="no">02</span>
+          <h3 class="h3">3D Visualization</h3>
+          <p>You approve the home itself, not a flat line drawing you have to imagine in three dimensions. A full 3D model and photoreal renderings, day and twilight, before a single construction sheet is final.</p>
+        </article>
+        <article class="col rv">
+          <figure class="lit"><img src="assets/sheet-dimensional-plan-top.webp" alt="Dimensional floor plan A103 with every room and wall dimensioned" loading="lazy"></figure>
+          <span class="no">03</span>
+          <h3 class="h3">Construction Documents</h3>
+          <p>The complete coordinated set your builder and your city both need, typically around 22 sheets across roughly six disciplines, drawn to the 2024 IBC / IRC / IECC code cycle.</p>
+        </article>
+        <article class="col rv">
+          <figure class="lit"><img src="assets/sheet-site-plan-top.webp" alt="Site plan A100 showing property lines, dimensions and the house on its lot" loading="lazy"></figure>
+          <span class="no">04</span>
+          <h3 class="h3">Permit Stewardship</h3>
+          <p>We do not hand you drawings and disappear. Submittals formatted to each jurisdiction's checklist, plan review comments answered, resubmittals managed until the permit is in hand.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PROCESS. The pinned track ================= -->
+  <section class="track golden bloom" aria-label="How it goes">
+    <div class="track-sticky">
+      <div class="track-head">
+        <div class="sec-head rv" style="margin-bottom:0">
+          <h2 class="h2" style="--k:5.9">Six moves, in this order.</h2>
+          <p class="lede">Each one closes before the next one opens. That is the whole reason a project does not stall at plan review.</p>
+        </div>
+      </div>
+
+      <div class="track-rail" id="rail" tabindex="0" role="group" aria-label="The six steps, scroll sideways">
+        <article class="station"><span class="no">01</span><div class="mark"></div><h3>Survey and setbacks</h3><p>What the lot and the zoning will let you build.</p></article>
+        <article class="station"><span class="no">02</span><div class="mark"></div><h3>Design</h3><p>Massing and plan, resolved against how you live.</p></article>
+        <article class="station"><span class="no">03</span><div class="mark"></div><h3>3D model</h3><p>You approve the house while changes are still free.</p></article>
+        <article class="station"><span class="no">04</span><div class="mark"></div><h3>Construction documents</h3><p>The coordinated set your builder builds from.</p></article>
+        <article class="station"><span class="no">05</span><div class="mark"></div><h3>Permit submitted</h3><p>Formatted to the jurisdiction's own checklist.</p></article>
+        <article class="station"><span class="no">06</span><div class="mark"></div><h3>Permit in hand</h3><p>Comments answered, resubmittals managed, stamp issued.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= THE WORK. Skyline ================= -->
+  <section class="sec dusk-to-night" id="work">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <h2 class="h2" style="--k:6.42">The studio's own work.</h2>
+        <p class="lede">Renders and models from live residential projects. Nothing here is stock photography.</p>
+      </div>
+
+      <div class="skyline">
+        <figure class="sky-plate p1 rv"><img class="lit" src="assets/render-motorcourt.webp" alt="Contemporary stone estate designed around a motor court at dusk" loading="lazy"><figcaption><b>Motor court estate</b>Stone and glass, organised around the arrival court.</figcaption></figure>
+        <figure class="sky-plate p2 rv"><img class="lit" src="assets/render-night-stars.webp" alt="Desert home glowing beneath a starry night sky" loading="lazy"><figcaption><b>Desert home at night</b>Judged against a clear sky before it was framed.</figcaption></figure>
+        <figure class="sky-plate p3 rv"><img class="lit" src="assets/render-greatroom.webp" alt="Great room interior render with a glass wall onto mountains at dusk" loading="lazy"><figcaption><b>Great room</b>Glass wall onto the mountains.</figcaption></figure>
+        <figure class="sky-plate p4 rv"><img class="lit" src="assets/render-pool-twilight.webp" alt="Twilight render of a modern estate above a pool terrace" loading="lazy"><figcaption><b>Pool terrace</b>An outdoor room, not left over space.</figcaption></figure>
+        <figure class="sky-plate p5 rv"><img class="lit" src="assets/model-massing-white.webp" alt="White three dimensional massing model of a residence" loading="lazy"><figcaption><b>White massing model</b>Form first. No materials, no distractions.</figcaption></figure>
+      </div>
+      <div class="skyline-base"></div>
+    </div>
+  </section>
+
+  <!-- ================= THE SET. Fanned ================= -->
+  <section class="sec night bloom">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <h2 class="h2" style="--k:5.80">What a permit set holds.</h2>
+        <p class="lede">Four sheets from one real set, carrying their own numbers off the title block.</p>
+      </div>
+
+      <div class="fan">
+        <div class="fan-stage rv" id="fanStage">
+          <figure class="fan-leaf"><img src="assets/sheet-cover-elevation-top.webp" alt="Cover sheet CS with the rendered elevation, sheet index and code list" loading="lazy"></figure>
+          <figure class="fan-leaf"><img src="assets/sheet-site-plan-top.webp" alt="Site plan A100 with property lines and dimensions" loading="lazy"></figure>
+          <figure class="fan-leaf"><img src="assets/sheet-dimensional-plan-top.webp" alt="Dimensional floor plan A103 with every room dimensioned" loading="lazy"></figure>
+          <figure class="fan-leaf"><img src="assets/sheet-elevations-top.webp" alt="Elevations A201 showing the rear and right elevations with materials called out" loading="lazy"></figure>
+        </div>
+
+        <div class="rv">
+          <div class="fan-list">
+            <div class="fan-row"><b>CS</b><span>Cover sheet. The rendered elevation, the sheet index and the code list.</span></div>
+            <div class="fan-row"><b>A100</b><span>Site plan. Property lines, setbacks, the house on its lot.</span></div>
+            <div class="fan-row"><b>A103</b><span>Dimensional plan. Every room and every wall dimensioned.</span></div>
+            <div class="fan-row"><b>A201</b><span>Elevations. Rear and right, with the materials called out.</span></div>
+          </div>
+          <p class="fan-note">A full set runs to around 22 sheets across roughly six disciplines, drawn to the 2024 code cycle.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= THE ARGUMENT ================= -->
+  <section class="argue night" id="about">
+    <div class="argue-bg" aria-hidden="true"><img src="assets/render-night-stars.webp" alt="" loading="lazy"></div>
+    <div class="wrap">
+      <h2 class="rv">Every hand-off is a chance for something to be <em>lost.</em></h2>
+      <div class="argue-foot">
+        <p class="rv">Most residential projects pass through several hands before a permit is issued.</p>
+        <p class="rv">Quest takes a project the whole way, on one flat fee agreed before we start.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= QUESTIONS ================= -->
+  <section class="sec night" id="faq">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <h2 class="h2" style="--k:5.27">Asked on every first call.</h2>
+      </div>
+      <div class="qs">
+        <article class="rv">
+          <h3 class="h3">How much does a project cost?</h3>
+          <p>A flat fee agreed up front, based on the scope of your project. One fixed price and a defined timeline, with no hourly surprises.</p>
+        </article>
+        <article class="rv">
+          <h3 class="h3">What is in a construction document set?</h3>
+          <p>Around 22 sheets across roughly six disciplines: cover, site, floor plans, roof plans, elevations, sections and coordinated details, drawn to the 2024 code cycle.</p>
+        </article>
+        <article class="rv">
+          <h3 class="h3">Can you design an ADU, casita or guest house?</h3>
+          <p>Yes. Casitas, accessory dwelling units, guest houses, additions, remodels, RV garages and site structures. What you can build depends on your lot and your zoning.</p>
+        </article>
+        <article class="rv">
+          <h3 class="h3">Why build a 3D model before the drawings?</h3>
+          <p>Because it lets you approve the actual home while changes are still free.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CLOSING ================= -->
+  <section class="sec close night-2" id="quote">
+    <div class="wrap">
+      <h2 class="rv"><span>Put your project</span><span>on the board.</span></h2>
+      <p class="close-sub rv">Tell us the lot and the idea. You get a flat fee and a defined timeline before any drawing starts.</p>
+      <div class="close-areas rv">
+        <span>Gilbert</span><span>Queen Creek</span><span>Mesa</span>
+        <span>Chandler</span><span>Phoenix</span><span>Scottsdale</span>
+      </div>
+    </div>
+    <div class="close-strip">
+      <div class="close-strip-in">
+        <a class="tel" href="tel:+16023396455">(602) 339-6455</a>
+        <a class="btn btn-ink" href="mailto:info@questdraftinganddesign.com">Get a Quote</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <div class="foot-brand">
+      <img src="assets/logo.png" alt="Quest Drafting and Design">
+      <p>Residential architectural drafting in Gilbert, Arizona.</p>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <a href="tel:+16023396455">(602) 339-6455</a>
+      <a href="mailto:info@questdraftinganddesign.com">info@questdraftinganddesign.com</a>
+    </div>
+    <div>
+      <h4>Service area</h4>
+      <a href="#quote">Gilbert</a><a href="#quote">Queen Creek</a><a href="#quote">Mesa</a>
+      <a href="#quote">Chandler</a><a href="#quote">Phoenix</a><a href="#quote">Scottsdale</a>
+    </div>
+    <div>
+      <h4>Pages</h4>
+      <a href="#work">Work</a><a href="#services">Services</a><a href="#about">About</a>
+      <a href="/blog">Blog</a><a href="#faq">FAQ</a><a href="#quote">Contact</a>
+    </div>
+  </div>
+  <div class="wrap foot-base">Quest Drafting &amp; Design LLC</div>
+</footer>
+
+<script>
+document.documentElement.classList.add('js');
+
+/* ---- entrances. IntersectionObserver only, never a scroll listener ---- */
+(function(){
+  var items = document.querySelectorAll('.rv');
+  if (!('IntersectionObserver' in window)) { items.forEach(function(n){ n.classList.add('in'); }); return; }
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { rootMargin:'0px 0px -8% 0px', threshold:0.06 });
+  items.forEach(function(n){ io.observe(n); });
+})();
+
+/* ---- the sun path. Three hours the studio actually renders ---- */
+(function(){
+  var hero = document.getElementById('hero');
+  var sky = document.getElementById('sky');
+  if (!hero || !sky) return;
+  var imgs = sky.querySelectorAll('img');
+  var btns = hero.querySelectorAll('.sunpath button');
+
+  function show(i){
+    i = +i;
+    imgs.forEach(function(im, n){ im.classList.toggle('on', n === i); });
+    btns.forEach(function(b){ b.setAttribute('aria-pressed', +b.dataset.i === i ? 'true' : 'false'); });
+    hero.setAttribute('data-hour', String(i));
+  }
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){ show(b.dataset.i); });
+    b.addEventListener('focus', function(){ show(b.dataset.i); });
+  });
+})();
+
+/* ---- the fan straightens once, as it arrives, so the set reads as a set ---- */
+(function(){
+  var stage = document.getElementById('fanStage');
+  if (!stage || !('IntersectionObserver' in window)) return;
+  var leaves = stage.querySelectorAll('.fan-leaf');
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if (!e.isIntersecting) return;
+      leaves.forEach(function(l, i){
+        setTimeout(function(){ l.style.rotate = ((i - 1.5) * 1.6) + 'deg'; l.style.translate = ((i - 1.5) * 2.4) + '% ' + (i * 0.6) + '%'; }, i * 110);
+      });
+      io.disconnect();
+    });
+  }, { threshold:0.35 });
+  io.observe(stage);
+})();
+
+/* ---- the sideways track answers the arrow keys when it is a scroller ---- */
+(function(){
+  var rail = document.getElementById('rail');
+  if (!rail) return;
+  rail.addEventListener('keydown', function(e){
+    var step = rail.clientWidth * 0.6;
+    if (e.key === 'ArrowRight') { rail.scrollBy({ left: step, behavior:'smooth' }); e.preventDefault(); }
+    if (e.key === 'ArrowLeft')  { rail.scrollBy({ left: -step, behavior:'smooth' }); e.preventDefault(); }
+  });
+})();
+</script>
+</body>
+</html>

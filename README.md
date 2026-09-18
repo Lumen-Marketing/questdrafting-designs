@@ -7,9 +7,9 @@ and each card opens full screen.
 ```
 index.html                      the chooser
 direction-1-cut-line.html       "Cut Line"
-direction-2-datum.html          "Datum"
+direction-2-sun-study.html      "Sun Study"
 direction-3-blueprint.html      "Blueprint"
-direction-4-courtyard.html      "Courtyard"
+direction-4-trace.html          "Trace"
 assets/                         the studio's own renders, models, sheets, logo
 ```
 
@@ -25,37 +25,37 @@ document and the model, not from a generic template.
 | Trade fact | Design | Motion |
 |---|---|---|
 | A section is a cut through the building | Cut Line's opener cuts the photograph and finds the drawing | A cut line you drag across the render |
-| Drawings are printed in register, ink over ink | Datum's plates sit on solid planes, slightly off | Things arrive off register and pull into line |
+| A sun study renders the house at different hours | Sun Study runs the page from dusk to night | Move the light by hand, and a pinned sideways track |
 | Plan line-work is the studio's own visual language | Blueprint's ground is drafting line-work on deep ink | Line-work is static; it is the ground, not an effect |
-| A desert house is lived in at dusk, in a courtyard | Courtyard is a warm clay wall with an arched plate | Settle. Things rise a little and come to rest |
-| A permit set is a stack of numbered sheets | Sheets are shown as sheets, named CS, A100, A103, A201 | Light table, mosaic viewer, sheet flipper, mounted plate |
-| The work exists three times: massed, rendered, drawn | The same house shown as model, render and sheet | Each direction pairs them differently |
+| A drafter works in overlays, in register | Trace is milky film laid on a graphite board | The four sheets of one set landing in register, pinned |
+| A permit set is a stack of numbered sheets | Sheets are shown as sheets, named CS, A100, A103, A201 | Light table, fanned set, sheet flipper, pinned register |
+| The work exists three times: massed, rendered, drawn | The same house as model, render and sheet | Each direction pairs them differently |
 
 ## Furniture matrix
 
 Same sections, same order, same words in all four. No cell repeats across two
 columns.
 
-| Section | Cut Line | Datum | Blueprint | Courtyard |
+| Section | Cut Line | Sun Study | Blueprint | Trace |
 |---|---|---|---|---|
-| Opener | Full bleed render with a draggable cut revealing the elevation | Type first, render off register behind an orange plane | Full bleed render, statement crossing it, copy card over it | Symmetric courtyard, arched plate at the centre |
-| Services | Four mirrored bleed bands, number crossing the edge | One large on orange beside three ruled rows | Accordion strip, the panel you point at opens | A spread of four entries in a recessed tray |
-| Process | Strata, full width rows stepping deeper | Courses on an orange field filling white in order | Ruled timeline with drawn dimension connectors | Mirrored spine, steps hanging either side |
-| The work | A roll of plates at full size, captions in the margin | Mosaic that opens full screen | Drag filmstrip with mixed slide widths | Three diptychs of unequal pairs |
-| The set | Light table, pick a number and that sheet comes up | One wide plus three, numbers crossing the corner | Sheet viewer, tab list by number, on the rest of the set | Four sheets mounted on a cream board |
-| The argument | Pine field, the heading crossing the top edge | Kinetic statement on ink, word by word | Statement full bleed over the night render | Cream field with the second arch beside it |
-| Questions | Sticky index on the left, answers on the right | Heavy ruled pairs, question left, answer right | Ruled rows that expand in place | Two by two, questions in serif italic |
-| Closing | Huge two line statement over an orange strip | Full width headline, then a split against the render | Orange band with the render behind it | Statement beside a recessed panel |
+| Opener | Full bleed render with a draggable cut revealing the elevation | Full bleed render with three hours you can move the light through | Full bleed render, statement crossing it, copy card over it | Headline printed on a sheet of film laid over the render |
+| Services | Four mirrored bleed bands, number crossing the edge | Four tall columns on one mirrored offset | Accordion strip, the panel you point at opens | Four strips of film laid across one plate |
+| Process | Strata, full width rows stepping deeper | Pinned track, six stations travelling sideways | Ruled timeline with drawn dimension connectors | Six overlays, each laid over the last |
+| The work | A roll of plates at full size, captions in the margin | A skyline. Different heights, one baseline | Drag filmstrip with mixed slide widths | A film mat with windows cut in it |
+| The set | Light table, pick a number and that sheet comes up | Four sheets fanned out, straightening into a stack | Sheet viewer, tab list by number, on the rest of the set | Pinned register, four sheets landing one at a time |
+| The argument | Pine field, the heading crossing the top edge | Night ground with the stars render behind it | Statement full bleed over the night render | One sheet of film, printed, with registration crosses |
+| Questions | Sticky index on the left, answers on the right | Two by two on night | Ruled rows that expand in place | Two by two on graphite, heavy rules |
+| Closing | Huge two line statement over an orange strip | Deep night, then an orange strip | Orange band with the render behind it | Statement, then an orange strip |
 
 Type, material and depth, one set each:
 
-| | Cut Line | Datum | Blueprint | Courtyard |
+| | Cut Line | Sun Study | Blueprint | Trace |
 |---|---|---|---|---|
-| Type | Bricolage Grotesque with Hanken Grotesk | Archivo Black with Familjen Grotesk | Big Shoulders Display with Sora | Newsreader with Schibsted Grotesk |
-| Material | Vellum fibre | Screen print halftone | Plan line-work on deep ink | Lime plaster |
-| Depth | Registration, offset planes behind plates | Misregistration resolving into register | Sheets overlapping, one crossing a section edge | Warm daylight, lit top edges, recessed trays |
-| Shape | Square, 0px everywhere | Square, 0px everywhere | Square with drawn rules | Square, with the arch as the one signature form, used twice |
-| Second colour | Pine #1C3A32 | Near black #0D0D0D | Steel blue #7FA6BF | Cream #F6EFE6 on clay #33251F |
+| Type | Bricolage Grotesque with Hanken Grotesk | Syne with Outfit | Big Shoulders Display with Sora | Anybody with Chivo |
+| Material | Vellum fibre | Raking light, one low sun | Plan line-work on deep ink | Mylar tooth |
+| Depth | Registration, offset planes behind plates | Plates overlapping and casting onto each other | Sheets overlapping, one crossing a section edge | Registration in Z, film lying on film |
+| Shape | Square, 0px everywhere | Square, 0px everywhere | Square with drawn rules | Square, 0px everywhere |
+| Second colour | Pine #1C3A32 | Night indigo #111524 | Steel blue #7FA6BF | Graphite #1E2628 |
 
 The brand orange `#E8552B` is fixed and appears in all four, always on a large
 surface: a full strip, a whole field, a filled button, or display type.
@@ -91,7 +91,7 @@ assets/sheet-dimensional-plan-top.webp
 assets/sheet-elevations-top.webp
 ```
 
-Cut Line, Datum and Courtyard use only the `-top` copies. Blueprint still uses
+Cut Line, Sun Study and Trace use only the `-top` copies. Blueprint still uses
 the originals with a CSS crop. If these go public, either get the client's
 permission or switch Blueprint to the `-top` copies too.
 
@@ -106,9 +106,16 @@ On each direction separately, at 505, 780, 880, 1024, 1280, 1440 and 1907 pixels
   percent of its own column, at every width, using container units.
 - Body text contrast at least 4.5:1 and display type at least 3:1, measured off
   the rendered pixels rather than the tokens.
-- Every interactive piece driven with a real click and a real key press: the
-  cut handle by drag and by arrow key, the light table by click, the mosaic
-  viewer by click, arrow and Escape, the chooser toggle and veil by click.
+- Every interactive piece driven with a real click, drag or key press: the cut
+  handle by drag and by arrow key, the light table by click, the three hours in
+  Sun Study by click, and the four sheet buttons in Trace by click.
+- Both pinned set pieces driven by real scrolling at several positions, with
+  motion enabled: Sun Study's track travels from 0 to the end of its rail, and
+  Trace's four sheets land in register one at a time.
+- Scroll driven motion uses native CSS scroll timelines, so there is no scroll
+  event listener anywhere. Where a browser does not support them, or the reader
+  asks for reduced motion, both set pieces fall back to ordinary layouts with
+  everything visible.
 
 ## Deploy
 

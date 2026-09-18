@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quest Drafting &amp; Design | Residential architectural drafting in Gilbert, Arizona</title>
+<meta name="description" content="Quest Drafting and Design takes a house from first sketch through 3D, through a coordinated construction set, and through plan review until the city stamps the permit.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@75..110,500..900&family=Chivo:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TRACE
+   A drafter works in overlays. The survey goes down first, the
+   plan goes over it, the dimensions go over that, and every
+   sheet in a set is drawn on the same origin so they register.
+   This page is made of those overlays: milky film laid on a
+   graphite board, held in register by crosses.
+
+   Material  : mylar tooth. A fine cross hatch in the film
+   Depth     : registration in Z. Sheets lie on top of one
+               another, slightly offset, and you see through them
+   Motion    : the set assembling. The centre piece pins and the
+               four sheets of one permit set land in register,
+               one at a time, driven by scroll position itself
+   Shape     : square. 0px radius everywhere
+   ============================================================ */
+
+:root{
+  --graphite:#1E2628;
+  --graphite-2:#151B1D;
+  --slate:#2C3739;
+  --film:#EDEDE7;
+  --film-2:#E2E3DC;
+  --film-ink:#171C1C;
+  --film-ink-soft:#4C5654;
+  --chalk:#E6EAE8;
+  --chalk-dim:#A9B4B2;
+  --orange:#E8552B;
+  --orange-lite:#F5865E;   /* brand orange is 4.3:1 on graphite, too low for small text */
+  --rule:rgba(230,234,232,.20);
+  --rule-2:rgba(230,234,232,.40);
+
+  --disp:'Anybody','Chivo',Helvetica,sans-serif;
+  --body:'Chivo',Helvetica,sans-serif;
+
+  --wrap:1300px;
+  --pad:32px;
+  --nav:68px;
+
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:48px;
+  --s6:64px; --s7:96px; --s8:128px;
+  --ease:cubic-bezier(.32,.72,0,1);
+  --lift:0 34px 66px -36px rgba(3,7,7,.9);
+}
+@media (max-width:760px){ :root{ --pad:20px; --nav:60px; } }
+
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; overflow-x:clip; }
+body{
+  margin:0; background:var(--graphite); color:var(--chalk);
+  font-family:var(--body); font-size:17px; line-height:1.62; overflow-x:clip;
+}
+img{ display:block; max-width:100%; }
+a{ color:inherit; }
+h1,h2,h3{ margin:0; }
+p{ margin:0; }
+button{ font:inherit; color:inherit; }
+:focus-visible{ outline:3px solid var(--orange); outline-offset:3px; }
+
+.wrap{ width:100%; max-width:var(--wrap); margin-inline:auto; padding-inline:var(--pad); }
+.sec{ padding-block:var(--s8); position:relative; }
+@media (max-width:880px){ .sec{ padding-block:var(--s7); } }
+
+/* ---------- the one material: mylar tooth ---------- */
+.mylar{ position:relative; }
+.mylar::before{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:
+    repeating-linear-gradient(46deg, rgba(230,234,232,.055) 0 1px, transparent 1px 6px),
+    repeating-linear-gradient(-46deg, rgba(230,234,232,.045) 0 1px, transparent 1px 8px);
+}
+.mylar > *{ position:relative; }
+
+/* ---------- film: the thing everything is drawn on ---------- */
+.film{
+  background:rgba(237,237,231,.95);
+  color:var(--film-ink);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72), var(--lift);   /* one hairline, top face only */
+}
+.film-2{ background:rgba(226,227,220,.93); color:var(--film-ink); box-shadow:inset 0 1px 0 rgba(255,255,255,.6), var(--lift); }
+/* a registration cross is a drafting mark, and it only appears where two
+   sheets are actually being put in register */
+.reg{ position:absolute; width:22px; height:22px; pointer-events:none; }
+.reg::before,.reg::after{ content:""; position:absolute; background:var(--orange); }
+.reg::before{ left:50%; top:0; width:1.5px; height:100%; transform:translateX(-50%); }
+.reg::after{ top:50%; left:0; height:1.5px; width:100%; transform:translateY(-50%); }
+
+/* ---------- type ---------- */
+.h2{
+  font-family:var(--disp); font-weight:800;
+  font-variation-settings:'wdth' 86;
+  font-size:clamp(30px, calc(var(--k,6) * var(--kx,1) * 1cqw), 150px);
+  line-height:.94; letter-spacing:-.022em; text-transform:uppercase;
+}
+.h3{
+  font-family:var(--disp); font-weight:700; font-variation-settings:'wdth' 88;
+  font-size:clamp(21px,2vw,27px); line-height:1.08; letter-spacing:-.012em; text-transform:uppercase;
+}
+.lede{ color:var(--chalk-dim); font-size:clamp(17px,1.35vw,20px); max-width:56ch; }
+.film .lede,.film-2 .lede{ color:var(--film-ink-soft); }
+.no{ font-family:var(--disp); font-weight:800; font-variation-settings:'wdth' 80; letter-spacing:-.04em; color:var(--orange-lite); }
+.sec-head{ container-type:inline-size; --kx:1; display:grid; grid-template-columns:minmax(0,1.45fr) minmax(0,1fr); gap:var(--s5); align-items:end; margin-bottom:var(--s7); }
+@media (max-width:980px){ .sec-head{ grid-template-columns:1fr; gap:var(--s3); --kx:1.62; margin-bottom:var(--s6); } }
+
+/* ---------- actions ---------- */
+.btn{
+  display:inline-flex; align-items:center; gap:10px;
+  padding:16px 28px; border:0; border-radius:0; cursor:pointer; text-decoration:none;
+  font-family:var(--disp); font-weight:700; font-variation-settings:'wdth' 88;
+  font-size:15px; letter-spacing:.06em; text-transform:uppercase;
+  transition:transform .18s var(--ease), background-color .18s;
+}
+.btn:active{ transform:translateY(1px); }
+.btn-orange{ background:var(--orange); color:#140E0C; }
+.btn-orange:hover{ background:#FF6A3D; }
+.btn-film{ background:var(--film); color:var(--film-ink); }
+.btn-ink{ background:var(--graphite-2); color:var(--chalk); }
+.btn-sm{ padding:11px 18px; font-size:13px; }
+
+/* ---------- nav ---------- */
+.bar{
+  position:sticky; top:0; z-index:70; height:var(--nav);
+  background:rgba(21,27,29,.94); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--rule);
+}
+.bar-in{ height:100%; display:flex; align-items:center; gap:var(--s4); max-width:var(--wrap); margin-inline:auto; padding-inline:var(--pad); }
+.brand{ display:flex; align-items:center; margin-right:auto; text-decoration:none; }
+.brand img{ height:32px; width:auto; background:var(--film); padding:5px 9px; }
+.nav-links{ display:flex; align-items:center; gap:24px; }
+.nav-links a:not(.btn){
+  text-decoration:none; font-family:var(--disp); font-weight:600; font-variation-settings:'wdth' 90;
+  font-size:13.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--chalk);
+}
+.nav-links a:not(.btn):hover{ color:var(--orange-lite); }
+@media (max-width:1010px){ .nav-links a:not(.btn){ display:none; } }
+
+/* ============================================================
+   OPENER. The photograph, and the film laid beside it
+   ============================================================ */
+.hero{
+  position:relative; min-height:calc(100dvh - var(--nav)); max-height:980px;
+  display:grid; grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);
+  align-items:stretch; overflow:hidden; background:var(--graphite-2);
+}
+@media (max-height:700px){ .hero{ min-height:640px; } }
+.hero-photo{ position:relative; }
+.hero-photo img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:56% 56%; }
+.hero-photo::after{ content:""; position:absolute; inset:0; background:linear-gradient(90deg, rgba(10,14,15,.30) 0%, rgba(10,14,15,0) 46%, rgba(10,14,15,.22) 100%); }
+.hero-cap{
+  position:absolute; left:var(--pad); bottom:var(--s4); z-index:2;
+  font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; font-weight:500;
+  color:var(--chalk); background:rgba(10,14,15,.66); padding:8px 12px;
+}
+.hero-film{
+  position:relative; z-index:3;
+  margin:var(--s5) var(--pad) var(--s5) calc(var(--s7) * -1);
+  padding:clamp(28px,3.4vw,52px);
+  display:flex; flex-direction:column; justify-content:center; gap:var(--s3);
+  container-type:inline-size;
+}
+.hero-film .reg{ top:14px; right:14px; }
+.hero-film .reg.b{ top:auto; right:auto; bottom:14px; left:14px; }
+.hero h1{
+  font-family:var(--disp); font-weight:900; font-variation-settings:'wdth' 82;
+  font-size:clamp(32px, calc(15.6 * 1cqw), 168px);
+  line-height:.9; letter-spacing:-.035em; text-transform:uppercase;
+}
+.hero h1 span{ display:block; white-space:nowrap; }
+.hero h1 em{ font-style:normal; color:var(--orange); }
+.hero-rule{ height:2px; background:var(--film-ink); opacity:.28; }
+.hero-film p{ color:var(--film-ink-soft); font-size:clamp(15.5px,1.15vw,18px); max-width:46ch; }
+.hero-acts{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:var(--s2); }
+.hero-acts .tel{
+  font-family:var(--disp); font-weight:800; font-variation-settings:'wdth' 86;
+  font-size:clamp(19px,1.7vw,24px); letter-spacing:-.01em; text-decoration:none;
+  color:var(--film-ink); border-bottom:3px solid var(--orange); padding-bottom:2px;
+}
+@media (max-width:980px){
+  .hero{ grid-template-columns:1fr; grid-auto-rows:min-content; align-content:start; max-height:none; }
+  .hero-photo{ min-height:34dvh; }
+  .hero-film{ margin:calc(var(--s6) * -1) var(--pad) var(--s5); }
+  .hero h1{ font-size:clamp(30px, calc(10.4 * 1cqw), 96px); }
+}
+
+/* ============================================================
+   SERVICES. Four strips of film laid across one plate
+   ============================================================ */
+.strips{ position:relative; }
+.strips-plate{ position:relative; }
+.strips-plate img{ width:100%; height:auto; aspect-ratio:1080/364; object-fit:cover; }
+.strip-set{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:2px; margin-top:calc(var(--s7) * -1); position:relative; z-index:2; }
+.strip{ padding:var(--s4) var(--s3) var(--s5); display:flex; flex-direction:column; gap:12px; }
+.strip:nth-child(even){ margin-top:var(--s4); }
+.strip .no{ font-size:40px; line-height:.8; }
+.strip p{ color:var(--film-ink-soft); font-size:15px; }
+@media (max-width:1100px){
+  .strip-set{ grid-template-columns:repeat(2,minmax(0,1fr)); margin-top:calc(var(--s6) * -1); }
+}
+@media (max-width:620px){
+  .strip-set{ grid-template-columns:1fr; margin-top:calc(var(--s5) * -1); }
+  .strip:nth-child(even){ margin-top:0; }
+}
+
+/* ============================================================
+   PROCESS. Six overlays, each laid over the last
+   ============================================================ */
+.overlays{ display:grid; gap:0; }
+.overlay{
+  display:grid; grid-template-columns:110px minmax(0,1fr) minmax(0,1.1fr);
+  gap:var(--s3) var(--s4); align-items:baseline;
+  padding:var(--s4);
+  margin-left:calc(var(--i) * 26px);
+  margin-top:-2px;
+  position:relative; z-index:calc(var(--i) + 1);
+  transition:translate .5s var(--ease);
+}
+.overlay:hover{ translate:10px 0; }
+.overlay .no{ font-size:clamp(30px,3vw,44px); line-height:.9; color:var(--orange); }
+.overlay p{ color:var(--film-ink-soft); font-size:15.5px; }
+@media (max-width:980px){
+  .overlay{ grid-template-columns:72px minmax(0,1fr); margin-left:calc(var(--i) * 10px); }
+  .overlay p{ grid-column:2; }
+}
+@media (max-width:620px){ .overlay{ margin-left:0; } }
+
+/* ============================================================
+   THE WORK. A film mat with windows cut in it
+   ============================================================ */
+.mat{ padding:clamp(18px,2.2vw,30px); }
+.mat-grid{ display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:clamp(18px,2.2vw,30px); }
+.win{ margin:0; position:relative; overflow:hidden; }
+.win img{ width:100%; height:100%; object-fit:cover; transition:transform 1.1s var(--ease); }
+.win:hover img{ transform:scale(1.045); }
+.win figcaption{
+  position:absolute; left:0; bottom:0; z-index:2;
+  background:rgba(23,28,28,.88); color:var(--chalk);
+  font-size:12.5px; letter-spacing:.1em; text-transform:uppercase; font-weight:500;
+  padding:8px 12px;
+}
+.w1{ grid-column:span 4; aspect-ratio:16/9; }
+.w2{ grid-column:span 2; aspect-ratio:3/4; }
+.w3{ grid-column:span 2; aspect-ratio:1/1; }
+.w4{ grid-column:span 2; aspect-ratio:1/1; }
+.w5{ grid-column:span 2; aspect-ratio:1/1; }
+.mat-note{ margin-top:clamp(18px,2.2vw,30px); border-top:1px solid rgba(23,28,28,.2); padding-top:var(--s3); color:var(--film-ink-soft); font-size:15.5px; }
+@media (max-width:880px){
+  .mat-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .w1{ grid-column:span 2; }
+  .w2,.w3,.w4,.w5{ grid-column:span 1; aspect-ratio:1/1; }
+}
+
+/* ============================================================
+   THE SET. The pinned register. This is the page's centre piece
+   ============================================================ */
+.stack{ padding-block:var(--s8); }
+.stack-head{ margin-bottom:var(--s6); }
+.stack-frame{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--s3); }
+.ply{ position:relative; margin:0; background:#fff; box-shadow:var(--lift); }
+.ply1{ z-index:1; } .ply2{ z-index:2; } .ply3{ z-index:3; } .ply4{ z-index:4; }
+.ply img{ width:100%; height:auto; aspect-ratio:3/2; object-fit:cover; }
+.ply-tag{
+  position:absolute; left:0; top:0; z-index:3;
+  font-family:var(--disp); font-weight:800; font-variation-settings:'wdth' 84;
+  font-size:clamp(20px,2vw,30px); letter-spacing:-.02em;
+  background:var(--orange); color:#140E0C; padding:6px 14px;
+}
+.stack-steps{ list-style:none; margin:var(--s5) 0 0; padding:0; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:2px; }
+.stack-steps button{
+  width:100%; text-align:left; border:0; cursor:pointer;
+  background:var(--slate); color:var(--chalk);
+  padding:14px 16px; box-shadow:inset 0 1px 0 rgba(230,234,232,.16);
+  transition:background-color .35s var(--ease), padding-left .3s var(--ease);
+}
+.stack-steps button:hover{ padding-left:22px; }
+.stack-steps b{
+  display:block; font-family:var(--disp); font-weight:800; font-variation-settings:'wdth' 84;
+  font-size:19px; letter-spacing:-.01em;
+}
+.stack-steps span{ display:block; font-size:13px; color:var(--chalk-dim); margin-top:2px; }
+.stack-steps button[aria-current="true"]{ background:var(--orange); color:#140E0C; }
+.stack-steps button[aria-current="true"] span{ color:rgba(20,14,12,.76); }
+.stack-note{ margin-top:var(--s4); color:var(--chalk-dim); font-size:16px; max-width:56ch; }
+@media (max-width:620px){ .stack-steps{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion: no-preference){
+    .stack{ height:420vh; padding-block:0; view-timeline:--stk block; }
+    /* the whole pinned panel has to fit one screen, controls included */
+    .stack-sticky{ position:sticky; top:0; height:100dvh; display:grid; align-content:center; padding-block:calc(var(--nav) + 20px) var(--s4); overflow:hidden; }
+    .stack-head{ margin-bottom:var(--s3); }
+    .stack-frame{ display:block; position:relative; aspect-ratio:3/2; max-height:40dvh; margin-inline:auto; width:100%; }
+    .stack-steps{ margin-top:var(--s4); }
+    .stack-note{ margin-top:var(--s3); font-size:15px; }
+    .ply{ position:absolute; inset:0; }
+    .ply img{ width:100%; height:100%; aspect-ratio:auto; }
+    .ply2,.ply3,.ply4{ animation:register linear both; animation-timeline:--stk; }
+    .ply2{ animation-range:contain 12% contain 34%; }
+    .ply3{ animation-range:contain 38% contain 60%; }
+    .ply4{ animation-range:contain 64% contain 86%; }
+    .stack-steps li:nth-child(2) button,
+    .stack-steps li:nth-child(3) button,
+    .stack-steps li:nth-child(4) button{ animation:lightup steps(1) both; animation-timeline:--stk; }
+    .stack-steps li:nth-child(2) button{ animation-range:contain 12% contain 34%; }
+    .stack-steps li:nth-child(3) button{ animation-range:contain 38% contain 60%; }
+    .stack-steps li:nth-child(4) button{ animation-range:contain 64% contain 86%; }
+  }
+}
+@keyframes register{
+  from{ opacity:0; translate:6% -5%; rotate:1.4deg; }
+  to  { opacity:1; translate:0 0;    rotate:0deg; }
+}
+@keyframes lightup{
+  from{ background-color:var(--slate); color:var(--chalk); }
+  to  { background-color:var(--orange); color:#140E0C; }
+}
+
+/* ============================================================
+   THE ARGUMENT. One sheet of film, printed
+   ============================================================ */
+.argue{ padding-block:var(--s8); }
+.argue-sheet{ position:relative; padding:clamp(40px,5vw,86px); container-type:inline-size; }
+.argue-sheet .reg{ top:16px; left:16px; }
+.argue-sheet .reg.b{ top:auto; left:auto; bottom:16px; right:16px; }
+.argue h2{
+  font-family:var(--disp); font-weight:900; font-variation-settings:'wdth' 84;
+  font-size:clamp(26px, calc(10.7 * 1cqw), 132px);
+  line-height:.98; letter-spacing:-.03em; text-transform:uppercase; max-width:19em;
+}
+.argue h2 em{ font-style:normal; color:var(--orange); }
+.argue-foot{ margin-top:var(--s6); padding-top:var(--s4); border-top:1px solid rgba(23,28,28,.22); display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--s5); }
+.argue-foot p{ color:var(--film-ink-soft); font-size:clamp(16px,1.3vw,19px); }
+@media (max-width:880px){ .argue-foot{ grid-template-columns:1fr; gap:var(--s3); } }
+
+/* ============================================================
+   QUESTIONS
+   ============================================================ */
+.qs{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--s6) var(--s7); }
+.qs article{ border-top:2px solid var(--rule-2); padding-top:var(--s3); }
+.qs h3{ margin-bottom:12px; }
+.qs p{ color:var(--chalk-dim); font-size:16px; }
+@media (max-width:880px){ .qs{ grid-template-columns:1fr; gap:var(--s4); } }
+
+/* ============================================================
+   CLOSING
+   ============================================================ */
+.close{ padding-bottom:0; }
+.close .wrap{ container-type:inline-size; }
+.close h2{
+  font-family:var(--disp); font-weight:900; font-variation-settings:'wdth' 80;
+  font-size:clamp(36px, calc(var(--kc,12.9) * 1cqw), 190px);
+  line-height:.86; letter-spacing:-.045em; text-transform:uppercase;
+}
+.close h2 span{ display:block; white-space:nowrap; }
+.close h2 span:last-child{ color:var(--orange); }
+.close-sub{ margin-top:var(--s4); max-width:52ch; color:var(--chalk-dim); font-size:18px; }
+.close-areas{ margin-top:var(--s6); border-top:1px solid var(--rule); padding-top:var(--s3); display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:var(--s2); font-size:15px; color:var(--chalk-dim); }
+.close-strip{ margin-top:var(--s7); background:var(--orange); color:#140E0C; }
+.close-strip-in{ max-width:var(--wrap); margin-inline:auto; padding:var(--s5) var(--pad); display:flex; flex-wrap:wrap; gap:var(--s4); align-items:center; justify-content:space-between; }
+.close-strip .tel{
+  font-family:var(--disp); font-weight:900; font-variation-settings:'wdth' 84;
+  font-size:clamp(28px,3.8vw,52px); letter-spacing:-.035em; text-decoration:none; color:#140E0C;
+}
+@media (max-width:760px){ .close-areas{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+
+/* ---------- footer ---------- */
+.foot{ background:var(--graphite-2); color:var(--chalk-dim); padding-block:var(--s6); border-top:1px solid var(--rule); }
+.foot-in{ display:grid; grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(0,1fr)); gap:var(--s5); }
+.foot h4{ margin:0 0 12px; font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--chalk); font-weight:700; }
+.foot a{ overflow-wrap:anywhere; color:var(--chalk-dim); text-decoration:none; display:block; padding-block:3px; font-size:15px; }
+.foot a:hover{ color:var(--orange-lite); }
+.foot-brand img{ height:32px; width:auto; background:var(--film); padding:6px 10px; }
+.foot-brand p{ margin-top:var(--s2); font-size:15px; max-width:34ch; }
+.foot-base{ margin-top:var(--s5); border-top:1px solid var(--rule); padding-top:var(--s3); font-size:14px; }
+@media (max-width:880px){ .foot-in{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+
+/* ---------- entrances ---------- */
+.js .rv{ opacity:0; translate:0 20px; }
+.js .rv.in{ opacity:1; translate:0 0; transition:opacity .85s var(--ease), translate .85s var(--ease); }
+@media (prefers-reduced-motion:reduce){
+  .js .rv{ opacity:1; translate:0 0; }
+  *{ transition-duration:.001ms !important; animation-duration:.001ms !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar-in">
+    <a class="brand" href="#top"><img src="assets/logo.png" alt="Quest Drafting and Design"></a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="#about">About</a>
+      <a href="/blog">Blog</a>
+      <a href="#faq">FAQ</a>
+      <a href="#quote">Contact</a>
+      <a class="btn btn-orange btn-sm" href="#quote">Get a Quote</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ================= OPENER ================= -->
+  <section class="hero">
+    <div class="hero-photo">
+      <img src="assets/render-motorcourt.webp" alt="Contemporary stone estate designed around a motor court, shown at dusk" fetchpriority="high">
+      <span class="hero-cap">Motor court estate, dusk render</span>
+    </div>
+    <div class="hero-film film">
+      <span class="reg" aria-hidden="true"></span>
+      <span class="reg b" aria-hidden="true"></span>
+      <h1><span>From vision,</span><span>to model,</span><span>to <em>permit.</em></span></h1>
+      <div class="hero-rule"></div>
+      <p>We turn a property and an idea into a home that is resolved on paper, modeled, documented and permitted, before the first shovel hits the ground.</p>
+      <div class="hero-acts">
+        <a class="btn btn-orange" href="#quote">Get a Quote</a>
+        <a class="tel" href="tel:+16023396455">(602) 339-6455</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SERVICES ================= -->
+  <section class="sec mylar" id="services">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <h2 class="h2" style="--k:7.49">Four services, no hand-offs.</h2>
+        <p class="lede">Residential architectural drafting in Gilbert, Arizona. One studio carries the project from the first massing study to the stamped permit.</p>
+      </div>
+
+      <div class="strips">
+        <figure class="strips-plate rv" style="margin:0">
+          <img src="assets/model-massing-white.webp" alt="White three dimensional massing model of a residence" loading="lazy">
+        </figure>
+        <div class="strip-set">
+          <article class="strip film rv">
+            <span class="no">01</span>
+            <h3 class="h3">Architectural Design</h3>
+            <p>From first massing study to a resolved floor plan, shaped by your lot, your zoning, and how you actually live. Custom homes, hillside and desert estates, additions, casitas, guest houses and site structures.</p>
+          </article>
+          <article class="strip film-2 rv">
+            <span class="no">02</span>
+            <h3 class="h3">3D Visualization</h3>
+            <p>You approve the home itself, not a flat line drawing you have to imagine in three dimensions. A full 3D model and photoreal renderings, day and twilight, before a single construction sheet is final.</p>
+          </article>
+          <article class="strip film rv">
+            <span class="no">03</span>
+            <h3 class="h3">Construction Documents</h3>
+            <p>The complete coordinated set your builder and your city both need, typically around 22 sheets across roughly six disciplines, drawn to the 2024 IBC / IRC / IECC code cycle.</p>
+          </article>
+          <article class="strip film-2 rv">
+            <span class="no">04</span>
+            <h3 class="h3">Permit Stewardship</h3>
+            <p>We do not hand you drawings and disappear. Submittals formatted to each jurisdiction's checklist, plan review comments answered, resubmittals managed until the permit is in hand.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PROCESS ================= -->
+  <section class="sec">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <h2 class="h2" style="--k:6.50">Six moves, laid one over the last.</h2>
+        <p class="lede">Each one closes before the next one opens. That is the whole reason a project does not stall at plan review.</p>
+      </div>
+      <div class="overlays">
+        <div class="overlay film rv"   style="--i:0"><span class="no">01</span><h3 class="h3">Survey and setbacks</h3><p>What the lot and the zoning will let you build.</p></div>
+        <div class="overlay film-2 rv" style="--i:1"><span class="no">02</span><h3 class="h3">Design</h3><p>Massing and plan, resolved against how you live.</p></div>
+        <div class="overlay film rv"   style="--i:2"><span class="no">03</span><h3 class="h3">3D model</h3><p>You approve the house while changes are still free.</p></div>
+        <div class="overlay film-2 rv" style="--i:3"><span class="no">04</span><h3 class="h3">Construction documents</h3><p>The coordinated set your builder builds from.</p></div>
+        <div class="overlay film rv"   style="--i:4"><span class="no">05</span><h3 class="h3">Permit submitted</h3><p>Formatted to the jurisdiction's own checklist.</p></div>
+        <div class="overlay film-2 rv" style="--i:5"><span class="no">06</span><h3 class="h3">Permit in hand</h3><p>Comments answered, resubmittals managed, stamp issued.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= THE WORK ================= -->
+  <section class="sec mylar" id="work">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <h2 class="h2" style="--k:6.85">Work drawn and rendered here.</h2>
+        <p class="lede">Renders and models from live residential projects. Nothing here is stock photography.</p>
+      </div>
+
+      <div class="mat film rv">
+        <div class="mat-grid">
+          <figure class="win w1"><img src="assets/render-motorcourt.webp" alt="Contemporary stone estate designed around a motor court at dusk" loading="lazy"><figcaption>Motor court estate</figcaption></figure>
+          <figure class="win w2"><img src="assets/render-night-stars.webp" alt="Desert home glowing beneath a starry night sky" loading="lazy"><figcaption>Night</figcaption></figure>
+          <figure class="win w3"><img src="assets/render-greatroom.webp" alt="Great room interior render with a glass wall onto mountains at dusk" loading="lazy"><figcaption>Great room</figcaption></figure>
+          <figure class="win w4"><img src="assets/render-pool-twilight.webp" alt="Twilight render of a modern estate above a pool terrace" loading="lazy"><figcaption>Pool terrace</figcaption></figure>
+          <figure class="win w5"><img src="assets/model-massing-terrain.webp" alt="Three dimensional massing model set into its sloped lot" loading="lazy"><figcaption>Massing on the lot</figcaption></figure>
+        </div>
+        <p class="mat-note">The same house gets modeled, rendered and drawn. You see all three before anything is built.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= THE SET. The pinned register ================= -->
+  <section class="stack mylar" aria-label="What a permit set looks like">
+    <div class="stack-sticky">
+      <div class="wrap">
+        <div class="stack-head">
+          <div class="sec-head rv" style="margin-bottom:0">
+            <h2 class="h2" style="--k:7.06">One set, laid down in register.</h2>
+            <p class="lede">Every sheet in a set is drawn on the same origin, so they land on top of each other exactly. Four sheets from one real set.</p>
+          </div>
+        </div>
+
+        <div class="stack-frame" id="stackFrame">
+          <figure class="ply ply1">
+            <span class="ply-tag">CS</span>
+            <img src="assets/sheet-cover-elevation-top.webp" alt="Cover sheet CS with the rendered elevation, sheet index and code list" loading="lazy">
+          </figure>
+          <figure class="ply ply2">
+            <span class="ply-tag">A100</span>
+            <img src="assets/sheet-site-plan-top.webp" alt="Site plan A100 with property lines, dimensions and the house on its lot" loading="lazy">
+          </figure>
+          <figure class="ply ply3">
+            <span class="ply-tag">A103</span>
+            <img src="assets/sheet-dimensional-plan-top.webp" alt="Dimensional floor plan A103 with every room and wall dimensioned" loading="lazy">
+          </figure>
+          <figure class="ply ply4">
+            <span class="ply-tag">A201</span>
+            <img src="assets/sheet-elevations-top.webp" alt="Elevations A201 showing rear and right elevations with materials called out" loading="lazy">
+          </figure>
+        </div>
+
+        <ol class="stack-steps" id="stackSteps">
+          <li><button type="button" data-i="0" aria-current="true"><b>CS</b><span>Cover sheet</span></button></li>
+          <li><button type="button" data-i="1" aria-current="false"><b>A100</b><span>Site plan</span></button></li>
+          <li><button type="button" data-i="2" aria-current="false"><b>A103</b><span>Dimensional plan</span></button></li>
+          <li><button type="button" data-i="3" aria-current="false"><b>A201</b><span>Elevations</span></button></li>
+        </ol>
+        <p class="stack-note">A full set runs to around 22 sheets across roughly six disciplines, drawn to the 2024 IBC / IRC / IECC code cycle.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= THE ARGUMENT ================= -->
+  <section class="argue" id="about">
+    <div class="wrap">
+      <div class="argue-sheet film rv">
+        <span class="reg" aria-hidden="true"></span>
+        <span class="reg b" aria-hidden="true"></span>
+        <h2>Every hand-off is a chance for something to be <em>lost.</em></h2>
+        <div class="argue-foot">
+          <p>Most residential projects pass through several hands before a permit is issued.</p>
+          <p>Quest takes a project the whole way, on one flat fee agreed before we start.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= QUESTIONS ================= -->
+  <section class="sec" id="faq">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <h2 class="h2" style="--k:6.42">Asked on almost every first call.</h2>
+      </div>
+      <div class="qs">
+        <article class="rv">
+          <h3 class="h3">How much does a project cost?</h3>
+          <p>A flat fee agreed up front, based on the scope of your project. One fixed price and a defined timeline, with no hourly surprises.</p>
+        </article>
+        <article class="rv">
+          <h3 class="h3">What is in a construction document set?</h3>
+          <p>Around 22 sheets across roughly six disciplines: cover, site, floor plans, roof plans, elevations, sections and coordinated details, drawn to the 2024 code cycle.</p>
+        </article>
+        <article class="rv">
+          <h3 class="h3">Can you design an ADU, casita or guest house?</h3>
+          <p>Yes. Casitas, accessory dwelling units, guest houses, additions, remodels, RV garages and site structures. What you can build depends on your lot and your zoning.</p>
+        </article>
+        <article class="rv">
+          <h3 class="h3">Why build a 3D model before the drawings?</h3>
+          <p>Because it lets you approve the actual home while changes are still free.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CLOSING ================= -->
+  <section class="sec close mylar" id="quote">
+    <div class="wrap">
+      <h2 class="rv"><span>Put your project</span><span>on the board.</span></h2>
+      <p class="close-sub rv">Tell us the lot and the idea. You get a flat fee and a defined timeline before any drawing starts.</p>
+      <div class="close-areas rv">
+        <span>Gilbert</span><span>Queen Creek</span><span>Mesa</span>
+        <span>Chandler</span><span>Phoenix</span><span>Scottsdale</span>
+      </div>
+    </div>
+    <div class="close-strip">
+      <div class="close-strip-in">
+        <a class="tel" href="tel:+16023396455">(602) 339-6455</a>
+        <a class="btn btn-ink" href="mailto:info@questdraftinganddesign.com">Get a Quote</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <div class="foot-brand">
+      <img src="assets/logo.png" alt="Quest Drafting and Design">
+      <p>Residential architectural drafting in Gilbert, Arizona.</p>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <a href="tel:+16023396455">(602) 339-6455</a>
+      <a href="mailto:info@questdraftinganddesign.com">info@questdraftinganddesign.com</a>
+    </div>
+    <div>
+      <h4>Service area</h4>
+      <a href="#quote">Gilbert</a><a href="#quote">Queen Creek</a><a href="#quote">Mesa</a>
+      <a href="#quote">Chandler</a><a href="#quote">Phoenix</a><a href="#quote">Scottsdale</a>
+    </div>
+    <div>
+      <h4>Pages</h4>
+      <a href="#work">Work</a><a href="#services">Services</a><a href="#about">About</a>
+      <a href="/blog">Blog</a><a href="#faq">FAQ</a><a href="#quote">Contact</a>
+    </div>
+  </div>
+  <div class="wrap foot-base">Quest Drafting &amp; Design LLC</div>
+</footer>
+
+<script>
+document.documentElement.classList.add('js');
+
+/* ---- entrances ---- */
+(function(){
+  var items = document.querySelectorAll('.rv');
+  if (!('IntersectionObserver' in window)) { items.forEach(function(n){ n.classList.add('in'); }); return; }
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { rootMargin:'0px 0px -8% 0px', threshold:0.06 });
+  items.forEach(function(n){ io.observe(n); });
+})();
+
+/* ---- the register. The sheets land as you scroll, and the four buttons
+        move the page to the point where their sheet is on top, so the set
+        can be stepped through from the keyboard as well as by scrolling ---- */
+(function(){
+  var sec = document.querySelector('.stack');
+  var steps = document.getElementById('stackSteps');
+  if (!sec || !steps) return;
+
+  var pinned = CSS.supports('animation-timeline: view()') &&
+               !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var marks = [0.06, 0.34, 0.60, 0.88];   /* where each sheet is fully landed */
+
+  steps.addEventListener('click', function(e){
+    var b = e.target.closest('button');
+    if (!b) return;
+    var i = +b.dataset.i;
+    steps.querySelectorAll('button').forEach(function(x){
+      x.setAttribute('aria-current', x === b ? 'true' : 'false');
+    });
+    if (!pinned) return;
+    var top = sec.offsetTop;
+    var travel = sec.offsetHeight - window.innerHeight;
+    window.scrollTo({ top: top + travel * marks[i], behavior: 'smooth' });
+  });
+})();
+</script>
+</body>
+</html>
