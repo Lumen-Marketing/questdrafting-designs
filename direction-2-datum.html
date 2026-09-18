@@ -1,0 +1,758 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quest Drafting &amp; Design | Residential architectural drafting in Gilbert, Arizona</title>
+<meta name="description" content="Quest Drafting and Design takes a house from first sketch through 3D, through a coordinated construction set, and through plan review until the city stamps the permit.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Familjen+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DATUM
+   A datum is the one line every measurement on a drawing is
+   taken from. This page is built off a single heavy rule that
+   every section starts against.
+   Material  : screen print halftone, one material
+   Depth     : misregistration. Every plate has a solid plane
+               offset behind it, and slides into register
+   Motion    : registration. Things arrive off register and
+               pull into line, because that is the job
+   Shape     : 0px radius everywhere. Hard edges only
+   ============================================================ */
+
+:root{
+  --paper:#FFFFFF;
+  --ink:#0D0D0D;
+  --ink-soft:#4C4C4C;
+  --orange:#E8552B;
+  --orange-deep:#C43F18;
+  --rule:#D2D2D2;
+
+  --disp:'Archivo Black','Familjen Grotesk',Helvetica,sans-serif;
+  --body:'Familjen Grotesk',Helvetica,sans-serif;
+
+  --wrap:1300px;
+  --pad:32px;
+  --nav:66px;
+
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:48px;
+  --s6:64px; --s7:96px; --s8:128px;
+}
+@media (max-width:760px){ :root{ --pad:20px; --nav:58px; } }
+
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:17px;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+img{ display:block; max-width:100%; }
+a{ color:inherit; }
+h1,h2,h3{ margin:0; }
+p{ margin:0; }
+button{ font:inherit; color:inherit; }
+
+.wrap{ width:100%; max-width:var(--wrap); margin-inline:auto; padding-inline:var(--pad); }
+.sec{ padding-block:var(--s8); }
+@media (max-width:880px){ .sec{ padding-block:var(--s7); } }
+
+/* ---------- the one material: screen print halftone ---------- */
+.mat{ position:relative; }
+.mat::before{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background-image:radial-gradient(circle at center, currentColor 1.1px, transparent 1.2px);
+  background-size:9px 9px;
+  opacity:.12;
+}
+.mat > *{ position:relative; }
+
+/* ---------- type ---------- */
+.disp{
+  font-family:var(--disp); font-weight:400;
+  text-transform:uppercase; letter-spacing:-.018em; line-height:.88;
+}
+/* Each heading is sized from the measured width of its own string, in
+   container units, so every one fills its column at every viewport width. */
+.h2{ font-size:clamp(30px, calc(var(--k,7) * var(--kx,1) * 1cqw), 170px); }
+.h3{ font-size:clamp(22px,2.2vw,30px); line-height:.98; }
+.lede{ font-size:clamp(17px,1.4vw,20px); color:var(--ink-soft); max-width:60ch; }
+.tag{
+  font-size:12px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+}
+
+/* the datum: every section opens against one heavy rule */
+.sec-head{
+  container-type:inline-size; --kx:1;
+  border-top:4px solid var(--ink);
+  padding-top:var(--s3);
+  display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);
+  gap:var(--s5);
+  align-items:end;
+  margin-bottom:var(--s6);
+}
+.sec-head p{ color:var(--ink-soft); }
+@media (max-width:880px){ .sec-head{ grid-template-columns:1fr; gap:var(--s3); --kx:1.73; } }
+
+/* ---------- actions ---------- */
+.btn{
+  display:inline-flex; align-items:center; gap:10px;
+  padding:16px 28px; border:0; border-radius:0;
+  font-weight:700; font-size:16px; letter-spacing:.02em; text-transform:uppercase;
+  text-decoration:none; cursor:pointer;
+  transition:transform .16s cubic-bezier(.32,.72,0,1), background-color .16s;
+}
+.btn:active{ transform:translate(2px,2px); }
+.btn-ink{ background:var(--ink); color:#fff; }
+.btn-ink:hover{ background:var(--orange-deep); }
+.btn-line{ background:transparent; color:var(--ink); box-shadow:inset 0 0 0 2px var(--ink); }
+.btn-line:hover{ background:var(--ink); color:#fff; }
+.btn-paper{ background:#fff; color:var(--ink); }
+.btn-sm{ padding:11px 18px; font-size:14px; }
+:focus-visible{ outline:3px solid var(--orange); outline-offset:3px; }
+
+/* ---------- nav ---------- */
+.bar{
+  position:sticky; top:0; z-index:60; height:var(--nav);
+  background:var(--ink); color:#fff;
+}
+.bar-in{ height:100%; display:flex; align-items:center; gap:var(--s4); max-width:var(--wrap); margin-inline:auto; padding-inline:var(--pad); }
+.brand{ display:flex; align-items:center; margin-right:auto; text-decoration:none; }
+.brand img{ height:34px; width:auto; background:#fff; padding:5px 9px; }
+.nav-links{ display:flex; align-items:center; gap:24px; }
+.nav-links a{
+  text-decoration:none; font-size:13px; font-weight:700; letter-spacing:.12em;
+  text-transform:uppercase; color:#fff;
+}
+.nav-links a:not(.btn):hover{ color:var(--orange); }
+@media (max-width:1010px){ .nav-links a:not(.btn){ display:none; } }
+
+/* ============================================================
+   OPENER. Type first, one plate off register
+   ============================================================ */
+.hero{
+  min-height:calc(100dvh - var(--nav));
+  max-height:960px;
+  display:grid; align-content:center;
+  padding-block:var(--s6);
+  overflow:hidden;
+}
+@media (max-height:700px){ .hero{ min-height:640px; } }
+.hero-in{
+  display:grid; grid-template-columns:minmax(0,1.42fr) minmax(0,1fr);
+  gap:var(--s6); align-items:center;
+}
+.hero h1{
+  font-family:var(--disp); font-weight:400; text-transform:uppercase;
+  /* sized off the real string measured in Archivo Black, so each line
+     fills its own column instead of wrapping into six lines */
+  font-size:clamp(40px,6.6vw,84px); line-height:.86; letter-spacing:-.035em;
+}
+.hero-tag{ color:var(--ink-soft); margin-bottom:var(--s3); padding-bottom:10px; border-bottom:2px solid var(--ink); display:inline-block; }
+.hero h1 span{ display:block; white-space:nowrap; }
+.hero h1 .o{ color:var(--orange); }
+.hero-rule{ height:4px; background:var(--ink); margin:var(--s4) 0 var(--s3); }
+.hero p{ font-size:clamp(16px,1.35vw,20px); color:var(--ink-soft); max-width:52ch; }
+.hero-acts{ display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin-top:var(--s4); }
+.hero-acts .tel{
+  font-family:var(--disp); font-size:clamp(20px,1.9vw,26px); text-decoration:none;
+  letter-spacing:-.02em; border-bottom:4px solid var(--orange); padding-bottom:2px;
+}
+.hero-fig{ position:relative; }
+.hero-fig img{
+  width:100%; height:auto; aspect-ratio:3/4; object-fit:cover; object-position:62% 38%;
+  position:relative; z-index:1;
+}
+.hero-fig::after{
+  content:""; position:absolute; z-index:0; inset:-20px -20px auto auto;
+  width:70%; height:78%; background:var(--orange);
+}
+.hero-cap{
+  position:relative; z-index:2; margin-top:12px;
+  font-size:13px; font-weight:600; letter-spacing:.06em; color:var(--ink-soft);
+}
+@media (max-width:980px){
+  .hero-in{ grid-template-columns:1fr; gap:var(--s5); }
+  .hero-fig{ display:none; }
+  .hero h1{ font-size:clamp(36px,11.2vw,94px); }
+}
+
+/* ============================================================
+   SERVICES. One large, three ruled
+   ============================================================ */
+.svc-grid{ display:grid; grid-template-columns:minmax(0,1.22fr) minmax(0,1fr); gap:var(--s6); }
+.svc-lead{ background:var(--orange); color:var(--ink); position:relative; }
+.svc-lead img{ width:100%; height:auto; aspect-ratio:16/10; object-fit:cover; }
+.svc-lead-txt{ padding:var(--s5) var(--s4) var(--s5); }
+.svc-lead .no{ font-family:var(--disp); font-size:56px; line-height:.8; display:block; margin-bottom:var(--s3); }
+.svc-lead h3{ margin-bottom:var(--s2); }
+.svc-lead p{ max-width:48ch; }
+.svc-rows{ display:grid; align-content:start; }
+.svc-row{ border-top:2px solid var(--ink); padding:var(--s4) 0; display:grid; grid-template-columns:72px minmax(0,1fr); gap:var(--s3); }
+.svc-row:last-child{ border-bottom:2px solid var(--ink); }
+.svc-row .no{ font-family:var(--disp); font-size:34px; line-height:.9; color:var(--orange); }
+.svc-row h3{ margin-bottom:10px; }
+.svc-row p{ color:var(--ink-soft); }
+@media (max-width:980px){ .svc-grid{ grid-template-columns:1fr; gap:var(--s5); } }
+
+/* ============================================================
+   PROCESS. Orange field, six ruled courses
+   ============================================================ */
+.process{ background:var(--orange); color:var(--ink); }
+.process .sec-head{ border-top-color:var(--ink); }
+.process .sec-head p{ color:var(--ink); }
+.courses{ border-top:2px solid var(--ink); }
+.course{
+  position:relative; overflow:hidden;
+  display:grid; grid-template-columns:96px minmax(0,1fr) minmax(0,1.1fr);
+  gap:var(--s3) var(--s4); align-items:center;
+  padding:var(--s3) var(--s3);
+  border-bottom:2px solid var(--ink);
+}
+.course::before{
+  content:""; position:absolute; inset:0; background:var(--paper);
+  transform:scaleX(0); transform-origin:left center;
+  transition:transform .7s cubic-bezier(.32,.72,0,1);
+}
+.course.set::before{ transform:scaleX(1); }
+.course > *{ position:relative; }
+.course .no{ font-family:var(--disp); font-size:clamp(30px,3.2vw,46px); line-height:.9; }
+.course h3{ font-family:var(--disp); font-size:clamp(19px,1.9vw,26px); line-height:1; text-transform:uppercase; letter-spacing:-.012em; }
+.course p{ color:var(--ink); font-size:16px; }
+@media (max-width:880px){
+  .course{ grid-template-columns:64px minmax(0,1fr); }
+  .course p{ grid-column:2; }
+}
+
+/* ============================================================
+   THE WORK. Mosaic with a full screen viewer
+   ============================================================ */
+.mosaic{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:var(--s3);
+}
+.tile{
+  position:relative; padding:0; border:0; background:none; cursor:zoom-in;
+  display:block; width:100%; overflow:hidden;
+}
+.tile img{ width:100%; height:100%; object-fit:cover; transition:transform .7s cubic-bezier(.32,.72,0,1); }
+.tile:hover img{ transform:scale(1.04); }
+.tile figcaption{
+  position:absolute; left:0; bottom:0;
+  background:var(--ink); color:#fff;
+  font-size:13px; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+  padding:9px 14px; text-align:left;
+}
+.t1{ grid-column:span 4; aspect-ratio:16/9; }
+.t2{ grid-column:span 2; aspect-ratio:3/4; }
+.t3{ grid-column:span 2; aspect-ratio:1/1; }
+.t4{ grid-column:span 2; aspect-ratio:1/1; }
+.t5{ grid-column:span 2; aspect-ratio:1/1; }
+.t6{ grid-column:span 6; aspect-ratio:1080/364; }
+@media (max-width:880px){
+  .mosaic{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .t1,.t6{ grid-column:span 2; }
+  .t2,.t3,.t4,.t5{ grid-column:span 1; aspect-ratio:1/1; }
+}
+.viewer{
+  border:0; padding:0; background:var(--ink); color:#fff;
+  width:min(96vw,1300px); max-width:96vw;
+}
+.viewer::backdrop{ background:rgba(13,13,13,.92); }
+.viewer img{ width:100%; height:auto; max-height:76dvh; object-fit:contain; background:#000; }
+.viewer-bar{ display:flex; flex-wrap:wrap; align-items:center; gap:var(--s3); padding:var(--s3) var(--s4); }
+.viewer-bar b{ font-family:var(--disp); text-transform:uppercase; font-size:18px; letter-spacing:.01em; }
+.viewer-bar span{ color:rgba(255,255,255,.72); font-size:15px; margin-right:auto; }
+.viewer-bar button{
+  background:transparent; color:#fff; border:2px solid rgba(255,255,255,.5);
+  padding:9px 16px; cursor:pointer; font-weight:700; font-size:14px; text-transform:uppercase; letter-spacing:.08em;
+}
+.viewer-bar button:hover{ background:#fff; color:var(--ink); }
+
+/* ============================================================
+   THE SET. One wide, three under
+   ============================================================ */
+.set-wide{ position:relative; margin-bottom:var(--s3); }
+.set-wide img{ width:100%; height:auto; aspect-ratio:21/9; object-fit:cover; object-position:50% 14%; }
+.set-three{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:var(--s3); }
+.set-three figure{ position:relative; margin:0; }
+.set-three img{ width:100%; height:auto; aspect-ratio:4/3; object-fit:cover; object-position:50% 12%; }
+.set-no{
+  position:absolute; top:-18px; left:-8px; z-index:2;
+  font-family:var(--disp); text-transform:uppercase;
+  font-size:clamp(28px,3.4vw,52px); line-height:1;
+  color:var(--orange);
+  -webkit-text-stroke:2px var(--ink);
+  paint-order:stroke fill;
+}
+.set-wide .set-no{ font-size:clamp(34px,4.6vw,72px); }
+.set-cap{ margin-top:10px; font-size:15px; color:var(--ink-soft); }
+.set-note{
+  margin-top:var(--s5); border-top:2px solid var(--ink); padding-top:var(--s3);
+  font-size:clamp(17px,1.5vw,21px); max-width:64ch;
+}
+@media (max-width:880px){
+  .set-three{ grid-template-columns:1fr; gap:var(--s5); }
+  .set-wide img{ aspect-ratio:16/9; }
+}
+
+/* ============================================================
+   THE ARGUMENT. Kinetic statement on ink
+   ============================================================ */
+.argue{ background:var(--ink); color:#fff; padding-block:var(--s8); }
+.argue .wrap{ container-type:inline-size; }
+.argue .kin{
+  font-family:var(--disp); text-transform:uppercase;
+  font-size:clamp(28px, calc(8.24 * 1cqw), 112px); line-height:.96; letter-spacing:-.024em;
+  max-width:19em;
+}
+.argue .kin i{ font-style:normal; color:var(--orange); }
+.kin b{ display:inline-block; font-weight:400; opacity:.22; transition:opacity .5s ease; }
+.kin.lit b{ opacity:1; }
+.argue-foot{
+  margin-top:var(--s6); border-top:2px solid rgba(255,255,255,.28); padding-top:var(--s4);
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--s5);
+}
+.argue-foot p{ color:rgba(255,255,255,.82); font-size:clamp(16px,1.3vw,19px); }
+@media (max-width:880px){ .argue-foot{ grid-template-columns:1fr; gap:var(--s3); } }
+
+/* ============================================================
+   QUESTIONS. Heavy ruled pairs
+   ============================================================ */
+.q{ border-top:2px solid var(--ink); padding:var(--s5) 0; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:var(--s5); align-items:start; }
+.q:last-child{ border-bottom:2px solid var(--ink); }
+.q h3{ font-family:var(--disp); text-transform:uppercase; font-size:clamp(21px,2.4vw,34px); line-height:.98; letter-spacing:-.016em; }
+.q p{ color:var(--ink-soft); font-size:17px; }
+@media (max-width:880px){ .q{ grid-template-columns:1fr; gap:var(--s2); padding:var(--s4) 0; } }
+
+/* ============================================================
+   CLOSING. Split, with the plane breaking the line
+   ============================================================ */
+.close{ background:var(--ink); color:#fff; }
+.close-head{ padding-block:var(--s8) var(--s5); }
+.close-head .wrap{ container-type:inline-size; }
+.close-body{ display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); }
+.close-txt{ padding:0 var(--s6) var(--s8) max(var(--pad), calc((100vw - var(--wrap)) / 2 + var(--pad))); }
+.close h2{
+  font-family:var(--disp); text-transform:uppercase;
+  font-size:clamp(38px, calc(8.43 * 1cqw), 150px); line-height:.86; letter-spacing:-.035em;
+}
+.close h2 span{ display:block; white-space:nowrap; }
+.close h2 .o{ color:var(--orange); }
+.close p{ margin-top:var(--s4); color:rgba(255,255,255,.80); max-width:44ch; font-size:18px; }
+.close-acts{ display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin-top:var(--s5); }
+.close-acts .tel{
+  font-family:var(--disp); font-size:clamp(24px,2.6vw,38px); text-decoration:none; color:#fff;
+  letter-spacing:-.02em; border-bottom:4px solid var(--orange); padding-bottom:2px;
+}
+.close-areas{
+  margin-top:var(--s6); border-top:2px solid rgba(255,255,255,.28); padding-top:var(--s3);
+  display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px var(--s3);
+  font-size:15px; color:rgba(255,255,255,.80);
+}
+.close-fig{ position:relative; }
+.close-fig img{ width:100%; height:100%; object-fit:cover; position:relative; z-index:1; }
+.close-fig::before{
+  content:""; position:absolute; z-index:2; left:-36px; bottom:14%;
+  width:150px; height:22px; background:var(--orange);
+}
+@media (max-width:980px){
+  .close-body{ grid-template-columns:1fr; }
+  .close-head{ padding-block:var(--s7) var(--s4); }
+  .close-txt{ padding:0 var(--pad) var(--s7); }
+  .close-fig{ min-height:56vw; }
+  .close-fig::before{ left:0; bottom:auto; top:-11px; }
+}
+
+/* ---------- footer ---------- */
+.foot{ background:var(--paper); color:var(--ink); padding-block:var(--s6); border-top:4px solid var(--ink); }
+.foot-in{ display:grid; grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(0,1fr)); gap:var(--s5); }
+.foot h4{ margin:0 0 12px; font-size:12px; letter-spacing:.2em; text-transform:uppercase; font-weight:700; }
+.foot a{ overflow-wrap:anywhere; color:var(--ink-soft); text-decoration:none; display:block; padding-block:3px; font-size:15px; }
+.foot a:hover{ color:var(--orange-deep); }
+.foot-brand img{ height:34px; width:auto; }
+.foot-brand p{ margin-top:var(--s2); font-size:15px; color:var(--ink-soft); max-width:34ch; }
+.foot-base{ margin-top:var(--s5); border-top:2px solid var(--ink); padding-top:var(--s3); font-size:14px; color:var(--ink-soft); }
+@media (max-width:880px){ .foot-in{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+
+/* ---------- reveal. Off register, then into register ---------- */
+.js .rv{ opacity:0; translate:-14px 16px; }
+.js .rv.in{ opacity:1; translate:0 0; transition:opacity .7s cubic-bezier(.32,.72,0,1), translate .85s cubic-bezier(.32,.72,0,1); }
+@media (prefers-reduced-motion:reduce){
+  .js .rv{ opacity:1; translate:0 0; }
+  .course::before{ transform:scaleX(1); transition:none; }
+  .kin b{ opacity:1; transition:none; }
+  *{ animation-duration:.001ms !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar-in">
+    <a class="brand" href="#top"><img src="assets/logo.png" alt="Quest Drafting and Design"></a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="#about">About</a>
+      <a href="/blog">Blog</a>
+      <a href="#faq">FAQ</a>
+      <a href="#quote">Contact</a>
+      <a class="btn btn-sm" style="background:var(--orange);color:var(--ink)" href="#quote">Get a Quote</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ================= OPENER ================= -->
+  <section class="hero">
+    <div class="wrap hero-in">
+      <div>
+        <p class="tag hero-tag">Residential architectural drafting, Gilbert Arizona</p>
+        <h1><span>From vision,</span><span>to model,</span><span class="o">to permit.</span></h1>
+        <div class="hero-rule"></div>
+        <p>We turn a property and an idea into a home that is resolved on paper, modeled, documented and permitted, before the first shovel hits the ground.</p>
+        <div class="hero-acts">
+          <a class="btn btn-ink" href="#quote">Get a Quote</a>
+          <a class="tel" href="tel:+16023396455">(602) 339-6455</a>
+        </div>
+      </div>
+      <figure class="hero-fig">
+        <img src="assets/render-motorcourt.webp" alt="Contemporary stone estate designed around a motor court, shown at dusk" fetchpriority="high">
+        <figcaption class="hero-cap">Motor court estate, dusk render</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ================= SERVICES ================= -->
+  <section class="sec" id="services">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <h2 class="disp h2" style="--k:7.75">What the studio does</h2>
+        <p>Residential architectural drafting in Gilbert, Arizona. Four services, one studio, one flat fee.</p>
+      </div>
+
+      <div class="svc-grid">
+        <article class="svc-lead rv">
+          <img src="assets/model-massing-terrain.webp" alt="Three dimensional massing model of a residence set into its sloped lot" loading="lazy">
+          <div class="svc-lead-txt">
+            <span class="no">01</span>
+            <h3 class="disp h3">Architectural Design</h3>
+            <p>From first massing study to a resolved floor plan, shaped by your lot, your zoning, and how you actually live. Custom homes, hillside and desert estates, additions, casitas, guest houses and site structures.</p>
+          </div>
+        </article>
+
+        <div class="svc-rows">
+          <article class="svc-row rv">
+            <span class="no">02</span>
+            <div>
+              <h3 class="disp h3">3D Visualization</h3>
+              <p>You approve the home itself, not a flat line drawing you have to imagine in three dimensions. A full 3D model and photoreal renderings, day and twilight, before a single construction sheet is final.</p>
+            </div>
+          </article>
+          <article class="svc-row rv">
+            <span class="no">03</span>
+            <div>
+              <h3 class="disp h3">Construction Documents</h3>
+              <p>The complete coordinated set your builder and your city both need, typically around 22 sheets across roughly six disciplines, drawn to the 2024 IBC / IRC / IECC code cycle.</p>
+            </div>
+          </article>
+          <article class="svc-row rv">
+            <span class="no">04</span>
+            <div>
+              <h3 class="disp h3">Permit Stewardship</h3>
+              <p>We do not hand you drawings and disappear. Submittals formatted to each jurisdiction's checklist, plan review comments answered, resubmittals managed until the permit is in hand.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PROCESS ================= -->
+  <section class="sec process mat">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <h2 class="disp h2" style="--k:7.14">How it goes</h2>
+        <p>Six moves in one order. Each one closes before the next one opens.</p>
+      </div>
+      <div class="courses" id="courses">
+        <div class="course"><span class="no">01</span><h3>Survey and setbacks</h3><p>What the lot and the zoning will let you build.</p></div>
+        <div class="course"><span class="no">02</span><h3>Design</h3><p>Massing and plan, resolved against how you live.</p></div>
+        <div class="course"><span class="no">03</span><h3>3D model</h3><p>You approve the house while changes are still free.</p></div>
+        <div class="course"><span class="no">04</span><h3>Construction documents</h3><p>The coordinated set your builder builds from.</p></div>
+        <div class="course"><span class="no">05</span><h3>Permit submitted</h3><p>Formatted to the jurisdiction's own checklist.</p></div>
+        <div class="course"><span class="no">06</span><h3>Permit in hand</h3><p>Comments answered, resubmittals managed, stamp issued.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= THE WORK ================= -->
+  <section class="sec" id="work">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <h2 class="disp h2" style="--k:8.90">The work</h2>
+        <p>Renders and models from live residential projects. Open any one of them full screen.</p>
+      </div>
+
+      <div class="mosaic" id="mosaic">
+        <button class="tile t1 rv" type="button" data-src="assets/render-motorcourt.webp" data-title="Motor court estate" data-note="Stone and glass, organised around the arrival court. Dusk render.">
+          <img src="assets/render-motorcourt.webp" alt="Contemporary stone estate designed around a motor court at dusk" loading="lazy">
+          <figcaption>Motor court estate</figcaption>
+        </button>
+        <button class="tile t2 rv" type="button" data-src="assets/render-night-stars.webp" data-title="Desert home at night" data-note="The house read against a clear desert sky, before anything was built.">
+          <img src="assets/render-night-stars.webp" alt="Desert home glowing beneath a starry night sky" loading="lazy">
+          <figcaption>Night</figcaption>
+        </button>
+        <button class="tile t3 rv" type="button" data-src="assets/render-pool-twilight.webp" data-title="Pool terrace, twilight" data-note="The terrace designed as an outdoor room rather than left over space.">
+          <img src="assets/render-pool-twilight.webp" alt="Twilight render of a modern estate above a pool terrace" loading="lazy">
+          <figcaption>Pool terrace</figcaption>
+        </button>
+        <button class="tile t4 rv" type="button" data-src="assets/render-greatroom.webp" data-title="Great room" data-note="Glass wall onto the mountains, judged at dusk before framing.">
+          <img src="assets/render-greatroom.webp" alt="Great room interior render with a glass wall onto mountains at dusk" loading="lazy">
+          <figcaption>Great room</figcaption>
+        </button>
+        <button class="tile t5 rv" type="button" data-src="assets/model-massing-terrain.webp" data-title="Massing on the lot" data-note="The model dropped onto the real slope, so grade is designed and not discovered.">
+          <img src="assets/model-massing-terrain.webp" alt="Three dimensional massing model set into its sloped lot" loading="lazy">
+          <figcaption>Massing, sloped lot</figcaption>
+        </button>
+        <button class="tile t6 rv" type="button" data-src="assets/model-massing-white.webp" data-title="White massing model" data-note="Form first. No materials, no distractions, just the shape of the house.">
+          <img src="assets/model-massing-white.webp" alt="White three dimensional massing model of a residence" loading="lazy">
+          <figcaption>White massing model</figcaption>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <dialog class="viewer" id="viewer" aria-label="Project image">
+    <img id="vImg" src="assets/render-motorcourt.webp" alt="">
+    <div class="viewer-bar">
+      <b id="vTitle">Motor court estate</b>
+      <span id="vNote"></span>
+      <button type="button" id="vPrev">Previous</button>
+      <button type="button" id="vNext">Next</button>
+      <button type="button" id="vClose">Close</button>
+    </div>
+  </dialog>
+
+  <!-- ================= THE SET ================= -->
+  <section class="sec mat">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <h2 class="disp h2" style="--k:11.27">The set</h2>
+        <p>Four sheets from one real construction set, carrying their own numbers.</p>
+      </div>
+
+      <figure class="set-wide rv">
+        <span class="set-no">CS</span>
+        <img src="assets/sheet-cover-elevation-top.webp" alt="Cover sheet CS with the rendered elevation, sheet index and code list" loading="lazy">
+        <figcaption class="set-cap">Cover sheet. The rendered elevation, the sheet index and the code list the set is drawn to.</figcaption>
+      </figure>
+
+      <div class="set-three">
+        <figure class="rv">
+          <span class="set-no">A100</span>
+          <img src="assets/sheet-site-plan-top.webp" alt="Site plan A100 with property lines, dimensions and the house on its lot" loading="lazy">
+          <figcaption class="set-cap">Site plan. Property lines, setbacks and the house placed on its lot.</figcaption>
+        </figure>
+        <figure class="rv">
+          <span class="set-no">A103</span>
+          <img src="assets/sheet-dimensional-plan-top.webp" alt="Dimensional floor plan A103 with every room and wall dimensioned" loading="lazy">
+          <figcaption class="set-cap">Dimensional plan. Every room and every wall dimensioned for the framer.</figcaption>
+        </figure>
+        <figure class="rv">
+          <span class="set-no">A201</span>
+          <img src="assets/sheet-elevations-top.webp" alt="Elevations A201 showing rear and right elevations with materials called out" loading="lazy">
+          <figcaption class="set-cap">Elevations. Rear and right, with the materials called out.</figcaption>
+        </figure>
+      </div>
+
+      <p class="set-note rv">A full set runs to around 22 sheets across roughly six disciplines, drawn to the 2024 IBC / IRC / IECC code cycle.</p>
+    </div>
+  </section>
+
+  <!-- ================= THE ARGUMENT ================= -->
+  <section class="argue" id="about">
+    <div class="wrap">
+      <h2 class="kin" id="kin">Every hand-off is a chance for something to be <i>lost.</i></h2>
+      <div class="argue-foot">
+        <p class="rv">Most residential projects pass through several hands before a permit is issued.</p>
+        <p class="rv">Quest takes a project the whole way, on one flat fee agreed before we start.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= QUESTIONS ================= -->
+  <section class="sec" id="faq">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <h2 class="disp h2" style="--k:8.13">Questions</h2>
+        <p>The four that come up on almost every first call.</p>
+      </div>
+
+      <article class="q rv">
+        <h3>How much does a project cost?</h3>
+        <p>A flat fee agreed up front, based on the scope of your project. One fixed price and a defined timeline, with no hourly surprises.</p>
+      </article>
+      <article class="q rv">
+        <h3>What is in a construction document set?</h3>
+        <p>Around 22 sheets across roughly six disciplines: cover, site, floor plans, roof plans, elevations, sections and coordinated details, drawn to the 2024 code cycle.</p>
+      </article>
+      <article class="q rv">
+        <h3>Can you design an ADU, casita or guest house?</h3>
+        <p>Yes. Casitas, accessory dwelling units, guest houses, additions, remodels, RV garages and site structures. What you can build depends on your lot and your zoning.</p>
+      </article>
+      <article class="q rv">
+        <h3>Why build a 3D model before the drawings?</h3>
+        <p>Because it lets you approve the actual home while changes are still free.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ================= CLOSING ================= -->
+  <section class="close" id="quote">
+    <div class="close-head"><div class="wrap">
+      <h2 class="rv"><span>Put your project</span><span class="o">on the board.</span></h2>
+    </div></div>
+    <div class="close-body">
+    <div class="close-txt">
+      <p class="rv">Tell us the lot and the idea. You get a flat fee and a defined timeline before any drawing starts.</p>
+      <div class="close-acts rv">
+        <a class="btn btn-paper" href="mailto:info@questdraftinganddesign.com">Get a Quote</a>
+        <a class="tel" href="tel:+16023396455">(602) 339-6455</a>
+      </div>
+      <div class="close-areas rv">
+        <span>Gilbert</span><span>Queen Creek</span><span>Mesa</span>
+        <span>Chandler</span><span>Phoenix</span><span>Scottsdale</span>
+      </div>
+    </div>
+    <figure class="close-fig">
+      <img src="assets/render-pool-twilight.webp" alt="Twilight render of a modern estate above a pool terrace" loading="lazy">
+    </figure>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <div class="foot-brand">
+      <img src="assets/logo.png" alt="Quest Drafting and Design">
+      <p>Residential architectural drafting in Gilbert, Arizona.</p>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <a href="tel:+16023396455">(602) 339-6455</a>
+      <a href="mailto:info@questdraftinganddesign.com">info@questdraftinganddesign.com</a>
+    </div>
+    <div>
+      <h4>Service area</h4>
+      <a href="#quote">Gilbert</a>
+      <a href="#quote">Queen Creek</a>
+      <a href="#quote">Mesa</a>
+      <a href="#quote">Chandler</a>
+      <a href="#quote">Phoenix</a>
+      <a href="#quote">Scottsdale</a>
+    </div>
+    <div>
+      <h4>Pages</h4>
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="#about">About</a>
+      <a href="/blog">Blog</a>
+      <a href="#faq">FAQ</a>
+      <a href="#quote">Contact</a>
+    </div>
+  </div>
+  <div class="wrap foot-base">Quest Drafting &amp; Design LLC</div>
+</footer>
+
+<script>
+document.documentElement.classList.add('js');
+
+/* ---- reveals ---- */
+(function(){
+  var items = document.querySelectorAll('.rv');
+  if (!('IntersectionObserver' in window)) { items.forEach(function(n){ n.classList.add('in'); }); return; }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { rootMargin:'0px 0px -8% 0px', threshold:0.08 });
+  items.forEach(function(n){ io.observe(n); });
+})();
+
+/* ---- the courses set in reading order, so the sequence reads as a sequence ---- */
+(function(){
+  var host = document.getElementById('courses');
+  if (!host) return;
+  var rows = host.querySelectorAll('.course');
+  function setAll(){ rows.forEach(function(r){ r.classList.add('set'); }); }
+  if (!('IntersectionObserver' in window)) { setAll(); return; }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (!e.isIntersecting) return;
+      rows.forEach(function(r, i){ setTimeout(function(){ r.classList.add('set'); }, i * 110); });
+      io.disconnect();
+    });
+  }, { threshold:0.18 });
+  io.observe(host);
+})();
+
+/* ---- the statement lands word by word ---- */
+(function(){
+  var kin = document.getElementById('kin');
+  if (!kin) return;
+  var html = kin.innerHTML;
+  kin.innerHTML = html.replace(/(<i>.*?<\/i>|[^\s<]+)/g, function(m){ return '<b>' + m + '</b>'; });
+  var words = kin.querySelectorAll('b');
+  words.forEach(function(w, i){ w.style.transitionDelay = (i * 55) + 'ms'; });
+  if (!('IntersectionObserver' in window)) { kin.classList.add('lit'); return; }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if (e.isIntersecting) { kin.classList.add('lit'); io.disconnect(); } });
+  }, { threshold:0.3 });
+  io.observe(kin);
+})();
+
+/* ---- the viewer ---- */
+(function(){
+  var dlg = document.getElementById('viewer');
+  var tiles = Array.prototype.slice.call(document.querySelectorAll('.tile'));
+  if (!dlg || !tiles.length) return;
+  var img = document.getElementById('vImg');
+  var title = document.getElementById('vTitle');
+  var note = document.getElementById('vNote');
+  var at = 0, opener = null;
+
+  function load(i){
+    at = (i + tiles.length) % tiles.length;
+    var t = tiles[at];
+    img.src = t.dataset.src;
+    img.alt = t.querySelector('img').alt;
+    title.textContent = t.dataset.title;
+    note.textContent = t.dataset.note;
+  }
+  tiles.forEach(function(t, i){
+    t.addEventListener('click', function(){
+      opener = t; load(i);
+      if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open','');
+    });
+  });
+  document.getElementById('vPrev').addEventListener('click', function(){ load(at - 1); });
+  document.getElementById('vNext').addEventListener('click', function(){ load(at + 1); });
+  document.getElementById('vClose').addEventListener('click', function(){ dlg.close(); });
+  dlg.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowLeft')  { load(at - 1); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { load(at + 1); e.preventDefault(); }
+  });
+  dlg.addEventListener('close', function(){ if (opener) opener.focus(); });
+})();
+</script>
+</body>
+</html>

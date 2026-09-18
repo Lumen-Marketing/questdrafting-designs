@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quest Drafting and Design, homepage directions</title>
+<meta name="description" content="Four homepage design directions for Quest Drafting &amp; Design, residential architectural drafting in Gilbert, Arizona.">
+<link rel="icon" href="assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&display=swap" rel="stylesheet">
+<style>
+/* ===========================================================================
+   QUEST DRAFTING & DESIGN, the chooser.
+
+   Styled to the trade the directions come from, not to a fifth look of its
+   own: graphite paper, bone ink, the studio's orange as the only accent, and
+   one of the studio's own renders as the ground. One family, Archivo, in two
+   roles, because each direction owns a type pairing and the chooser must not
+   borrow one.
+   ======================================================================== */
+:root{
+  --ink:#141719;
+  --ink-2:#1C2023;
+  --paper:#EFEEEB;
+  --mute:#9A9992;
+  --line:rgba(239,238,235,.14);
+  --orange:#E8552B;       /* the studio's orange. The only accent here. */
+  --gut:clamp(18px,4vw,56px);
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--ink);-webkit-text-size-adjust:100%}
+body{
+  background:transparent;color:var(--paper);
+  font-family:'Archivo',system-ui,sans-serif;font-weight:400;
+  font-size:15.5px;line-height:1.62;-webkit-font-smoothing:antialiased;overflow-x:clip;
+}
+/* The ground: the studio's own render, dark enough to sit under type. */
+body::before{
+  content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:url("assets/render-motorcourt.webp") center/cover no-repeat;
+  filter:saturate(.85) brightness(.26);
+}
+body::after{
+  content:'';position:fixed;inset:0;z-index:95;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+::selection{background:var(--orange);color:#14100F}
+h1,h2{font-weight:800;letter-spacing:-.03em;line-height:.94;font-stretch:112%}
+
+.wrap{max-width:1680px;margin-inline:auto;padding-inline:var(--gut);position:relative;z-index:2}
+header,footer{text-shadow:0 2px 10px rgba(6,8,9,.9),0 2px 32px rgba(6,8,9,.8)}
+.card,.card *{text-shadow:none}
+
+/* ── the panel material: a drawn sheet, not glass ─────────────────────────
+   These directions are paper, ink and line-work, so the chooser's own panels
+   are sheets: a flat dark ground, one hairline, a lit top edge. */
+.sheet{
+  background:rgba(20,23,25,.86);
+  border:1px solid rgba(239,238,235,.18);
+  box-shadow:inset 0 1px 0 rgba(239,238,235,.22),
+             0 1px 2px rgba(6,8,9,.5),
+             0 20px 44px rgba(6,8,9,.5);
+}
+
+/* ── header ─────────────────────────────────────────────────────────────── */
+header{padding-block:clamp(34px,6vw,76px) clamp(22px,4vw,42px)}
+.hbar{display:flex;align-items:center;gap:13px;margin-bottom:clamp(20px,4vw,38px)}
+.hbar img{height:34px;width:auto;background:#fff;padding:7px 10px}
+.hbar b{display:block;font-size:15.5px;font-weight:800;letter-spacing:-.01em}
+.hbar span{display:block;font-size:13.5px;color:var(--mute)}
+h1{font-size:clamp(2.1rem,6.4vw,5rem);max-width:17ch}
+h1 em{font-style:normal;color:var(--orange)}
+.lead{margin-top:clamp(18px,3vw,30px);max-width:66ch;color:#C8C7C1}
+.lead b{color:var(--paper);font-weight:600}
+.lead + .lead{margin-top:14px}
+.seg{display:inline-flex;margin-top:clamp(20px,3vw,32px);padding:5px;
+  background:rgba(20,23,25,.8);border:1px solid rgba(239,238,235,.2);
+  box-shadow:inset 0 1px 0 rgba(239,238,235,.2),0 12px 28px rgba(6,8,9,.5)}
+.seg button{background:0;border:0;color:var(--mute);font:inherit;font-size:13.5px;font-weight:500;
+  padding:8px 20px;cursor:pointer;transition:background .3s var(--ease),color .3s var(--ease)}
+.seg button.on{background:var(--orange);color:#14100F;font-weight:600}
+
+/* ── cards ──────────────────────────────────────────────────────────────── */
+.cards{display:grid;grid-template-columns:1fr;gap:clamp(18px,2.4vw,32px);padding-block:clamp(24px,4vw,50px)}
+@media(min-width:900px){ .cards{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.card{overflow:hidden;display:flex;flex-direction:column;
+  opacity:0;translate:0 26px;transition:opacity .8s var(--ease),translate .8s var(--ease)}
+.card.is-in{opacity:1;translate:0 0}
+.card:nth-child(2){transition-delay:.08s}
+.card:nth-child(3){transition-delay:.16s}
+.card:nth-child(4){transition-delay:.24s}
+
+.card-hd{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding:16px 18px 14px}
+.card-hd h2{font-size:24px}
+.tierlab{font-size:13px;font-weight:600;color:var(--orange)}
+.card-hd .open{margin-left:auto;font-size:13px;font-weight:500;color:var(--mute);white-space:nowrap;
+  transition:color .3s var(--ease)}
+.card-hd .open:hover{color:var(--paper)}
+
+.stage{position:relative;background:#0A0C0D;overflow:hidden;border-block:1px solid rgba(239,238,235,.12)}
+.stage.desktop{aspect-ratio:16/11}
+.stage.mobile{aspect-ratio:16/11;display:flex;align-items:flex-start;justify-content:center;padding-top:14px}
+.holder{position:absolute;top:0;left:0;transform-origin:top left}
+.stage.mobile .holder{position:relative;transform-origin:top center}
+.holder iframe{border:0;display:block;background:#0A0C0D}
+.veil{position:absolute;inset:0;z-index:5;background:rgba(8,10,11,.26);display:flex;align-items:flex-end;justify-content:center;
+  padding-bottom:18px;cursor:pointer;transition:opacity .4s var(--ease)}
+.veil span{font-size:13px;font-weight:500;padding:9px 18px;background:rgba(20,23,25,.86);
+  border:1px solid rgba(239,238,235,.24);box-shadow:inset 0 1px 0 rgba(239,238,235,.24),0 10px 24px rgba(6,8,9,.55)}
+.stage.live .veil{opacity:0;pointer-events:none}
+.loading{position:absolute;inset:0;display:grid;place-items:center;z-index:2;color:#6E6D68;font-size:13px}
+
+.card-bd{padding:18px;display:flex;flex-direction:column;gap:15px;flex:1}
+.card-bd p{font-size:14.5px;color:#C4C3BD;line-height:1.6}
+.card-bd p b{color:var(--paper);font-weight:600}
+.spec{list-style:none;display:grid;gap:8px;padding-top:14px;border-top:1px solid rgba(239,238,235,.12)}
+.spec li{font-size:13.5px;color:#C4C3BD;display:flex;gap:12px;align-items:baseline}
+.spec li i{flex:0 0 76px;font-style:normal;font-size:11px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--mute)}
+.tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:auto;padding-top:4px}
+.tag{font-size:12px;color:var(--mute);border:1px solid rgba(239,238,235,.16);padding:5px 12px}
+.tag.key{color:var(--paper);border-color:rgba(232,85,43,.62)}
+
+footer{padding-block:26px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;
+  font-size:13.5px;color:var(--mute);border-top:1px solid var(--line)}
+.fl{display:flex;gap:22px;flex-wrap:wrap}
+.fl a:hover{color:var(--paper)}
+
+@media(max-width:900px){.cards{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header>
+  <div class="hbar">
+    <img src="assets/logo.png" alt="Quest Drafting and Design logo">
+    <div><b>Quest Drafting &amp; Design LLC</b><span>Residential architectural drafting in Gilbert, Arizona</span></div>
+  </div>
+  <h1>Four homepages, four <em>looks.</em></h1>
+  <p class="lead">Every one uses the <b>same real work</b>: the studio's own renders, its 3D massing models and four sheets from a real permit set, with the sheet numbers printed on them. <b>What you see on each card is that design's homepage, running live.</b> Click a preview once to use it.</p>
+  <p class="lead">All four run the <b>same sections in the same order</b>, and no two of them lay a single section out the same way. Each one owns its own typefaces, its own material, its own way of building depth and its own piece of motion. So what you are choosing between is the design, nothing else.</p>
+  <div class="seg" id="seg">
+    <button class="on" data-mode="desktop">Desktop</button>
+    <button data-mode="mobile">Mobile</button>
+  </div>
+</header>
+
+<div class="cards" id="cards">
+
+  <article class="card sheet">
+    <div class="card-hd">
+      <h2>Cut Line</h2><span class="tierlab">Drag the opener</span>
+      <a class="open" href="direction-1-cut-line.html" target="_blank" rel="noopener">Open full screen</a>
+    </div>
+    <div class="stage desktop" data-src="direction-1-cut-line.html">
+      <div class="loading">Loading preview</div><div class="holder"></div><div class="veil"><span>Click to interact</span></div>
+    </div>
+    <div class="card-bd">
+      <p><b>A section cut through the house.</b> A section is a real drawing: you cut the building open and draw what is inside. The opener does exactly that. The render fills the screen, and a cut line you can drag turns the photograph into the elevation of the same house. The four services are wide bands that mirror left and right, each with the number crossing the edge. The six steps are strata, full width rows stepping deeper into the page. The work is a roll of plates at full size with the captions out in the margin, and the permit set is a light table: pick a sheet number and that sheet comes to the top of the pile.</p>
+      <ul class="spec">
+        <li><i>Type</i>Bricolage Grotesque with Hanken Grotesk</li>
+        <li><i>Material</i>Vellum fibre, on named sections only</li>
+        <li><i>Depth</i>Registration. Plates on offset planes</li>
+        <li><i>Motion</i>The cut. Drag it, or arrow key it</li>
+      </ul>
+      <div class="tags">
+        <span class="tag key">Vellum and pine</span><span class="tag">Draggable cut</span>
+        <span class="tag">Mirrored bands</span><span class="tag">Strata</span>
+        <span class="tag">Plate roll</span><span class="tag">Light table</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="card sheet">
+    <div class="card-hd">
+      <h2>Datum</h2><span class="tierlab">Loudest</span>
+      <a class="open" href="direction-2-datum.html" target="_blank" rel="noopener">Open full screen</a>
+    </div>
+    <div class="stage desktop" data-src="direction-2-datum.html">
+      <div class="loading">Loading preview</div><div class="holder"></div><div class="veil"><span>Click to interact</span></div>
+    </div>
+    <div class="card-bd">
+      <p><b>A datum is the one line every measurement is taken from.</b> Every section on this page starts against one heavy rule, and the whole thing is built in three flat colours: paper, near black, and the studio's orange at full strength on whole bands. The opener is type first, with the render off register behind an orange plane. The services put one service large beside three ruled rows. The six steps are courses on a full orange field that fill white in reading order. The work is a mosaic that opens full screen, and the argument lands word by word.</p>
+      <ul class="spec">
+        <li><i>Type</i>Archivo Black with Familjen Grotesk</li>
+        <li><i>Material</i>Screen print halftone</li>
+        <li><i>Depth</i>Misregistration. Solid planes behind plates</li>
+        <li><i>Motion</i>Things arrive off register and pull into line</li>
+      </ul>
+      <div class="tags">
+        <span class="tag key">Orange fields</span><span class="tag">Type first opener</span>
+        <span class="tag">One large, three ruled</span><span class="tag">Filling courses</span>
+        <span class="tag">Mosaic and viewer</span><span class="tag">Kinetic statement</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="card sheet">
+    <div class="card-hd">
+      <h2>Blueprint</h2><span class="tierlab">Most editorial</span>
+      <a class="open" href="direction-3-blueprint.html" target="_blank" rel="noopener">Open full screen</a>
+    </div>
+    <div class="stage desktop" data-src="direction-3-blueprint.html">
+      <div class="loading">Loading preview</div><div class="holder"></div><div class="veil"><span>Click to interact</span></div>
+    </div>
+    <div class="card-bd">
+      <p><b>The drawing board at night.</b> Deep ink with plan line-work drawn across it, and the renders lit like windows. The four services are a strip of panels where the one you point at opens to a third of the width. The six steps run down a ruled timeline whose connectors are drawn dimension lines. The work is a filmstrip you drag, with the next frame always cut off by the edge, and the permit set is a viewer you flip by sheet number, sitting on the rest of the set. The statement runs full width across the night render.</p>
+      <ul class="spec">
+        <li><i>Type</i>Big Shoulders Display with Sora</li>
+        <li><i>Material</i>Plan line-work on deep ink</li>
+        <li><i>Depth</i>Sheets overlapping, one crossing a section edge</li>
+        <li><i>Motion</i>Full editorial motion, drag and flip</li>
+      </ul>
+      <div class="tags">
+        <span class="tag key">Plan line-work</span><span class="tag">Accordion strip</span>
+        <span class="tag">Drawn timeline</span><span class="tag">Drag filmstrip</span>
+        <span class="tag">Sheet viewer</span><span class="tag">Night render</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="card sheet">
+    <div class="card-hd">
+      <h2>Courtyard</h2><span class="tierlab">Warmest</span>
+      <a class="open" href="direction-4-courtyard.html" target="_blank" rel="noopener">Open full screen</a>
+    </div>
+    <div class="stage desktop" data-src="direction-4-courtyard.html">
+      <div class="loading">Loading preview</div><div class="holder"></div><div class="veil"><span>Click to interact</span></div>
+    </div>
+    <div class="card-bd">
+      <p><b>A desert house is lived in at dusk, in a courtyard, against a warm wall.</b> The page is that wall: deep clay, lime plaster, and an editorial serif. The opener is symmetric, with an arched plate at the centre and the copy either side of it. The services are read like a spread, four entries in a recessed tray. The six steps hang either side of a centre spine. The work is three diptychs of unequal pairs, the permit set is mounted on a cream board like a print, and the one argument sits on cream with the second arch beside it.</p>
+      <ul class="spec">
+        <li><i>Type</i>Newsreader with Schibsted Grotesk</li>
+        <li><i>Material</i>Lime plaster</li>
+        <li><i>Depth</i>Warm daylight. Lit top edges, recessed trays</li>
+        <li><i>Motion</i>Settle. Nothing slides, things come to rest</li>
+      </ul>
+      <div class="tags">
+        <span class="tag key">Clay and cream</span><span class="tag">The arch, used twice</span>
+        <span class="tag">Spread reader</span><span class="tag">Mirrored spine</span>
+        <span class="tag">Diptychs</span><span class="tag">Mounted plate</span>
+      </div>
+    </div>
+  </article>
+
+</div>
+
+<footer>
+  <span>Quest Drafting &amp; Design LLC, Gilbert Arizona. (602) 339-6455</span>
+  <div class="fl">
+    <a href="tel:+16023396455">Call</a>
+    <a href="mailto:info@questdraftinganddesign.com">Email</a>
+  </div>
+</footer>
+</div>
+
+<script>
+/* Live previews. Each stage holds a full size iframe at a real viewport width,
+   scaled down with a transform, so what you see is the real page and not a
+   screenshot. The veil swallows the first click so scrolling the gallery never
+   scrolls a preview instead. */
+var DESKTOP=1440, MOBILE=390;
+var stages=[].slice.call(document.querySelectorAll('.stage'));
+var mode='desktop';
+
+function build(st){
+  var holder=st.querySelector('.holder');
+  var w=mode==='mobile'?MOBILE:DESKTOP;
+  var h=mode==='mobile'?Math.round(w*16/9):Math.round(w*11/16);
+  var f=holder.querySelector('iframe');
+  if(!f){
+    f=document.createElement('iframe');
+    f.setAttribute('loading','lazy');
+    f.setAttribute('title','Preview');
+    f.src=st.dataset.src;
+    f.addEventListener('load',function(){var l=st.querySelector('.loading');if(l)l.style.display='none'});
+    holder.appendChild(f);
+  }
+  f.style.width=w+'px';
+  f.style.height=h+'px';
+  fit(st);
+}
+function fit(st){
+  var holder=st.querySelector('.holder');
+  var f=holder.querySelector('iframe');
+  if(!f)return;
+  var w=parseInt(f.style.width,10);
+  var scale=st.clientWidth/w;
+  if(mode==='mobile'){
+    scale=Math.min(st.clientHeight/parseInt(f.style.height,10),st.clientWidth/w);
+  }
+  holder.style.transform='scale('+scale+')';
+  holder.style.width=w+'px';
+  holder.style.height=parseInt(f.style.height,10)+'px';
+}
+
+stages.forEach(function(st){
+  st.querySelector('.veil').addEventListener('click',function(){st.classList.add('live')});
+});
+
+/* build a preview only as its card approaches, so four full pages do not load
+   at once on a cold cache and make the gallery itself look broken */
+var pio=new IntersectionObserver(function(es,o){
+  es.forEach(function(e){if(e.isIntersecting){build(e.target);o.unobserve(e.target)}});
+},{rootMargin:'300px'});
+stages.forEach(function(st){pio.observe(st)});
+
+document.getElementById('seg').addEventListener('click',function(e){
+  var b=e.target.closest('button');if(!b)return;
+  mode=b.dataset.mode;
+  this.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b)});
+  stages.forEach(function(st){
+    st.classList.remove('live');
+    st.classList.toggle('mobile',mode==='mobile');
+    st.classList.toggle('desktop',mode==='desktop');
+    if(st.querySelector('iframe'))build(st);
+  });
+});
+
+addEventListener('resize',function(){stages.forEach(fit)});
+
+var cio=new IntersectionObserver(function(es){es.forEach(function(e){
+  if(e.isIntersecting){e.target.classList.add('is-in');cio.unobserve(e.target)}
+})},{threshold:.05});
+document.querySelectorAll('.card').forEach(function(c){cio.observe(c)});
+</script>
+</body>
+</html>

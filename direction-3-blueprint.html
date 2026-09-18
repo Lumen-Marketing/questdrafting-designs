@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quest Drafting &amp; Design | Residential architectural drafting in Gilbert, Arizona</title>
+<meta name="description" content="Quest Drafting and Design takes a house from first sketch through 3D, through a coordinated construction set, and through plan review until the city stamps the permit.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders:wght@500;700;800;900&display=swap" rel="stylesheet">
+<script>if('IntersectionObserver' in window){document.documentElement.classList.add('js');}</script>
+<style>
+/* ============================================================
+   QUEST DRAFTING & DESIGN. Direction A: "Blueprint table".
+   Shape rule: everything square. 2px radius on controls only.
+   Spacing scale: 8pt. Material: blueprint line work (CSS only).
+   Depth device: overlapping sheets on a table, real occlusion.
+   ============================================================ */
+
+:root{
+  --ground:#0B1016;
+  --surface:#111B24;
+  --hair:#2C4457;
+  --ink:#E8EEF2;
+  --muted:#9BB0BE;
+  --orange:#E8552B;
+  --steel:#7FA6BF;
+  --sh:5,10,15;                 /* every shadow tints to #050A0F */
+  --display:"Big Shoulders Display","Big Shoulders","Oswald","Archivo Narrow",sans-serif;
+  --body:"Sora","Hanken Grotesk","Outfit",sans-serif;
+  --pad:clamp(20px,4vw,56px);
+  --nav:72px;
+  --r:2px;
+  --sp:clamp(56px,7.5vw,128px);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+
+html{
+  background:var(--ground);
+  -webkit-text-size-adjust:100%;
+}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:clamp(15px,1.05vw,17px);
+  line-height:1.62;
+  font-weight:300;
+  overflow-x:clip;                 /* net only. nothing is designed to exceed */
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block}
+a{color:inherit}
+h1,h2,h3,p,ol,ul,figure,blockquote{margin:0}
+ol,ul{padding:0;list-style:none}
+button{font:inherit;color:inherit;background:none;border:0;margin:0;padding:0}
+
+:focus-visible{outline:2px solid var(--steel);outline-offset:3px}
+
+@media (prefers-reduced-motion: no-preference){
+  html{scroll-behavior:smooth}
+}
+
+.wrap{width:min(1400px,100%);margin-inline:auto;padding-inline:var(--pad)}
+.sec{position:relative;padding-block:var(--sp);scroll-margin-top:calc(var(--nav) + 16px)}
+
+/* ---------- display type. weight carries hierarchy, never sized in ch ---------- */
+.dh{
+  font-family:var(--display);
+  font-weight:800;
+  line-height:.86;
+  letter-spacing:.012em;
+  text-transform:uppercase;
+  text-wrap:balance;
+  font-size:clamp(var(--hmin,2.3rem),var(--hvw,8vw),var(--hmax,6rem));
+}
+.lede{
+  color:var(--muted);
+  max-width:60ch;
+  margin-top:clamp(20px,2.2vw,30px);
+  font-size:clamp(15px,1.12vw,18px);
+  line-height:1.66;
+}
+
+/* ---------- material: blueprint line work ---------- */
+.mat-grid::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:
+    repeating-linear-gradient(to right, rgba(127,166,191,.16) 0 1px, transparent 1px 152px),
+    repeating-linear-gradient(to bottom, rgba(127,166,191,.16) 0 1px, transparent 1px 152px),
+    repeating-linear-gradient(to right, rgba(127,166,191,.085) 0 1px, transparent 1px 19px),
+    repeating-linear-gradient(to bottom, rgba(127,166,191,.085) 0 1px, transparent 1px 19px);
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 10%,#000 88%,transparent 100%);
+  mask-image:linear-gradient(to bottom,transparent 0,#000 10%,#000 88%,transparent 100%);
+}
+/* the line work is ground. content always sits on top of it, never under it */
+.mat-grid > .wrap{position:relative;z-index:1}
+/* a drawn dimension rule: hairline with end ticks */
+.dim{position:relative;height:14px;margin-block:clamp(26px,3vw,44px)}
+.dim::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--hair)}
+.dim::after{
+  content:"";position:absolute;inset:0;
+  background:
+    linear-gradient(var(--steel),var(--steel)) left center/1px 100% no-repeat,
+    linear-gradient(var(--steel),var(--steel)) right center/1px 100% no-repeat;
+  opacity:.7;
+}
+
+/* ---------- plates. one hairline each, large tinted shadow ---------- */
+.plate{
+  background:var(--surface);
+  border:1px solid var(--hair);
+  border-radius:var(--r);
+  box-shadow:0 48px 96px -38px rgba(var(--sh),.94),0 14px 34px -18px rgba(var(--sh),.72);
+}
+
+/* ---------- controls ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:var(--body);font-weight:600;font-size:clamp(14px,.98vw,15px);
+  letter-spacing:.02em;text-decoration:none;border-radius:var(--r);
+  padding:16px 28px;border:1px solid transparent;cursor:pointer;
+  transition:transform .28s cubic-bezier(.2,.7,.2,1),opacity .28s;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn-fill{background:var(--orange);color:#0B1016;box-shadow:0 16px 30px -16px rgba(var(--sh),.85),inset 0 1px 0 rgba(255,255,255,.22)}
+.btn-line{border-color:var(--hair);color:var(--ink);background:rgba(127,166,191,.06)}
+.btn-line:hover{border-color:var(--steel)}
+.btn-sm{padding:11px 18px}
+
+/* ---------- reveals. visible at rest unless JS + motion allowed ---------- */
+.js .rv{opacity:0;transform:translateY(18px)}
+.js .rv.in{opacity:1;transform:none;transition:opacity .75s cubic-bezier(.2,.7,.2,1),transform .75s cubic-bezier(.2,.7,.2,1)}
+@media (prefers-reduced-motion: reduce){
+  .js .rv{opacity:1!important;transform:none!important}
+  *{transition-duration:.001ms!important;animation-duration:.001ms!important}
+}
+
+/* ============================ NAV ============================ */
+.nav{position:sticky;top:0;z-index:60;background:rgba(11,16,22,.92);backdrop-filter:blur(10px);box-shadow:inset 0 -1px 0 var(--hair)}
+.nav-in{width:min(1400px,100%);margin-inline:auto;padding-inline:var(--pad);height:var(--nav);display:flex;align-items:center;gap:clamp(16px,2.4vw,40px)}
+.brand{flex:0 0 auto;background:var(--ink);padding:9px 14px;border-radius:var(--r);line-height:0;box-shadow:0 10px 24px -12px rgba(var(--sh),.9)}
+.brand img{height:26px;width:auto}
+.nav-links{margin-left:auto;display:flex;align-items:center;gap:clamp(14px,1.8vw,28px)}
+.nav-links a{
+  text-decoration:none;color:var(--muted);font-size:14px;font-weight:400;letter-spacing:.01em;
+  padding-block:6px;border-bottom:1px solid transparent;transition:color .25s,border-color .25s;
+}
+.nav-links a:hover{color:var(--ink);border-color:var(--orange)}
+.nav-links a.btn{color:#0B1016;border-bottom:0}
+.nav-links a.btn:hover{color:#0B1016;border-color:transparent}
+.nav-tog{display:none;margin-left:auto;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--hair);border-radius:var(--r);color:var(--ink);font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
+.nav-tog .bars{width:16px;height:10px;position:relative;display:block}
+.nav-tog .bars::before,.nav-tog .bars::after{content:"";position:absolute;left:0;right:0;height:2px;background:var(--steel)}
+.nav-tog .bars::before{top:0}
+.nav-tog .bars::after{bottom:0}
+
+@media (max-width:980px){
+  :root{--nav:64px}
+  .nav-tog{display:inline-flex}
+  .nav-links{
+    display:none;position:absolute;left:0;right:0;top:100%;
+    flex-direction:column;align-items:stretch;gap:0;
+    background:var(--surface);border-top:1px solid var(--hair);
+    box-shadow:0 40px 80px -30px rgba(var(--sh),.95);
+    padding:12px var(--pad) 24px;margin:0;
+  }
+  .nav.open .nav-links{display:flex}
+  .nav-links a{padding:15px 0;border-bottom:1px solid rgba(44,68,87,.55);font-size:17px;color:var(--ink)}
+  .nav-links a.btn{margin-top:16px;justify-content:center;padding:16px 20px}
+}
+@media (max-width:430px){
+  /* the wordmark plus the toggle must never be wider than the bar */
+  .brand{padding:7px 10px}
+  .brand img{height:20px}
+  .nav-tog{padding:9px 12px;letter-spacing:.08em}
+}
+
+/* ============================ OPENER ============================ */
+.hero{position:relative;min-height:calc(100dvh - var(--nav));display:flex;overflow:hidden;isolation:isolate}
+.hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 58%;z-index:-2}
+.hero-veil{
+  position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:
+    linear-gradient(to bottom,rgba(5,10,15,.42) 0%,rgba(5,10,15,.30) 26%,rgba(5,10,15,.66) 62%,rgba(5,10,15,.94) 100%),
+    linear-gradient(to right,rgba(5,10,15,.72) 0%,rgba(5,10,15,.18) 58%,rgba(5,10,15,.42) 100%);
+}
+.hero-in{width:min(1400px,100%);margin-inline:auto;padding:0 var(--pad) clamp(40px,5vh,72px);display:flex;flex-direction:column;justify-content:flex-end;flex:1}
+.hero-h1{
+  color:var(--ink);
+  text-shadow:0 3px 30px rgba(5,10,15,.75),0 1px 3px rgba(5,10,15,.6);
+  margin-bottom:clamp(24px,3.2vh,44px);
+}
+.hero-low{display:flex;align-items:flex-end;gap:0;flex-wrap:wrap}
+.hero-plate{
+  position:relative;z-index:2;
+  flex:1 1 440px;max-width:640px;
+  background:linear-gradient(180deg,rgba(17,27,36,.94),rgba(11,16,22,.94));
+  border:1px solid var(--hair);border-radius:var(--r);
+  padding:clamp(22px,2.4vw,32px);
+  box-shadow:0 56px 110px -40px rgba(var(--sh),.95),0 16px 36px -20px rgba(var(--sh),.8);
+}
+.hero-sup{color:var(--ink);font-size:clamp(15px,1.15vw,18px);line-height:1.6;max-width:46ch}
+.hero-acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:clamp(18px,2vw,26px)}
+.hero-chip{
+  position:relative;z-index:1;
+  flex:0 1 380px;min-width:220px;
+  margin-left:clamp(-72px,-4vw,-32px);
+  margin-bottom:clamp(18px,2.4vw,34px);
+  border:1px solid var(--hair);border-radius:var(--r);
+  background:var(--surface);
+  box-shadow:0 46px 90px -34px rgba(var(--sh),.95);
+}
+.hero-chip img{width:100%;height:clamp(96px,11vh,140px);object-fit:cover;object-position:50% 45%}
+.hero-chip figcaption{padding:10px 14px;border-top:1px solid var(--hair);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--steel);font-weight:600}
+
+@media (max-width:820px){
+  .hero-low{flex-direction:column;align-items:stretch}
+  .hero-chip{order:-1;margin-left:0;margin-bottom:16px;max-width:100%;flex:0 0 auto}
+  .hero-plate{max-width:none}
+}
+@media (max-height:760px) and (min-width:821px){
+  .hero-chip{display:none}
+  .hero-in{padding-bottom:36px}
+}
+
+/* ============================ SERVICES: accordion strip ============================ */
+.services{background:var(--ground)}
+.strip{
+  margin-top:clamp(32px,4vw,56px);
+  display:flex;gap:2px;overflow:hidden;
+  height:clamp(330px,46vh,470px);
+  border:1px solid var(--hair);border-radius:var(--r);background:rgba(127,166,191,.07);
+  box-shadow:0 60px 120px -44px rgba(var(--sh),.95),0 18px 40px -22px rgba(var(--sh),.75);
+}
+.pan{
+  position:relative;flex:1 1 0;min-width:0;overflow:hidden;cursor:pointer;
+  text-align:left;display:block;background:var(--surface);
+  transition:flex-grow .55s cubic-bezier(.2,.7,.2,1);
+}
+.pan.is-open{flex-grow:1.55}
+.pan-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 20%;filter:saturate(.9) brightness(.82);transition:filter .55s,transform .8s cubic-bezier(.2,.7,.2,1);transform:scale(1.02)}
+.pan.is-open .pan-img{filter:saturate(1.02) brightness(1);transform:scale(1)}
+.pan-veil{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(5,10,15,.95) 0%,rgba(5,10,15,.78) 42%,rgba(5,10,15,.44) 100%);
+  transition:opacity .55s;
+}
+.pan-body{position:relative;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(18px,1.8vw,28px)}
+.pan-no{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.24em;color:var(--steel);margin-bottom:auto}
+.pan-title{
+  font-family:var(--display);font-weight:800;text-transform:uppercase;line-height:.9;
+  font-size:clamp(22px,2.1vw,34px);color:var(--ink);letter-spacing:.015em;
+}
+.pan-rule{display:block;height:1px;background:var(--hair);margin:14px 0 0;transition:background .45s}
+.pan.is-open .pan-rule{background:var(--orange)}
+.pan-copy{
+  display:block;color:var(--muted);font-size:14.4px;line-height:1.62;max-width:40ch;overflow:hidden;
+  opacity:0;visibility:hidden;transform:translateY(10px);
+  max-height:0;margin-top:0;
+  transition:opacity .4s .12s,transform .5s .12s cubic-bezier(.2,.7,.2,1),visibility 0s .5s;
+}
+.pan.is-open .pan-copy{opacity:1;visibility:visible;transform:none;max-height:none;margin-top:14px;transition:opacity .45s .16s,transform .55s .16s cubic-bezier(.2,.7,.2,1),visibility 0s}
+
+@media (max-width:767px){
+  .strip{flex-direction:column;height:auto;overflow:visible;background:transparent;border:0;box-shadow:none;gap:14px}
+  .pan{flex:0 0 auto;height:280px;border:1px solid var(--hair);border-radius:var(--r);box-shadow:0 34px 70px -30px rgba(var(--sh),.92)}
+  .pan .pan-img{filter:saturate(1) brightness(.9);transform:none}
+  .pan-copy{opacity:1;visibility:visible;transform:none;max-height:none;margin-top:14px}
+  .pan-rule{background:var(--orange)}
+}
+
+/* ============================ PROCESS: ruled timeline ============================ */
+.process{background:var(--ground)}
+.tl-wrap{position:relative;margin-top:clamp(36px,4.4vw,64px)}
+.tl-plane{
+  position:absolute;left:0;top:clamp(-24px,-2vw,-14px);bottom:clamp(40px,6vw,96px);
+  width:min(56%,600px);
+  background:rgba(127,166,191,.08);
+  border:1px solid var(--hair);border-radius:var(--r);
+  pointer-events:none;
+}
+.tl{
+  position:relative;z-index:2;
+  margin-left:clamp(0px,7vw,120px);
+  padding:clamp(20px,2.6vw,40px) clamp(20px,2.6vw,40px) clamp(10px,1.4vw,20px);
+  background:var(--surface);border:1px solid var(--hair);border-radius:var(--r);
+  box-shadow:0 60px 120px -44px rgba(var(--sh),.95),0 16px 38px -20px rgba(var(--sh),.72);
+}
+.tl::before{               /* the connector: a drawn plan line */
+  content:"";position:absolute;z-index:0;
+  left:calc(clamp(20px,2.6vw,40px) + 26px);
+  top:clamp(20px,2.6vw,40px);bottom:clamp(10px,1.4vw,20px);width:1px;
+  background-image:repeating-linear-gradient(to bottom,var(--steel) 0 9px,transparent 9px 17px);
+  opacity:.55;
+}
+.step{position:relative;z-index:1;display:grid;grid-template-columns:54px 1fr;gap:clamp(14px,2vw,32px);padding-block:clamp(20px,2.4vw,32px);border-top:1px solid var(--hair)}
+.step:first-child{border-top:0;padding-top:0}
+.step:last-child{padding-bottom:clamp(20px,2.4vw,30px)}
+.step-no{
+  font-family:var(--display);font-weight:700;font-size:clamp(18px,1.5vw,22px);
+  color:var(--steel);letter-spacing:.06em;line-height:1;
+  background:var(--surface);padding-block:6px;align-self:start;position:relative;z-index:2;
+}
+.step-name{font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.015em;line-height:.9;font-size:clamp(26px,3.1vw,48px);color:var(--ink)}
+.step-note{color:var(--muted);font-size:14.4px;margin-top:10px;max-width:56ch}
+@media (max-width:767px){
+  .tl-plane{width:100%;top:-10px;bottom:-10px;opacity:.6}
+  .tl{margin-left:0}
+  .step{grid-template-columns:40px 1fr;gap:14px}
+  .tl::before{left:calc(clamp(20px,2.6vw,40px) + 19px)}
+}
+
+/* ============================ THE WORK: drag filmstrip ============================ */
+.work{background:var(--ground)}
+.work-bar{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-top:clamp(22px,2.6vw,34px);flex-wrap:wrap}
+.work-bar .lede{flex:1 1 280px;min-width:0}
+.arws{display:flex;gap:10px;flex:0 0 auto}
+.arw{
+  width:52px;height:52px;display:grid;place-items:center;cursor:pointer;
+  border:1px solid var(--hair);border-radius:var(--r);background:rgba(127,166,191,.06);
+  transition:background .25s,border-color .25s,transform .25s;
+}
+.arw:hover{background:rgba(127,166,191,.14);border-color:var(--steel);transform:translateY(-2px)}
+.arw svg{width:16px;height:16px;stroke:var(--ink);fill:none;stroke-width:1.6}
+.fs{
+  display:flex;gap:clamp(12px,1.4vw,20px);
+  margin-top:clamp(20px,2.4vw,32px);
+  margin-right:calc(-1 * var(--pad));
+  padding-right:var(--pad);
+  overflow-x:auto;overflow-y:hidden;
+  scroll-snap-type:x proximity;
+  scrollbar-width:thin;scrollbar-color:var(--hair) transparent;
+  cursor:grab;
+}
+.fs.drag{cursor:grabbing;scroll-snap-type:none}
+.fs::-webkit-scrollbar{height:6px}
+.fs::-webkit-scrollbar-track{background:rgba(127,166,191,.07)}
+.fs::-webkit-scrollbar-thumb{background:var(--hair)}
+.fr{
+  flex:0 0 auto;width:var(--w);scroll-snap-align:start;
+  border:1px solid var(--hair);border-radius:var(--r);background:var(--surface);
+  box-shadow:0 52px 100px -40px rgba(var(--sh),.95),0 14px 32px -18px rgba(var(--sh),.7);
+}
+.fr img{width:100%;height:clamp(230px,40vh,420px);object-fit:cover;-webkit-user-drag:none;user-select:none;pointer-events:none}
+.fr figcaption{padding:14px 16px;border-top:1px solid var(--hair);color:var(--muted);font-size:13.5px;line-height:1.5}
+.fr figcaption b{display:block;font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.16em;font-size:12px;color:var(--steel);margin-bottom:5px}
+
+/* ============================ THE SET: sheet viewer ============================ */
+.set{background:var(--ground);position:relative;z-index:2;padding-bottom:clamp(24px,3vw,44px)}
+.viewer{display:grid;grid-template-columns:minmax(200px,268px) 1fr;gap:clamp(18px,2.4vw,40px);margin-top:clamp(32px,4vw,56px);align-items:start}
+.tabs{
+  display:flex;flex-direction:column;
+  background:rgba(127,166,191,.09);
+  border:1px solid var(--hair);border-radius:var(--r);
+  box-shadow:0 34px 74px -34px rgba(var(--sh),.9);
+  overflow:hidden;
+}
+.tab{
+  display:block;text-align:left;cursor:pointer;
+  padding:clamp(16px,1.6vw,22px) clamp(16px,1.6vw,22px);
+  border-bottom:1px solid var(--hair);
+  transition:background .3s,color .3s;
+  position:relative;
+}
+.tab:last-child{border-bottom:0}
+.tab::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:transparent;transition:background .3s}
+.tab[aria-selected="true"]{background:var(--surface)}
+.tab[aria-selected="true"]::before{background:var(--orange)}
+.tab-no{display:block;font-family:var(--display);font-weight:800;font-size:clamp(26px,2.5vw,38px);line-height:.95;letter-spacing:.04em;color:var(--steel)}
+.tab[aria-selected="true"] .tab-no{color:var(--ink)}
+.tab-nm{display:block;font-size:13.5px;color:var(--muted);margin-top:4px}
+.stage{position:relative;--off:clamp(7px,1vw,15px);margin-bottom:calc(-1 * clamp(48px,7vw,120px))}
+.edge{position:absolute;inset:0;border:1px solid var(--hair);background:var(--surface);border-radius:var(--r)}
+.e1{transform:translate(var(--off),var(--off));z-index:1;box-shadow:0 30px 60px -30px rgba(var(--sh),.9)}
+.e2{transform:translate(calc(var(--off)*2),calc(var(--off)*2));z-index:0;opacity:.78}
+.sheets{
+  position:relative;z-index:2;aspect-ratio:1.72;overflow:hidden;
+  border:1px solid var(--hair);border-radius:var(--r);background:var(--surface);
+  box-shadow:0 70px 130px -40px rgba(var(--sh),.96),0 22px 50px -22px rgba(var(--sh),.8);
+}
+.sh{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .5s cubic-bezier(.2,.7,.2,1),visibility 0s .5s}
+.sh.is-on{opacity:1;visibility:visible;transition:opacity .5s cubic-bezier(.2,.7,.2,1),visibility 0s}
+.sh img{width:100%;height:100%;object-fit:cover;object-position:50% 10%}
+.sheet-tag{
+  position:absolute;left:0;bottom:0;z-index:3;
+  display:flex;align-items:center;gap:14px;
+  padding:12px 18px;background:rgba(5,10,15,.88);border-top:1px solid var(--hair);border-right:1px solid var(--hair);
+}
+.sheet-tag span:first-child{font-family:var(--display);font-weight:800;letter-spacing:.1em;font-size:17px;color:var(--orange)}
+.sheet-tag span:last-child{font-size:13.5px;color:var(--ink)}
+@media (max-width:767px){
+  .viewer{grid-template-columns:1fr}
+  .tabs{flex-direction:row;overflow-x:auto}
+  .tab{flex:0 0 auto;border-bottom:0;border-right:1px solid var(--hair);min-width:132px}
+  .tab::before{left:0;right:0;top:0;bottom:auto;width:auto;height:3px}
+  .stage{margin-bottom:calc(-1 * clamp(36px,9vw,64px))}
+}
+
+/* ============================ THE ARGUMENT ============================ */
+.argue{position:relative;z-index:1;overflow:hidden;isolation:isolate;
+  padding-top:calc(clamp(48px,7vw,120px) + var(--sp));padding-bottom:var(--sp)}
+.argue-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;z-index:-2}
+.argue-veil{position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(to right,rgba(5,10,15,.95) 0%,rgba(5,10,15,.86) 52%,rgba(5,10,15,.9) 100%)}
+.argue-h{color:var(--ink);text-shadow:0 2px 26px rgba(5,10,15,.85)}
+.argue-cols{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(20px,3vw,56px);margin-top:clamp(28px,3.4vw,48px);max-width:1000px}
+.argue-cols p{color:var(--ink);font-size:clamp(15px,1.15vw,18px);line-height:1.66;padding-top:20px;border-top:1px solid rgba(127,166,191,.5)}
+@media (max-width:767px){.argue-cols{grid-template-columns:1fr}}
+
+/* ============================ QUESTIONS ============================ */
+.faq{background:var(--ground)}
+.qas{margin-top:clamp(30px,3.6vw,52px);border-top:1px solid var(--hair)}
+.qa{border-bottom:1px solid var(--hair)}
+.qa-btn{
+  width:100%;display:flex;align-items:center;gap:20px;justify-content:space-between;
+  text-align:left;cursor:pointer;padding:clamp(20px,2.4vw,30px) 0;
+  transition:color .25s;
+}
+.qa-q{font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.015em;line-height:.96;font-size:clamp(21px,2.25vw,34px);color:var(--ink)}
+.qa-btn:hover .qa-q{color:var(--steel)}
+.qa-ic{position:relative;flex:0 0 auto;width:18px;height:18px}
+.qa-ic::before,.qa-ic::after{content:"";position:absolute;background:var(--orange)}
+.qa-ic::before{left:0;right:0;top:8px;height:2px}
+.qa-ic::after{top:0;bottom:0;left:8px;width:2px;transform:scaleY(1);transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.qa-btn[aria-expanded="true"] .qa-ic::after{transform:scaleY(0)}
+.qa-body{padding-bottom:clamp(22px,2.6vw,34px)}
+.qa-in{opacity:0;transform:translateY(10px);transition:opacity .4s,transform .45s cubic-bezier(.2,.7,.2,1);max-width:70ch;color:var(--muted);font-size:clamp(15px,1.1vw,17px);padding-left:clamp(0px,2vw,32px);border-left:1px solid var(--hair)}
+.qa-body.on .qa-in{opacity:1;transform:none}
+
+/* ============================ CLOSING ============================ */
+.close{position:relative;background:var(--orange);color:#0B1016;overflow:hidden;isolation:isolate}
+.close-wash{
+  position:absolute;right:0;bottom:0;left:46%;height:64%;z-index:0;pointer-events:none;
+  background-image:url("assets/render-greatroom.webp");
+  background-size:cover;background-position:50% 42%;
+  filter:grayscale(1) contrast(1.06);mix-blend-mode:luminosity;opacity:.34;
+  -webkit-mask-image:linear-gradient(to right,transparent 0,#000 26%);
+  mask-image:linear-gradient(to right,transparent 0,#000 26%);
+}
+.close-in{position:relative;z-index:1}
+.close-h{color:#0B1016}
+.close-dim{position:relative;height:14px;margin-block:clamp(26px,3vw,44px)}
+.close-dim::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(11,16,22,.42)}
+.close-dim::after{content:"";position:absolute;inset:0;background:linear-gradient(#0B1016,#0B1016) left center/1px 100% no-repeat,linear-gradient(#0B1016,#0B1016) right center/1px 100% no-repeat;opacity:.55}
+.close-row{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(24px,3.4vw,64px);align-items:start}
+.areas{display:grid;grid-template-columns:repeat(3,1fr);gap:0 clamp(16px,2vw,32px)}
+.areas li{border-top:1px solid rgba(11,16,22,.4);padding:14px 0;font-size:clamp(15px,1.15vw,18px);font-weight:500;color:#0B1016}
+.areas-lab{font-size:13px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(11,16,22,.72);margin-bottom:12px}
+.close-plate{
+  background:#0B1016;border:1px solid rgba(232,238,242,.14);border-radius:var(--r);
+  padding:clamp(22px,2.4vw,34px);
+  box-shadow:0 52px 100px -38px rgba(var(--sh),.95),0 16px 34px -18px rgba(var(--sh),.7);
+}
+.close-plate p{color:var(--muted);font-size:15px;margin-bottom:20px}
+.close-acts{display:flex;flex-wrap:wrap;gap:12px}
+.close-contact{margin-top:22px;padding-top:18px;border-top:1px solid rgba(232,238,242,.14);display:grid;gap:8px}
+.close-contact a{color:var(--ink);text-decoration:none;font-size:15px}
+.close-contact a:hover{color:var(--orange)}
+.close-plate .btn-fill{color:#0B1016}
+@media (max-width:900px){
+  .close-row{grid-template-columns:1fr}
+  .close-wash{left:0;height:40%;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 40%);mask-image:linear-gradient(to bottom,transparent 0,#000 40%);opacity:.26}
+}
+@media (max-width:560px){.areas{grid-template-columns:repeat(2,1fr)}}
+
+/* ============================ FOOTER ============================ */
+.foot{background:var(--ground);border-top:1px solid var(--hair);padding-block:clamp(48px,5.4vw,80px)}
+.foot-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:clamp(24px,3vw,48px)}
+.foot h3{font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--steel);margin-bottom:16px}
+.foot li{padding:7px 0;font-size:14.5px;color:var(--muted)}
+.foot a{color:var(--muted);text-decoration:none}
+.foot a:hover{color:var(--ink)}
+.foot-brand{background:var(--ink);padding:9px 14px;border-radius:var(--r);line-height:0;display:inline-block;margin-bottom:18px}
+.foot-brand img{height:26px;width:auto}
+.foot-note{color:var(--muted);font-size:14.5px;max-width:34ch}
+.foot-base{margin-top:clamp(32px,4vw,56px);padding-top:20px;border-top:1px solid var(--hair);display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between;color:var(--muted);font-size:13px}
+@media (max-width:900px){.foot-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.foot-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body id="top">
+
+<!-- ============================ 1. NAVIGATION ============================ -->
+<header class="nav" id="nav">
+  <div class="nav-in">
+    <a class="brand" href="#top" aria-label="Quest Drafting and Design, home">
+      <img src="assets/logo.png" alt="Quest Drafting and Design" width="180" height="26">
+    </a>
+    <button class="nav-tog" id="navtog" type="button" aria-expanded="false" aria-controls="navlinks">
+      <span class="bars" aria-hidden="true"></span>Menu
+    </button>
+    <nav class="nav-links" id="navlinks" aria-label="Primary">
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="#about">About</a>
+      <a href="/blog">Blog</a>
+      <a href="#faq">FAQ</a>
+      <a href="#quote">Contact</a>
+      <a class="btn btn-fill btn-sm" href="#quote">Get a Quote</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============================ 2. OPENER ============================ -->
+<section class="hero" aria-labelledby="hero-h">
+  <img class="hero-img" src="assets/render-motorcourt.webp"
+       alt="Contemporary stone estate designed around a motor court at dusk" width="1600" height="900" fetchpriority="high">
+  <div class="hero-veil" aria-hidden="true"></div>
+  <div class="hero-in">
+    <h1 class="dh hero-h1" id="hero-h" style="--hvw:6.62vw;--hmax:5.8rem;--hmin:2.35rem">From vision, to model, to permit.</h1>
+    <div class="hero-low">
+      <div class="hero-plate">
+        <p class="hero-sup">We turn a property and an idea into a home that is resolved on paper, modeled, documented and permitted, before the first shovel hits the ground.</p>
+        <div class="hero-acts">
+          <a class="btn btn-fill" href="#quote">Get a Quote</a>
+          <a class="btn btn-line" href="tel:+16023396455">(602) 339-6455</a>
+        </div>
+      </div>
+      <figure class="hero-chip">
+        <img src="assets/model-massing-white.webp"
+             alt="White 3D massing model of a residence" width="1080" height="364" loading="lazy" decoding="async">
+        <figcaption>Massing study</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 3. SERVICES: accordion strip ============================ -->
+<section class="sec services mat-grid" id="services" aria-labelledby="svc-h">
+  <div class="wrap">
+    <div class="rv">
+      <h2 class="dh" id="svc-h" style="--hvw:10.02vw;--hmax:8.75rem;--hmin:2.5rem">What the studio does</h2>
+      <p class="lede">Four things, and they run in one line. Nothing is handed off to another office between them.</p>
+    </div>
+
+    <div class="strip rv" id="strip">
+      <button class="pan" type="button" aria-expanded="true">
+        <img class="pan-img" src="assets/model-massing-terrain.webp"
+             alt="3D massing model set into its sloped lot with green terrain" width="1080" height="634" loading="lazy" decoding="async">
+        <span class="pan-veil" aria-hidden="true"></span>
+        <span class="pan-body">
+          <span class="pan-no">01</span>
+          <span class="pan-title">Architectural Design</span>
+          <span class="pan-rule" aria-hidden="true"></span>
+          <span class="pan-copy">From first massing study to a resolved floor plan, shaped by your lot, your zoning, and how you actually live. Custom homes, hillside and desert estates, additions, casitas, guest houses and site structures.</span>
+        </span>
+      </button>
+
+      <button class="pan" type="button" aria-expanded="false">
+        <img class="pan-img" src="assets/render-pool-twilight.webp"
+             alt="Twilight render of a modern estate above a pool terrace" width="1080" height="608" loading="lazy" decoding="async">
+        <span class="pan-veil" aria-hidden="true"></span>
+        <span class="pan-body">
+          <span class="pan-no">02</span>
+          <span class="pan-title">3D Visualization</span>
+          <span class="pan-rule" aria-hidden="true"></span>
+          <span class="pan-copy">You approve the home itself, not a flat line drawing you have to imagine in three dimensions. A full 3D model and photoreal renderings, day and twilight, before a single construction sheet is final.</span>
+        </span>
+      </button>
+
+      <button class="pan" type="button" aria-expanded="false">
+        <img class="pan-img" src="assets/sheet-dimensional-plan.webp"
+             alt="Dimensional floor plan sheet A103 with every room and wall dimensioned" width="1500" height="1000" loading="lazy" decoding="async">
+        <span class="pan-veil" aria-hidden="true"></span>
+        <span class="pan-body">
+          <span class="pan-no">03</span>
+          <span class="pan-title">Construction Documents</span>
+          <span class="pan-rule" aria-hidden="true"></span>
+          <span class="pan-copy">The complete coordinated set your builder and your city both need, typically around 22 sheets across roughly six disciplines, drawn to the 2024 IBC / IRC / IECC code cycle.</span>
+        </span>
+      </button>
+
+      <button class="pan" type="button" aria-expanded="false">
+        <img class="pan-img" src="assets/sheet-cover-elevation.webp"
+             alt="Cover sheet CS with a rendered elevation, sheet index and code notes" width="1500" height="1000" loading="lazy" decoding="async">
+        <span class="pan-veil" aria-hidden="true"></span>
+        <span class="pan-body">
+          <span class="pan-no">04</span>
+          <span class="pan-title">Permit Stewardship</span>
+          <span class="pan-rule" aria-hidden="true"></span>
+          <span class="pan-copy">We do not hand you drawings and disappear. Submittals formatted to each jurisdiction's checklist, plan review comments answered, resubmittals managed until the permit is in hand.</span>
+        </span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 4. PROCESS: ruled timeline ============================ -->
+<section class="sec process" id="process" aria-labelledby="proc-h">
+  <div class="wrap">
+    <div class="rv">
+      <h2 class="dh" id="proc-h" style="--hvw:9.52vw;--hmax:8.3rem;--hmin:2.5rem">How it goes, in order</h2>
+      <p class="lede">Six steps on one agreement. The line between them is the part most projects drop.</p>
+      <div class="dim" aria-hidden="true"></div>
+    </div>
+
+    <div class="tl-wrap rv">
+      <div class="tl-plane" aria-hidden="true"></div>
+      <ol class="tl">
+        <li class="step">
+          <span class="step-no">01</span>
+          <div>
+            <h3 class="step-name">Survey and setbacks</h3>
+            <p class="step-note">What the lot and the zoning will allow, established before anything is drawn.</p>
+          </div>
+        </li>
+        <li class="step">
+          <span class="step-no">02</span>
+          <div>
+            <h3 class="step-name">Design</h3>
+            <p class="step-note">From first massing study to a resolved floor plan, shaped by your lot, your zoning, and how you actually live.</p>
+          </div>
+        </li>
+        <li class="step">
+          <span class="step-no">03</span>
+          <div>
+            <h3 class="step-name">3D model</h3>
+            <p class="step-note">A full 3D model and photoreal renderings, day and twilight, before a single construction sheet is final.</p>
+          </div>
+        </li>
+        <li class="step">
+          <span class="step-no">04</span>
+          <div>
+            <h3 class="step-name">Construction documents</h3>
+            <p class="step-note">Around 22 sheets across roughly six disciplines, drawn to the 2024 IBC / IRC / IECC code cycle.</p>
+          </div>
+        </li>
+        <li class="step">
+          <span class="step-no">05</span>
+          <div>
+            <h3 class="step-name">Permit submitted</h3>
+            <p class="step-note">Submittals formatted to each jurisdiction's checklist.</p>
+          </div>
+        </li>
+        <li class="step">
+          <span class="step-no">06</span>
+          <div>
+            <h3 class="step-name">Permit in hand</h3>
+            <p class="step-note">Plan review comments answered, resubmittals managed until the permit is in hand.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 5. THE WORK: drag filmstrip ============================ -->
+<section class="sec work" id="work" aria-labelledby="work-h">
+  <div class="wrap">
+    <div class="rv">
+      <h2 class="dh" id="work-h" style="--hvw:7.55vw;--hmax:6.6rem;--hmin:2.4rem">Renders and massing models</h2>
+      <div class="dim" aria-hidden="true"></div>
+    </div>
+    <div class="work-bar rv">
+      <p class="lede" style="margin-top:0">The studio's own output. Drag the strip, scroll it, or use the arrows.</p>
+      <div class="arws">
+        <button class="arw" type="button" data-dir="-1" aria-label="Show previous frames" aria-controls="fs">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7" stroke-linecap="square"/></svg>
+        </button>
+        <button class="arw" type="button" data-dir="1" aria-label="Show next frames" aria-controls="fs">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke-linecap="square"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="fs rv" id="fs" tabindex="0" role="group" aria-label="Filmstrip of renders and massing models. Use the left and right arrow keys to move.">
+      <figure class="fr" style="--w:clamp(280px,50vw,740px)">
+        <img src="assets/render-motorcourt.webp" alt="Contemporary stone estate designed around a motor court at dusk" width="1600" height="900" loading="lazy" decoding="async">
+        <figcaption><b>Render</b>Contemporary stone estate designed around a motor court, dusk.</figcaption>
+      </figure>
+      <figure class="fr" style="--w:clamp(230px,30vw,440px)">
+        <img src="assets/render-pool-twilight.webp" alt="Twilight render of a modern estate above a pool terrace" width="1080" height="608" loading="lazy" decoding="async">
+        <figcaption><b>Render</b>Twilight render of a modern estate above a pool terrace.</figcaption>
+      </figure>
+      <figure class="fr" style="--w:clamp(260px,38vw,560px)">
+        <img src="assets/render-greatroom.webp" alt="Great room interior render with a glass wall onto mountains at dusk" width="1080" height="720" loading="lazy" decoding="async">
+        <figcaption><b>Render</b>Great room interior, glass wall onto mountains at dusk.</figcaption>
+      </figure>
+      <figure class="fr" style="--w:clamp(300px,58vw,880px)">
+        <img src="assets/model-massing-white.webp" alt="White 3D massing model of a residence" width="1080" height="364" loading="lazy" decoding="async">
+        <figcaption><b>3D model</b>White massing model of a residence, wide strip.</figcaption>
+      </figure>
+      <figure class="fr" style="--w:clamp(230px,31vw,460px)">
+        <img src="assets/render-night-stars.webp" alt="Desert home glowing beneath a starry night sky" width="1080" height="720" loading="lazy" decoding="async">
+        <figcaption><b>Render</b>Desert home glowing beneath a starry night sky.</figcaption>
+      </figure>
+      <figure class="fr" style="--w:clamp(270px,41vw,620px)">
+        <img src="assets/model-massing-terrain.webp" alt="3D massing model set into its sloped lot with green terrain" width="1080" height="634" loading="lazy" decoding="async">
+        <figcaption><b>3D model</b>Massing model set into its sloped lot.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 6. THE SET: sheet viewer ============================ -->
+<section class="sec set mat-grid" id="set" aria-labelledby="set-h">
+  <div class="wrap">
+    <div class="rv">
+      <h2 class="dh" id="set-h" style="--hvw:8.63vw;--hmax:7.55rem;--hmin:2.4rem">The set, sheet by sheet</h2>
+      <p class="lede">Four sheets out of a set that typically runs to around 22, across roughly six disciplines.</p>
+    </div>
+
+    <div class="viewer rv">
+      <div class="tabs" id="tabs" role="tablist" aria-orientation="vertical" aria-label="Construction sheets">
+        <button class="tab" type="button" role="tab" id="t-cs" aria-selected="true" aria-controls="p-cs" tabindex="0">
+          <span class="tab-no">CS</span><span class="tab-nm">Cover sheet</span>
+        </button>
+        <button class="tab" type="button" role="tab" id="t-a100" aria-selected="false" aria-controls="p-a100" tabindex="-1">
+          <span class="tab-no">A100</span><span class="tab-nm">Site plan</span>
+        </button>
+        <button class="tab" type="button" role="tab" id="t-a103" aria-selected="false" aria-controls="p-a103" tabindex="-1">
+          <span class="tab-no">A103</span><span class="tab-nm">Dimensional plan</span>
+        </button>
+        <button class="tab" type="button" role="tab" id="t-a201" aria-selected="false" aria-controls="p-a201" tabindex="-1">
+          <span class="tab-no">A201</span><span class="tab-nm">Elevations</span>
+        </button>
+      </div>
+
+      <div class="stage">
+        <span class="edge e2" aria-hidden="true"></span>
+        <span class="edge e1" aria-hidden="true"></span>
+        <div class="sheets">
+          <div class="sh is-on" role="tabpanel" id="p-cs" aria-labelledby="t-cs">
+            <img src="assets/sheet-cover-elevation.webp" alt="Cover sheet CS with a rendered elevation, sheet index and code notes" width="1500" height="1000" loading="lazy" decoding="async">
+            <div class="sheet-tag"><span>CS</span><span>Cover sheet</span></div>
+          </div>
+          <div class="sh" role="tabpanel" id="p-a100" aria-labelledby="t-a100">
+            <img src="assets/sheet-site-plan.webp" alt="Site plan A100 showing property lines, dimensions and the house on its lot" width="1500" height="1000" loading="lazy" decoding="async">
+            <div class="sheet-tag"><span>A100</span><span>Site plan</span></div>
+          </div>
+          <div class="sh" role="tabpanel" id="p-a103" aria-labelledby="t-a103">
+            <img src="assets/sheet-dimensional-plan.webp" alt="Dimensional floor plan A103 with every room and wall dimensioned" width="1500" height="1000" loading="lazy" decoding="async">
+            <div class="sheet-tag"><span>A103</span><span>Dimensional plan</span></div>
+          </div>
+          <div class="sh" role="tabpanel" id="p-a201" aria-labelledby="t-a201">
+            <img src="assets/sheet-elevations.webp" alt="Elevations A201 showing rear and right elevations with materials called out" width="1500" height="1000" loading="lazy" decoding="async">
+            <div class="sheet-tag"><span>A201</span><span>Elevations</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 7. THE ARGUMENT ============================ -->
+<section class="argue" id="about" aria-labelledby="arg-h">
+  <img class="argue-img" src="assets/render-night-stars.webp" alt="" aria-hidden="true" width="1080" height="720" loading="lazy" decoding="async">
+  <div class="argue-veil" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="dh argue-h" id="arg-h" style="--hvw:8.37vw;--hmax:7.3rem;--hmin:2.3rem">Every hand-off is a chance for something to be lost.</p>
+    <div class="argue-cols">
+      <p>Most residential projects pass through several hands before a permit is issued.</p>
+      <p>Quest takes a project the whole way, on one flat fee agreed before we start.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 8. QUESTIONS ============================ -->
+<section class="sec faq" id="faq" aria-labelledby="faq-h">
+  <div class="wrap">
+    <div class="rv">
+      <h2 class="dh" id="faq-h" style="--hvw:9.03vw;--hmax:7.9rem;--hmin:2.4rem">Questions we get asked</h2>
+    </div>
+
+    <div class="qas rv">
+      <div class="qa">
+        <h3><button class="qa-btn" type="button" id="qb1" aria-expanded="true" aria-controls="qa1">
+          <span class="qa-q">How much does a project cost?</span><span class="qa-ic" aria-hidden="true"></span>
+        </button></h3>
+        <div class="qa-body on" id="qa1" role="region" aria-labelledby="qb1">
+          <div class="qa-in"><p>A flat fee agreed up front, based on the scope of your project. One fixed price and a defined timeline, with no hourly surprises.</p></div>
+        </div>
+      </div>
+
+      <div class="qa">
+        <h3><button class="qa-btn" type="button" id="qb2" aria-expanded="false" aria-controls="qa2">
+          <span class="qa-q">What is in a construction document set?</span><span class="qa-ic" aria-hidden="true"></span>
+        </button></h3>
+        <div class="qa-body" id="qa2" role="region" aria-labelledby="qb2" hidden>
+          <div class="qa-in"><p>Around 22 sheets across roughly six disciplines: cover, site, floor plans, roof plans, elevations, sections and coordinated details, drawn to the 2024 code cycle.</p></div>
+        </div>
+      </div>
+
+      <div class="qa">
+        <h3><button class="qa-btn" type="button" id="qb3" aria-expanded="false" aria-controls="qa3">
+          <span class="qa-q">Can you design an ADU, casita or guest house?</span><span class="qa-ic" aria-hidden="true"></span>
+        </button></h3>
+        <div class="qa-body" id="qa3" role="region" aria-labelledby="qb3" hidden>
+          <div class="qa-in"><p>Yes. Casitas, accessory dwelling units, guest houses, additions, remodels, RV garages and site structures. What you can build depends on your lot and your zoning.</p></div>
+        </div>
+      </div>
+
+      <div class="qa">
+        <h3><button class="qa-btn" type="button" id="qb4" aria-expanded="false" aria-controls="qa4">
+          <span class="qa-q">Why build a 3D model before the drawings?</span><span class="qa-ic" aria-hidden="true"></span>
+        </button></h3>
+        <div class="qa-body" id="qa4" role="region" aria-labelledby="qb4" hidden>
+          <div class="qa-in"><p>Because it lets you approve the actual home while changes are still free.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 9. CLOSING ============================ -->
+<section class="sec close" id="quote" aria-labelledby="close-h">
+  <div class="close-wash" aria-hidden="true"></div>
+  <div class="wrap close-in">
+    <h2 class="dh close-h" id="close-h" style="--hvw:6.74vw;--hmax:5.9rem;--hmin:2.4rem">Put your project on the board</h2>
+    <div class="close-dim" aria-hidden="true"></div>
+    <div class="close-row">
+      <div>
+        <p class="areas-lab">Service area</p>
+        <ul class="areas">
+          <li>Gilbert</li>
+          <li>Queen Creek</li>
+          <li>Mesa</li>
+          <li>Chandler</li>
+          <li>Phoenix</li>
+          <li>Scottsdale</li>
+        </ul>
+      </div>
+      <div class="close-plate">
+        <p>Residential architectural drafting in Gilbert, Arizona.</p>
+        <div class="close-acts">
+          <a class="btn btn-fill" href="#quote">Get a Quote</a>
+          <a class="btn btn-line" href="tel:+16023396455">(602) 339-6455</a>
+        </div>
+        <div class="close-contact">
+          <a href="tel:+16023396455">(602) 339-6455</a>
+          <a href="mailto:info@questdraftinganddesign.com">info@questdraftinganddesign.com</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 10. FOOTER ============================ -->
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <span class="foot-brand"><img src="assets/logo.png" alt="Quest Drafting and Design" width="180" height="26" loading="lazy"></span>
+        <p class="foot-note">Quest Drafting &amp; Design LLC. Residential architectural drafting in Gilbert, Arizona.</p>
+      </div>
+      <div>
+        <h3>Contact</h3>
+        <ul>
+          <li><a href="tel:+16023396455">(602) 339-6455</a></li>
+          <li><a href="mailto:info@questdraftinganddesign.com">info@questdraftinganddesign.com</a></li>
+          <li><a href="#quote">Get a Quote</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Service area</h3>
+        <ul>
+          <li>Gilbert</li>
+          <li>Queen Creek</li>
+          <li>Mesa</li>
+          <li>Chandler</li>
+          <li>Phoenix</li>
+          <li>Scottsdale</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Pages</h3>
+        <ul>
+          <li><a href="#work">Work</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#quote">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-base">
+      <span>Quest Drafting &amp; Design LLC</span>
+      <span>From vision, to model, to permit.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var d = document;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- nav ---------- */
+  var nav = d.getElementById('nav'), tog = d.getElementById('navtog');
+  if (tog) {
+    tog.addEventListener('click', function(){
+      var open = nav.classList.toggle('open');
+      tog.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    Array.prototype.forEach.call(d.querySelectorAll('#navlinks a'), function(a){
+      a.addEventListener('click', function(){
+        nav.classList.remove('open');
+        tog.setAttribute('aria-expanded','false');
+      });
+    });
+    d.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && nav.classList.contains('open')) {
+        nav.classList.remove('open');
+        tog.setAttribute('aria-expanded','false');
+        tog.focus();
+      }
+    });
+  }
+
+  /* ---------- services: horizontal accordion strip ---------- */
+  var strip = d.getElementById('strip');
+  if (strip) {
+    var pans = Array.prototype.slice.call(strip.querySelectorAll('.pan'));
+    var remembered = 0;
+    function show(i){
+      pans.forEach(function(p, n){
+        var on = (n === i);
+        p.classList.toggle('is-open', on);
+        p.setAttribute('aria-expanded', on ? 'true' : 'false');
+      });
+    }
+    pans.forEach(function(p, i){
+      /* click covers tap, mouse and the native Enter / Space on a button */
+      p.addEventListener('click', function(){ remembered = i; show(i); });
+      p.addEventListener('pointerenter', function(e){ if (e.pointerType === 'mouse') show(i); });
+      p.addEventListener('focus', function(){ show(i); });
+    });
+    strip.addEventListener('pointerleave', function(){ show(remembered); });
+    strip.addEventListener('focusout', function(e){
+      if (!strip.contains(e.relatedTarget)) show(remembered);
+    });
+    show(remembered);
+  }
+
+  /* ---------- the work: filmstrip, drag + scroll + arrows + keys ---------- */
+  var fs = d.getElementById('fs');
+  if (fs) {
+    var down = false, startX = 0, startL = 0, moved = false;
+    fs.addEventListener('pointerdown', function(e){
+      if (e.pointerType !== 'mouse') return;      /* touch scrolls natively */
+      if (e.button !== 0) return;
+      down = true; moved = false;
+      startX = e.clientX; startL = fs.scrollLeft;
+      fs.classList.add('drag');
+      try { fs.setPointerCapture(e.pointerId); } catch (err) {}
+    });
+    fs.addEventListener('pointermove', function(e){
+      if (!down) return;
+      var dx = e.clientX - startX;
+      if (Math.abs(dx) > 3) moved = true;
+      fs.scrollLeft = startL - dx;
+      e.preventDefault();
+    });
+    function stop(e){
+      if (!down) return;
+      down = false;
+      fs.classList.remove('drag');
+      try { fs.releasePointerCapture(e.pointerId); } catch (err) {}
+    }
+    fs.addEventListener('pointerup', stop);
+    fs.addEventListener('pointercancel', stop);
+    fs.addEventListener('click', function(e){ if (moved) { e.preventDefault(); e.stopPropagation(); } }, true);
+    fs.addEventListener('dragstart', function(e){ e.preventDefault(); });
+
+    function nudge(dir){
+      fs.scrollBy({ left: dir * Math.round(fs.clientWidth * 0.62), behavior: reduce ? 'auto' : 'smooth' });
+    }
+    Array.prototype.forEach.call(d.querySelectorAll('.arw'), function(b){
+      b.addEventListener('click', function(){ nudge(parseInt(b.getAttribute('data-dir'), 10)); });
+    });
+    fs.addEventListener('keydown', function(e){
+      if (e.key === 'ArrowRight') { e.preventDefault(); nudge(1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); nudge(-1); }
+      else if (e.key === 'Home') { e.preventDefault(); fs.scrollTo({ left: 0, behavior: reduce ? 'auto' : 'smooth' }); }
+      else if (e.key === 'End') { e.preventDefault(); fs.scrollTo({ left: fs.scrollWidth, behavior: reduce ? 'auto' : 'smooth' }); }
+    });
+  }
+
+  /* ---------- the set: sheet viewer tabs ---------- */
+  var tablist = d.getElementById('tabs');
+  if (tablist) {
+    var tabs = Array.prototype.slice.call(tablist.querySelectorAll('[role="tab"]'));
+    var panels = tabs.map(function(t){ return d.getElementById(t.getAttribute('aria-controls')); });
+    function select(i, moveFocus){
+      tabs.forEach(function(t, n){
+        var on = (n === i);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+        if (panels[n]) panels[n].classList.toggle('is-on', on);
+      });
+      if (moveFocus) tabs[i].focus();
+    }
+    tabs.forEach(function(t, i){
+      t.addEventListener('click', function(){ select(i, false); });
+      t.addEventListener('keydown', function(e){
+        var n = null, last = tabs.length - 1;
+        if (e.key === 'ArrowDown' || e.key === 'ArrowRight') n = (i === last) ? 0 : i + 1;
+        else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') n = (i === 0) ? last : i - 1;
+        else if (e.key === 'Home') n = 0;
+        else if (e.key === 'End') n = last;
+        if (n !== null) { e.preventDefault(); select(n, true); }
+      });
+    });
+  }
+
+  /* ---------- questions: expand in place ---------- */
+  Array.prototype.forEach.call(d.querySelectorAll('.qa-btn'), function(b){
+    b.addEventListener('click', function(){
+      var body = d.getElementById(b.getAttribute('aria-controls'));
+      var open = b.getAttribute('aria-expanded') === 'true';
+      if (open) {
+        b.setAttribute('aria-expanded', 'false');
+        body.classList.remove('on');
+        body.hidden = true;
+      } else {
+        b.setAttribute('aria-expanded', 'true');
+        body.hidden = false;
+        if (reduce) { body.classList.add('on'); }
+        else { window.requestAnimationFrame(function(){ body.classList.add('on'); }); }
+      }
+    });
+  });
+
+  /* ---------- reveals ---------- */
+  var rv = Array.prototype.slice.call(d.querySelectorAll('.rv'));
+  if (reduce || !('IntersectionObserver' in window)) {
+    rv.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+      });
+    }, { rootMargin: '0px 0px -6% 0px', threshold: 0.06 });
+    rv.forEach(function(el){ io.observe(el); });
+    /* safety net: nothing stays parked at opacity 0 */
+    window.setTimeout(function(){ rv.forEach(function(el){ el.classList.add('in'); }); }, 4000);
+  }
+})();
+</script>
+</body>
+</html>
