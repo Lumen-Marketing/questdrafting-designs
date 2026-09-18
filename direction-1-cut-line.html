@@ -342,33 +342,110 @@ button{ font:inherit; color:inherit; }
 
 /* ============================================================
    THE WORK. The roll
+   Plates come off the roll at full size and run to the page
+   edges. Nothing is a thumbnail and nothing sits in a card. The
+   reveal is the same cut as the opener: the plate is cut open
+   from the left as it rides up the screen
    ============================================================ */
-.work{ background:var(--paper); }
-.roll{ display:grid; gap:var(--s7); }
-.plate{
-  display:grid;
-  grid-template-columns:216px minmax(0,1fr);
-  gap:var(--s4);
-  align-items:start;
+/* clip, not hidden: overflow:hidden would make this section a scroll
+   container and the view timelines inside it would never progress */
+.work{ background:var(--paper); overflow:clip; }
+.roll{ display:grid; gap:var(--s8); margin-top:var(--s7); }
+
+/* every plate is a frame at a fixed ratio, so the crop is the
+   design decision and not whatever the file happens to be */
+.plate{ position:relative; margin:0; }
+.plate .frame{ position:relative; display:block; overflow:hidden; background:var(--vellum); }
+.plate img{ width:100%; height:100%; object-fit:cover; }
+
+/* the caption is a ruled line in the margin, never a box under a photo */
+.plate figcaption{
+  display:flex; flex-wrap:wrap; align-items:baseline; gap:6px var(--s3);
+  border-top:1px solid var(--rule); padding-top:12px; margin-top:14px;
 }
-.plate figcaption{ padding-top:6px; }
 .plate figcaption b{
-  display:block; font-family:var(--disp); font-weight:700;
-  font-size:21px; line-height:1.1; letter-spacing:-.012em; margin-bottom:6px;
+  font-family:var(--disp); font-weight:700; font-size:20px;
+  line-height:1.1; letter-spacing:-.012em;
 }
 .plate figcaption span{ font-size:15px; color:var(--graphite); }
-.plate img{ width:100%; height:auto; }
-.plate--wide{ grid-template-columns:1fr; }
-.plate--wide figcaption{
-  display:flex; flex-wrap:wrap; gap:var(--s2) var(--s4); align-items:baseline;
-  border-top:1px solid var(--rule); padding-top:var(--s2); margin-top:var(--s2);
+.plate figcaption em{
+  font-style:normal; font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--orange); font-weight:700;
 }
-.plate--wide figcaption b{ margin-bottom:0; }
-.plate--pair{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:var(--s4); }
-.plate--pair figcaption{ grid-column:1 / -1; border-top:1px solid var(--rule); padding-top:var(--s2); }
+
+/* A. edge to edge. The only plate that behaves like a ground */
+.p-bleed .frame{ aspect-ratio:2.32; }
+.p-bleed figcaption{ margin-inline:var(--pad); }
+
+/* B. a tall plate held to the right. The left column is narrow and
+   the copy hangs off a rule at its foot, so the empty quarter above
+   reads as deliberate margin rather than a gap */
+.p-tall{
+  display:grid; grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr);
+  gap:var(--s6); align-items:end; padding-inline:var(--pad);
+  max-width:var(--wrap); margin-inline:auto;
+}
+.p-tall .frame{ aspect-ratio:.78; }
+.p-tall .side{ container-type:inline-size; padding-bottom:var(--s4); }
+.p-tall .side h3{
+  font-family:var(--disp); font-weight:700;
+  font-size:clamp(28px, calc(var(--k3,12) * 1cqw), 92px);
+  line-height:1.0; letter-spacing:-.028em; margin:0 0 var(--s3);
+}
+.p-tall .side p{
+  color:var(--graphite); border-top:1px solid var(--rule); padding-top:14px;
+}
+.p-tall figcaption{ grid-column:2; }
+
+/* C. two plates in register. One crosses the left page edge and the
+   second lies across its corner, which is the depth device doing
+   real work: occlusion, not a shadow under a flat card */
+.p-pair .pair-stage{ position:relative; padding-bottom:var(--s6); }
+.p-pair .frame{ width:min(76%, 1060px); aspect-ratio:2.30; }
+.p-pair .over{
+  position:absolute; right:var(--pad); bottom:0; display:block;
+  width:min(38%, 520px); aspect-ratio:1.5; overflow:hidden; background:var(--vellum);
+  box-shadow:-30px -16px 50px -20px rgba(46,38,24,.42);
+}
+.p-pair .over img{ width:100%; height:100%; object-fit:cover; }
+.p-pair figcaption{ margin-left:var(--pad); }
+
+/* D. the massing model is an object on the paper, not a screenshot in a box */
+.p-model{
+  max-width:var(--wrap); margin-inline:auto; padding-inline:var(--pad);
+}
+.p-model .frame{
+  aspect-ratio:3.42; background:none; overflow:visible;
+  filter:drop-shadow(38px 30px 44px rgba(46,38,24,.22));
+}
+.p-model img{ object-fit:contain; }
+
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion: no-preference){
+    /* the timeline is declared on the frame, and the image inside looks it
+       up by name. An anonymous view() on the image itself does not resolve */
+    .plate .frame, .plate .over{ view-timeline:--cutline block; }
+    .plate .frame img, .plate .over img{
+      animation:cutopen linear both;
+      animation-timeline:--cutline;
+      animation-range:entry 6% cover 38%;
+    }
+  }
+}
+@keyframes cutopen{
+  from{ clip-path:inset(0 100% 0 0); }
+  to{ clip-path:inset(0 0 0 0); }
+}
+
 @media (max-width:880px){
-  .plate,.plate--pair{ grid-template-columns:1fr; gap:var(--s3); }
-  .roll{ gap:var(--s6); }
+  .roll{ gap:var(--s7); }
+  .p-tall{ grid-template-columns:1fr; gap:var(--s3); align-items:start; }
+  .p-tall figcaption{ grid-column:1; }
+  .p-tall .frame{ aspect-ratio:1.05; }
+  .p-pair .frame{ width:100%; }
+  .p-pair .over{ position:static; width:64%; margin:calc(-1 * var(--s5)) 0 0 auto; }
+  .p-pair .pair-stage{ padding-bottom:0; }
+  .p-model .frame{ aspect-ratio:2.6; }
 }
 
 /* ============================================================
@@ -682,34 +759,35 @@ button{ font:inherit; color:inherit; }
         <h2 class="h2" style="--k:7.48">The studio's own work.</h2>
         <p>Renders and models from live residential projects. Nothing here is stock photography.</p>
       </div>
+    </div>
 
-      <div class="roll">
-        <figure class="plate plate--wide rv">
-          <img src="assets/render-motorcourt.webp" alt="Contemporary stone estate designed around a motor court at dusk" loading="lazy">
-          <figcaption><b>Motor court estate</b><span>Stone and glass, organised around the arrival court. Dusk render.</span></figcaption>
-        </figure>
+    <div class="roll">
+      <figure class="plate p-bleed">
+        <span class="frame"><img src="assets/w-motorcourt.webp" alt="Contemporary stone estate designed around a motor court at dusk" loading="lazy"></span>
+        <figcaption><em>Render</em><b>Motor court estate</b><span>Stone and glass organised around the arrival court, drawn at dusk.</span></figcaption>
+      </figure>
 
-        <figure class="plate rv">
-          <figcaption><b>Twilight terrace</b><span>The pool terrace read as an outdoor room, not a leftover.</span></figcaption>
-          <img src="assets/render-pool-twilight.webp" alt="Twilight render of a modern estate above a pool terrace" loading="lazy">
-        </figure>
+      <figure class="plate p-tall">
+        <div class="side">
+          <h3 style="--k3:19">One house, two lights.</h3>
+          <p>A render is not a picture, it is a test. The same elevation is lit at dusk and again after dark, so the client approves the way the house reads at both before a footing is poured.</p>
+        </div>
+        <span class="frame"><img src="assets/t-night.webp" alt="Desert home glowing beneath a starry night sky" loading="lazy"></span>
+        <figcaption><em>Render</em><b>Night elevation</b><span>Interior light doing the work the drawing cannot.</span></figcaption>
+      </figure>
 
-        <figure class="plate plate--pair rv">
-          <img src="assets/render-greatroom.webp" alt="Great room interior render with a glass wall onto mountains at dusk" loading="lazy">
-          <img src="assets/render-night-stars.webp" alt="Desert home glowing beneath a starry night sky" loading="lazy">
-          <figcaption><b>Interior and night</b><span>The same house judged in two different lights before anything is built.</span></figcaption>
-        </figure>
+      <figure class="plate p-pair">
+        <div class="pair-stage">
+          <span class="frame"><img src="assets/w-pool.webp" alt="Twilight render of a modern estate above a pool terrace" loading="lazy"></span>
+          <span class="over"><img src="assets/w-greatroom.webp" alt="Great room interior with a glass wall onto the mountains at dusk" loading="lazy"></span>
+        </div>
+        <figcaption><em>Render</em><b>Terrace and great room</b><span>Outside and inside drawn as one room, in register.</span></figcaption>
+      </figure>
 
-        <figure class="plate plate--wide rv">
-          <img src="assets/model-massing-white.webp" alt="White three dimensional massing model of a residence" loading="lazy">
-          <figcaption><b>White massing model</b><span>Form first. No materials, no distractions, just the shape of the house.</span></figcaption>
-        </figure>
-
-        <figure class="plate rv">
-          <figcaption><b>Massing on its lot</b><span>The same model dropped onto the real slope, so the grade is designed, not discovered.</span></figcaption>
-          <img src="assets/model-massing-terrain.webp" alt="Three dimensional massing model set into its sloped lot" loading="lazy">
-        </figure>
-      </div>
+      <figure class="plate p-model">
+        <span class="frame"><img src="assets/model-cut.png" alt="White three dimensional massing model of a residence stepping down its slope" loading="lazy"></span>
+        <figcaption><em>Model</em><b>White massing model</b><span>Form first. No materials, no distractions, just the shape of the house on its grade.</span></figcaption>
+      </figure>
     </div>
   </section>
 

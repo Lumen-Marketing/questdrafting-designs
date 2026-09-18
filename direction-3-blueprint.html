@@ -314,40 +314,67 @@ button{font:inherit;color:inherit;background:none;border:0;margin:0;padding:0}
   .tl::before{left:calc(clamp(20px,2.6vw,40px) + 19px)}
 }
 
-/* ============================ THE WORK: drag filmstrip ============================ */
-.work{background:var(--ground)}
-.work-bar{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-top:clamp(22px,2.6vw,34px);flex-wrap:wrap}
-.work-bar .lede{flex:1 1 280px;min-width:0}
-.arws{display:flex;gap:10px;flex:0 0 auto}
-.arw{
-  width:52px;height:52px;display:grid;place-items:center;cursor:pointer;
-  border:1px solid var(--hair);border-radius:var(--r);background:rgba(127,166,191,.06);
-  transition:background .25s,border-color .25s,transform .25s;
+/* ============================ THE WORK: the index and one plate ============================
+   A drawing index is a real page in a real set: numbered rows, ruled,
+   naming what is on every sheet. So the work reads as an index on the
+   left and one very large plate on the right, running off the page
+   edge. Choosing a row brings that plate up. No thumbnails anywhere.
+   ============================================================ */
+.work{background:var(--ground);overflow:hidden}
+.wx{
+  display:grid;grid-template-columns:minmax(0,.62fr) minmax(0,1.38fr);
+  gap:clamp(24px,3.4vw,58px);align-items:stretch;
+  margin-top:clamp(28px,3.4vw,52px);
 }
-.arw:hover{background:rgba(127,166,191,.14);border-color:var(--steel);transform:translateY(-2px)}
-.arw svg{width:16px;height:16px;stroke:var(--ink);fill:none;stroke-width:1.6}
-.fs{
-  display:flex;gap:clamp(12px,1.4vw,20px);
-  margin-top:clamp(20px,2.4vw,32px);
-  margin-right:calc(-1 * var(--pad));
-  padding-right:var(--pad);
-  overflow-x:auto;overflow-y:hidden;
-  scroll-snap-type:x proximity;
-  scrollbar-width:thin;scrollbar-color:var(--hair) transparent;
-  cursor:grab;
+/* the index spans the full height of the plate beside it, so the
+   column reads as a ruled page and not as a short list with a hole under it */
+.wx-index{display:flex;flex-direction:column;justify-content:space-between;border-top:1px solid var(--hair)}
+.wx-row{
+  display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:baseline;
+  width:100%;text-align:left;cursor:pointer;
+  padding:clamp(14px,1.5vw,20px) 0;
+  background:none;border:0;border-bottom:1px solid var(--hair);
+  color:var(--muted);font:inherit;
+  transition:color .3s,padding-left .35s cubic-bezier(.32,.72,0,1);
 }
-.fs.drag{cursor:grabbing;scroll-snap-type:none}
-.fs::-webkit-scrollbar{height:6px}
-.fs::-webkit-scrollbar-track{background:rgba(127,166,191,.07)}
-.fs::-webkit-scrollbar-thumb{background:var(--hair)}
-.fr{
-  flex:0 0 auto;width:var(--w);scroll-snap-align:start;
-  border:1px solid var(--hair);border-radius:var(--r);background:var(--surface);
-  box-shadow:0 52px 100px -40px rgba(var(--sh),.95),0 14px 32px -18px rgba(var(--sh),.7);
+.wx-row .n{
+  font-family:var(--display);font-weight:700;font-size:13px;
+  letter-spacing:.14em;color:var(--steel);font-variant-numeric:tabular-nums;
 }
-.fr img{width:100%;height:clamp(230px,40vh,420px);object-fit:cover;-webkit-user-drag:none;user-select:none;pointer-events:none}
-.fr figcaption{padding:14px 16px;border-top:1px solid var(--hair);color:var(--muted);font-size:13.5px;line-height:1.5}
-.fr figcaption b{display:block;font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.16em;font-size:12px;color:var(--steel);margin-bottom:5px}
+.wx-row .t{
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(19px,1.72vw,26px);line-height:1.12;letter-spacing:-.01em;
+  color:var(--ink);
+}
+.wx-row .d{grid-column:2;font-size:14px;line-height:1.5;color:var(--muted);margin-top:4px;display:none}
+.wx-row:hover{padding-left:10px}
+.wx-row[aria-pressed="true"]{padding-left:16px;border-bottom-color:var(--orange)}
+.wx-row[aria-pressed="true"] .n{color:var(--orange)}
+.wx-row[aria-pressed="true"] .d{display:block}
+.wx-row:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+
+/* the plate runs off the right page edge, which is the depth device:
+   one thing crossing a boundary instead of a shadow under a card */
+.wx-plate{
+  position:relative;aspect-ratio:1.5;align-self:start;
+  margin-right:calc(-1 * max(var(--pad), (100vw - 1400px) / 2 + var(--pad)));
+  background:var(--surface);
+  box-shadow:0 60px 110px -44px rgba(var(--sh),.95);
+}
+.wx-plate img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  opacity:0;transition:opacity .62s cubic-bezier(.32,.72,0,1);
+}
+.wx-plate img.on{opacity:1}
+.wx-num{
+  position:absolute;left:0;bottom:0;z-index:2;
+  font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:.2em;
+  text-transform:uppercase;background:var(--ground);color:var(--steel);padding:9px 14px;
+}
+@media (max-width:900px){
+  .wx{grid-template-columns:1fr;gap:clamp(20px,3vw,32px)}
+  .wx-plate{margin-right:0;aspect-ratio:1.5;order:-1}
+}
 
 /* ============================ THE SET: sheet viewer ============================ */
 .set{background:var(--ground);position:relative;z-index:2;padding-bottom:clamp(24px,3vw,44px)}
@@ -448,8 +475,8 @@ button{font:inherit;color:inherit;background:none;border:0;margin:0;padding:0}
 .close-dim::after{content:"";position:absolute;inset:0;background:linear-gradient(#0B1016,#0B1016) left center/1px 100% no-repeat,linear-gradient(#0B1016,#0B1016) right center/1px 100% no-repeat;opacity:.55}
 .close-row{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(24px,3.4vw,64px);align-items:start}
 .areas{display:grid;grid-template-columns:repeat(3,1fr);gap:0 clamp(16px,2vw,32px)}
-.areas li{border-top:1px solid rgba(11,16,22,.4);padding:14px 0;font-size:clamp(15px,1.15vw,18px);font-weight:500;color:#0B1016}
-.areas-lab{font-size:13px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(11,16,22,.72);margin-bottom:12px}
+.areas li{border-top:1px solid rgba(11,16,22,.4);padding:14px 0;font-size:clamp(15px,1.15vw,18px);font-weight:500;color:#000}
+.areas-lab{font-size:13px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#120705;margin-bottom:12px}
 .close-plate{
   background:#0B1016;border:1px solid rgba(232,238,242,.14);border-radius:var(--r);
   padding:clamp(22px,2.4vw,34px);
@@ -521,7 +548,7 @@ button{font:inherit;color:inherit;background:none;border:0;margin:0;padding:0}
         </div>
       </div>
       <figure class="hero-chip">
-        <img src="assets/model-massing-white.webp"
+        <img src="assets/model-cut.png"
              alt="White 3D massing model of a residence" width="1080" height="364" loading="lazy" decoding="async">
         <figcaption>Massing study</figcaption>
       </figure>
@@ -539,7 +566,7 @@ button{font:inherit;color:inherit;background:none;border:0;margin:0;padding:0}
 
     <div class="strip rv" id="strip">
       <button class="pan" type="button" aria-expanded="true">
-        <img class="pan-img" src="assets/model-massing-terrain.webp"
+        <img class="pan-img" src="assets/model-terrain-neutral.webp"
              alt="3D massing model set into its sloped lot with green terrain" width="1080" height="634" loading="lazy" decoding="async">
         <span class="pan-veil" aria-hidden="true"></span>
         <span class="pan-body">
@@ -655,43 +682,40 @@ button{font:inherit;color:inherit;background:none;border:0;margin:0;padding:0}
       <h2 class="dh" id="work-h" style="--hvw:7.55vw;--hmax:6.6rem;--hmin:2.4rem">Renders and massing models</h2>
       <div class="dim" aria-hidden="true"></div>
     </div>
-    <div class="work-bar rv">
-      <p class="lede" style="margin-top:0">The studio's own output. Drag the strip, scroll it, or use the arrows.</p>
-      <div class="arws">
-        <button class="arw" type="button" data-dir="-1" aria-label="Show previous frames" aria-controls="fs">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7" stroke-linecap="square"/></svg>
+    <p class="lede" style="margin-top:clamp(18px,2.2vw,28px)">The studio's own output, listed the way a set lists its sheets. Choose a line to bring that plate up.</p>
+
+    <div class="wx rv">
+      <div class="wx-index" id="wxIndex" role="group" aria-label="Index of renders and massing models">
+        <button class="wx-row" type="button" data-i="0" aria-pressed="true">
+          <span class="n">01</span><span class="t">Motor court estate</span>
+          <span class="d">Stone and glass organised around the arrival court, drawn at dusk.</span>
         </button>
-        <button class="arw" type="button" data-dir="1" aria-label="Show next frames" aria-controls="fs">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke-linecap="square"/></svg>
+        <button class="wx-row" type="button" data-i="1" aria-pressed="false">
+          <span class="n">02</span><span class="t">Desert home at night</span>
+          <span class="d">The elevation judged against a clear sky before it was framed.</span>
+        </button>
+        <button class="wx-row" type="button" data-i="2" aria-pressed="false">
+          <span class="n">03</span><span class="t">Great room</span>
+          <span class="d">A glass wall onto the mountains, checked against the real view from the lot.</span>
+        </button>
+        <button class="wx-row" type="button" data-i="3" aria-pressed="false">
+          <span class="n">04</span><span class="t">Pool terrace</span>
+          <span class="d">An outdoor room drawn as a room, not as the space left over.</span>
+        </button>
+        <button class="wx-row" type="button" data-i="4" aria-pressed="false">
+          <span class="n">05</span><span class="t">White massing model</span>
+          <span class="d">Form first. No materials, no distractions, just the shape of the house on its grade.</span>
         </button>
       </div>
-    </div>
 
-    <div class="fs rv" id="fs" tabindex="0" role="group" aria-label="Filmstrip of renders and massing models. Use the left and right arrow keys to move.">
-      <figure class="fr" style="--w:clamp(280px,50vw,740px)">
-        <img src="assets/render-motorcourt.webp" alt="Contemporary stone estate designed around a motor court at dusk" width="1600" height="900" loading="lazy" decoding="async">
-        <figcaption><b>Render</b>Contemporary stone estate designed around a motor court, dusk.</figcaption>
-      </figure>
-      <figure class="fr" style="--w:clamp(230px,30vw,440px)">
-        <img src="assets/render-pool-twilight.webp" alt="Twilight render of a modern estate above a pool terrace" width="1080" height="608" loading="lazy" decoding="async">
-        <figcaption><b>Render</b>Twilight render of a modern estate above a pool terrace.</figcaption>
-      </figure>
-      <figure class="fr" style="--w:clamp(260px,38vw,560px)">
-        <img src="assets/render-greatroom.webp" alt="Great room interior render with a glass wall onto mountains at dusk" width="1080" height="720" loading="lazy" decoding="async">
-        <figcaption><b>Render</b>Great room interior, glass wall onto mountains at dusk.</figcaption>
-      </figure>
-      <figure class="fr" style="--w:clamp(300px,58vw,880px)">
-        <img src="assets/model-massing-white.webp" alt="White 3D massing model of a residence" width="1080" height="364" loading="lazy" decoding="async">
-        <figcaption><b>3D model</b>White massing model of a residence, wide strip.</figcaption>
-      </figure>
-      <figure class="fr" style="--w:clamp(230px,31vw,460px)">
-        <img src="assets/render-night-stars.webp" alt="Desert home glowing beneath a starry night sky" width="1080" height="720" loading="lazy" decoding="async">
-        <figcaption><b>Render</b>Desert home glowing beneath a starry night sky.</figcaption>
-      </figure>
-      <figure class="fr" style="--w:clamp(270px,41vw,620px)">
-        <img src="assets/model-massing-terrain.webp" alt="3D massing model set into its sloped lot with green terrain" width="1080" height="634" loading="lazy" decoding="async">
-        <figcaption><b>3D model</b>Massing model set into its sloped lot.</figcaption>
-      </figure>
+      <div class="wx-plate" id="wxPlate">
+        <img class="on" src="assets/w-motorcourt.webp" alt="Contemporary stone estate designed around a motor court at dusk" loading="lazy" decoding="async">
+        <img src="assets/t-night.webp" alt="Desert home glowing beneath a starry night sky" loading="lazy" decoding="async">
+        <img src="assets/w-greatroom.webp" alt="Great room interior with a glass wall onto the mountains at dusk" loading="lazy" decoding="async">
+        <img src="assets/w-pool.webp" alt="Twilight render of a modern estate above a pool terrace" loading="lazy" decoding="async">
+        <img src="assets/model-terrain-neutral.webp" alt="Three dimensional massing model set into its sloped lot" loading="lazy" decoding="async">
+        <span class="wx-num" id="wxNum">01 Motor court estate</span>
+      </div>
     </div>
   </div>
 </section>
@@ -938,47 +962,20 @@ button{font:inherit;color:inherit;background:none;border:0;margin:0;padding:0}
     show(remembered);
   }
 
-  /* ---------- the work: filmstrip, drag + scroll + arrows + keys ---------- */
-  var fs = d.getElementById('fs');
-  if (fs) {
-    var down = false, startX = 0, startL = 0, moved = false;
-    fs.addEventListener('pointerdown', function(e){
-      if (e.pointerType !== 'mouse') return;      /* touch scrolls natively */
-      if (e.button !== 0) return;
-      down = true; moved = false;
-      startX = e.clientX; startL = fs.scrollLeft;
-      fs.classList.add('drag');
-      try { fs.setPointerCapture(e.pointerId); } catch (err) {}
-    });
-    fs.addEventListener('pointermove', function(e){
-      if (!down) return;
-      var dx = e.clientX - startX;
-      if (Math.abs(dx) > 3) moved = true;
-      fs.scrollLeft = startL - dx;
-      e.preventDefault();
-    });
-    function stop(e){
-      if (!down) return;
-      down = false;
-      fs.classList.remove('drag');
-      try { fs.releasePointerCapture(e.pointerId); } catch (err) {}
-    }
-    fs.addEventListener('pointerup', stop);
-    fs.addEventListener('pointercancel', stop);
-    fs.addEventListener('click', function(e){ if (moved) { e.preventDefault(); e.stopPropagation(); } }, true);
-    fs.addEventListener('dragstart', function(e){ e.preventDefault(); });
-
-    function nudge(dir){
-      fs.scrollBy({ left: dir * Math.round(fs.clientWidth * 0.62), behavior: reduce ? 'auto' : 'smooth' });
-    }
-    Array.prototype.forEach.call(d.querySelectorAll('.arw'), function(b){
-      b.addEventListener('click', function(){ nudge(parseInt(b.getAttribute('data-dir'), 10)); });
-    });
-    fs.addEventListener('keydown', function(e){
-      if (e.key === 'ArrowRight') { e.preventDefault(); nudge(1); }
-      else if (e.key === 'ArrowLeft') { e.preventDefault(); nudge(-1); }
-      else if (e.key === 'Home') { e.preventDefault(); fs.scrollTo({ left: 0, behavior: reduce ? 'auto' : 'smooth' }); }
-      else if (e.key === 'End') { e.preventDefault(); fs.scrollTo({ left: fs.scrollWidth, behavior: reduce ? 'auto' : 'smooth' }); }
+  /* ---------- the work: the index drives one plate ---------- */
+  var wxIndex = d.getElementById('wxIndex');
+  var wxPlate = d.getElementById('wxPlate');
+  var wxNum = d.getElementById('wxNum');
+  if (wxIndex && wxPlate) {
+    var rows = [].slice.call(wxIndex.querySelectorAll('.wx-row'));
+    var imgs = [].slice.call(wxPlate.querySelectorAll('img'));
+    rows.forEach(function(row){
+      row.addEventListener('click', function(){
+        var i = parseInt(row.getAttribute('data-i'), 10);
+        rows.forEach(function(r){ r.setAttribute('aria-pressed', r === row ? 'true' : 'false'); });
+        imgs.forEach(function(im, n){ im.classList.toggle('on', n === i); });
+        wxNum.textContent = row.querySelector('.n').textContent + ' ' + row.querySelector('.t').textContent;
+      });
     });
   }
 

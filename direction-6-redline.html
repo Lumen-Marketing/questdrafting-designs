@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quest Drafting &amp; Design | Residential architectural drafting in Gilbert, Arizona</title>
+<meta name="description" content="Quest Drafting and Design takes a house from first sketch through 3D, through a coordinated construction set, and through plan review until the city stamps the permit.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gabarito:wght@500;600;700;800;900&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   REDLINE
+
+   The thing this studio actually sells is not a drawing, it is a
+   permit. A redline is the marked up print that comes back from
+   plan review, and answering those marks until the stamp issues
+   is the whole service. So the page is a print with marks on it.
+
+   Material  : print tooth. A dry toner grain on a warm stock
+   Depth     : the mark sits above the print. Annotation layers
+               float off the sheet on their own plane, and one
+               marked sheet lies across the clean one below it
+   Motion    : the mark being made. Every rule and circle on the
+               page draws itself as it comes up the screen, using
+               stroke-dashoffset on a native scroll timeline, so
+               there is no scroll listener anywhere
+   Shape     : square. 0px radius, no exceptions
+   ============================================================ */
+
+:root{
+  --stock:#F6F3EC;
+  --stock-2:#EDE8DD;
+  --print:#15140F;
+  --print-soft:#4F4B41;
+  --print-faint:#7C7669;
+  --rule:#CFC8B8;
+  --orange:#E8552B;
+  /* the mark colour. Brand orange is 3.5 to 1 on the stock, which
+     clears large type and drawn strokes but never small text */
+  --mark:#E8552B;
+  --mark-deep:#B8350F;
+
+  --disp:'Gabarito','Schibsted Grotesk',Georgia,sans-serif;
+  --body:'Schibsted Grotesk','Schibsted Grotesk Fallback',Helvetica,Arial,sans-serif;
+
+  --wrap:1300px;
+  --pad:36px;
+  --nav:66px;
+
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:48px;
+  --s6:64px; --s7:96px; --s8:132px;
+
+  --ease:cubic-bezier(.32,.72,0,1);
+}
+@media (max-width:760px){ :root{ --pad:20px; --nav:58px; } }
+
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; overflow-x:clip; }
+body{
+  margin:0; background:var(--stock); color:var(--print);
+  font-family:var(--body); font-size:17px; line-height:1.6;
+  overflow-x:clip; -webkit-font-smoothing:antialiased;
+}
+img{ display:block; max-width:100%; }
+a{ color:inherit; }
+h1,h2,h3,h4{ margin:0; }
+p{ margin:0; }
+button{ font:inherit; color:inherit; background:none; border:0; padding:0; }
+:focus-visible{ outline:3px solid var(--mark-deep); outline-offset:3px; }
+
+.wrap{ width:100%; max-width:var(--wrap); margin-inline:auto; padding-inline:var(--pad); }
+.sec{ padding-block:var(--s8); position:relative; }
+@media (max-width:880px){ .sec{ padding-block:var(--s7); } }
+
+/* ---------- the one material: print tooth ----------
+   dry toner on an uncoated warm stock. Named sections only */
+.toner{ position:relative; background:var(--stock-2); }
+.toner::before{
+  content:""; position:absolute; inset:0; pointer-events:none; z-index:0;
+  background-image:
+    repeating-linear-gradient(0deg,   rgba(21,20,15,.052) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg,  rgba(21,20,15,.034) 0 1px, transparent 1px 5px);
+}
+.toner > *{ position:relative; z-index:1; }
+
+/* ---------- type ---------- */
+.h2{
+  font-family:var(--disp); font-weight:800;
+  font-size:clamp(30px, calc(var(--k,6.4) * var(--kx,1) * 1cqw), 165px);
+  line-height:.95; letter-spacing:-.03em;
+}
+.h3{ font-family:var(--disp); font-weight:700; font-size:clamp(21px,2vw,29px); line-height:1.08; letter-spacing:-.02em; }
+.lede{ color:var(--print-soft); font-size:clamp(16px,1.3vw,19px); max-width:56ch; }
+.sec-head{
+  container-type:inline-size; --kx:1;
+  display:grid; grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);
+  gap:var(--s5); align-items:end; margin-bottom:var(--s7);
+}
+@media (max-width:980px){ .sec-head{ grid-template-columns:1fr; gap:var(--s3); --kx:1.56; margin-bottom:var(--s6); } }
+
+/* ---------- the mark. One shared drawing layer ----------
+   strokes draw themselves as the block they annotate rides up
+   the screen. Reduced motion and no support both land on a
+   fully drawn mark, never on a blank one */
+.ink{ position:absolute; inset:0; pointer-events:none; overflow:visible; }
+.ink path, .ink circle, .ink line, .ink ellipse{
+  fill:none; stroke:var(--mark); stroke-width:2.4;
+  stroke-linecap:round; stroke-linejoin:round;
+  vector-effect:non-scaling-stroke;
+}
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion: no-preference){
+    /* the timeline is declared on the sheet the marks are made on. An SVG
+       geometry element cannot establish a view timeline of its own, so the
+       paths look the named one up through their ancestors */
+    .hero-sheet, .rv-sheet, .argue-in{ view-timeline:--markline block; }
+    .ink path, .ink circle, .ink ellipse{
+      stroke-dasharray:var(--len,1200);
+      animation:draw linear both;
+      animation-timeline:--markline;
+      animation-range:entry 14% cover 46%;
+    }
+  }
+}
+@keyframes draw{ from{ stroke-dashoffset:var(--len,1200); } to{ stroke-dashoffset:0; } }
+
+/* ---------- controls ---------- */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:16px 30px; border:0; border-radius:0; cursor:pointer;
+  font-family:var(--body); font-weight:600; font-size:16px; text-decoration:none;
+  transition:transform .22s var(--ease), background-color .22s;
+}
+.btn:active{ transform:translateY(1px); }
+.btn-mark{ background:var(--orange); color:#150805; }
+.btn-mark:hover{ background:#FF6A3D; }
+.btn-print{ background:var(--print); color:var(--stock); }
+.btn-print:hover{ background:#2E2B22; }
+.btn-sm{ padding:11px 20px; font-size:15px; }
+.tel{ font-family:var(--disp); font-weight:700; font-size:clamp(19px,1.6vw,25px); text-decoration:none; letter-spacing:-.02em; }
+
+/* ---------- nav ---------- */
+.bar{
+  position:sticky; top:0; z-index:70;
+  background:rgba(246,243,236,.94); backdrop-filter:blur(8px);
+  box-shadow:0 1px 0 var(--rule);
+}
+.bar-in{
+  max-width:var(--wrap); margin-inline:auto; padding-inline:var(--pad);
+  height:var(--nav); display:flex; align-items:center; gap:var(--s4);
+}
+.brand{ display:flex; align-items:center; margin-right:auto; text-decoration:none; line-height:0; }
+.brand img{ height:26px; width:auto; }
+.nav-links{ display:flex; align-items:center; gap:25px; }
+.nav-links a:not(.btn){
+  text-decoration:none; font-size:14.5px; font-weight:500; color:var(--print-soft);
+  transition:color .2s;
+}
+.nav-links a:not(.btn):hover{ color:var(--print); }
+@media (max-width:1010px){ .nav-links a:not(.btn){ display:none; } }
+
+/* ============================================================
+   OPENER. The marked print
+   A render with the reviewer's marks made over it, and the
+   headline set as the largest mark on the sheet
+   ============================================================ */
+.hero{
+  min-height:calc(100dvh - var(--nav)); max-height:1040px;
+  display:grid; grid-template-rows:1fr auto; position:relative;
+}
+@media (max-height:720px){ .hero{ min-height:660px; } }
+.hero-sheet{
+  position:relative; overflow:hidden; background:var(--print);
+  margin-inline:var(--pad); min-height:0;
+}
+/* absolute, so the render's own intrinsic height cannot inflate the
+   opener past the fold once the page gets wide */
+.hero-sheet > img{
+  position:absolute; inset:0;
+  width:100%; height:100%; object-fit:cover; object-position:50% 58%;
+  filter:saturate(.9) contrast(1.02);
+}
+.hero-veil{
+  position:absolute; inset:0;
+  background:linear-gradient(to top, rgba(12,11,8,.72) 0%, rgba(12,11,8,.30) 42%, rgba(12,11,8,.10) 100%);
+}
+.hero-stamp{
+  position:absolute; right:clamp(16px,3vw,44px); top:clamp(16px,3vw,40px);
+  border:3px solid var(--mark); color:var(--mark);
+  font-family:var(--disp); font-weight:800; font-size:clamp(19px,1.5vw,23px);
+  letter-spacing:.2em; text-transform:uppercase;
+  padding:10px 16px; rotate:-7deg; background:rgba(10,9,6,.84);
+}
+.hero-tag{
+  position:absolute; left:0; bottom:0;
+  background:var(--print); color:var(--stock);
+  font-size:11.5px; letter-spacing:.17em; text-transform:uppercase; font-weight:600;
+  padding:9px 14px;
+}
+.hero-in{
+  container-type:inline-size;
+  max-width:var(--wrap); width:100%; margin-inline:auto;
+  padding:var(--s5) var(--pad) var(--s5);
+  display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);
+  gap:var(--s5); align-items:end;
+}
+.hero-in h1{
+  font-family:var(--disp); font-weight:800;
+  font-size:clamp(32px, min(calc(9.8 * 1cqw), 13vh), 160px);
+  line-height:.92; letter-spacing:-.036em;
+}
+.hero-in h1 span{ display:block; white-space:nowrap; }
+.hero-in h1 em{ font-style:normal; color:var(--mark-deep); }
+.hero-side p{ color:var(--print-soft); font-size:clamp(15px,1.2vw,18px); }
+.hero-acts{ display:flex; flex-wrap:wrap; align-items:center; gap:var(--s3); margin-top:var(--s3); }
+@media (max-width:980px){
+  .hero-in{ grid-template-columns:1fr; gap:var(--s3); }
+  .hero-in h1 span{ white-space:normal; }
+}
+
+/* ============================================================
+   SERVICES. Four clauses on a checklist, each with its own mark
+   ============================================================ */
+.clauses{ border-top:2px solid var(--print); }
+.clause{
+  position:relative;
+  display:grid; grid-template-columns:auto minmax(0,1fr) minmax(0,1.25fr);
+  gap:var(--s3) var(--s5); align-items:start;
+  padding-block:clamp(26px,3vw,44px); border-bottom:1px solid var(--rule);
+}
+.clause .no{
+  font-family:var(--disp); font-weight:800; font-size:clamp(28px,3vw,44px);
+  line-height:.9; color:var(--mark); letter-spacing:-.04em; font-variant-numeric:tabular-nums;
+}
+.clause h3{ padding-top:4px; }
+.clause p{ color:var(--print-soft); font-size:16.5px; }
+@media (max-width:880px){
+  .clause{ grid-template-columns:auto minmax(0,1fr); }
+  .clause p{ grid-column:2; }
+}
+
+/* ============================================================
+   PROCESS. The route the drawing takes, marked as a path
+   ============================================================ */
+.route{ position:relative; display:grid; gap:0; }
+.stop{
+  position:relative;
+  display:grid; grid-template-columns:96px minmax(0,1fr) minmax(0,1.2fr);
+  gap:var(--s3) var(--s5); align-items:baseline;
+  padding-block:clamp(22px,2.6vw,34px);
+  border-bottom:1px solid var(--rule);
+}
+.stop:first-child{ border-top:1px solid var(--rule); }
+.stop .no{
+  font-family:var(--disp); font-weight:800; font-size:15px; letter-spacing:.14em;
+  color:var(--print-faint); font-variant-numeric:tabular-nums;
+}
+.stop p{ color:var(--print-soft); font-size:16px; }
+.stop:last-child .no{ color:var(--mark); }
+@media (max-width:880px){
+  .stop{ grid-template-columns:56px minmax(0,1fr); }
+  .stop p{ grid-column:2; }
+}
+
+/* ============================================================
+   THE WORK. Marked up renders
+   The render runs at full size and the studio's own marks are
+   drawn over it, which is exactly what a review print looks
+   like. The photograph is never reduced to make room for a box
+   ============================================================ */
+.review{ display:grid; gap:var(--s8); }
+.rv-item{ position:relative; margin:0; }
+.rv-sheet{
+  position:relative; display:block; overflow:hidden; background:var(--print);
+}
+.rv-sheet img{ width:100%; height:100%; object-fit:cover; }
+.rv-sheet .ink{ z-index:2; }
+.rv-note{
+  position:absolute; z-index:3;
+  background:var(--stock); color:var(--print);
+  font-family:var(--body); font-weight:600; font-size:14px; line-height:1.35;
+  padding:10px 14px; max-width:270px;
+  box-shadow:0 18px 40px -20px rgba(21,20,15,.55);
+  border-left:3px solid var(--mark);
+}
+.rv-item figcaption{
+  display:flex; flex-wrap:wrap; align-items:baseline; gap:6px var(--s3);
+  border-top:1px solid var(--print); padding-top:12px; margin-top:14px;
+}
+.rv-item figcaption b{ font-family:var(--disp); font-weight:800; font-size:20px; letter-spacing:-.018em; }
+.rv-item figcaption span{ color:var(--print-soft); font-size:15.5px; }
+.rv-item figcaption em{
+  font-style:normal; font-size:12px; letter-spacing:.16em; text-transform:uppercase;
+  font-weight:700; color:var(--mark-deep);
+}
+
+/* A. runs the full page width */
+.rv-a .rv-sheet{ aspect-ratio:2.32; }
+.rv-a figcaption{ margin-inline:var(--pad); }
+.rv-a .rv-note{ left:6%; bottom:14%; }
+
+/* B. two sheets in review, the marked one lying across the clean one */
+.rv-b{ max-width:var(--wrap); margin-inline:auto; padding-inline:var(--pad); }
+.rv-b .stage{ position:relative; padding-bottom:var(--s6); }
+.rv-b .rv-sheet{ width:min(72%,880px); aspect-ratio:1.5; }
+.rv-b .lay{
+  position:absolute; right:0; bottom:0; display:block; overflow:hidden;
+  width:min(44%,540px); aspect-ratio:2.2; background:var(--print);
+  box-shadow:-28px -16px 52px -22px rgba(21,20,15,.5);
+}
+.rv-b .lay img{ width:100%; height:100%; object-fit:cover; }
+.rv-b .rv-note{ left:4%; top:8%; }
+
+/* C. the model, marked for grade */
+.rv-c{ max-width:var(--wrap); margin-inline:auto; padding-inline:var(--pad); }
+.rv-c .rv-sheet{ aspect-ratio:3.9; background:var(--stock-2); }
+.rv-c .rv-sheet img{ object-fit:contain; }
+.rv-c .rv-note{ right:3%; top:12%; }
+
+@media (max-width:880px){
+  .review{ gap:var(--s7); }
+  .rv-a .rv-sheet{ aspect-ratio:1.7; }
+  .rv-b .rv-sheet{ width:100%; }
+  .rv-b .lay{ position:static; width:72%; margin:calc(-1 * var(--s5)) 0 0 auto; }
+  .rv-b .stage{ padding-bottom:0; }
+  .rv-c .rv-sheet{ aspect-ratio:2.4; }
+  .rv-note{ max-width:200px; font-size:13px; }
+}
+
+/* ============================================================
+   THE SET. The transmittal, four sheets logged out
+   ============================================================ */
+.trans{ border-top:2px solid var(--print); }
+.trans-row{
+  display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.5fr);
+  gap:var(--s4) var(--s6); align-items:center;
+  padding-block:var(--s4); border-bottom:1px solid var(--rule);
+}
+.trans-row .meta{ display:flex; flex-direction:column; gap:6px; }
+.trans-row .num{
+  font-family:var(--disp); font-weight:800; font-size:clamp(30px,3.4vw,52px);
+  line-height:.9; letter-spacing:-.04em;
+}
+.trans-row .what{ font-size:16px; color:var(--print-soft); }
+.trans-row .status{
+  align-self:flex-start; margin-top:6px;
+  font-size:11.5px; letter-spacing:.17em; text-transform:uppercase; font-weight:700;
+  color:#150805; background:var(--orange); padding:6px 11px;
+}
+.trans-row figure{ margin:0; background:var(--stock); padding:10px; box-shadow:0 22px 48px -26px rgba(21,20,15,.42); }
+.trans-row img{ width:100%; height:auto; }
+.trans-note{ margin-top:var(--s4); color:var(--print-soft); font-size:16px; }
+@media (max-width:760px){ .trans-row{ grid-template-columns:1fr; } }
+
+/* ============================================================
+   THE ARGUMENT. One sheet, one mark through it
+   ============================================================ */
+.argue{ background:var(--print); color:var(--stock); padding-block:var(--s8); position:relative; }
+.argue-in{ container-type:inline-size; max-width:var(--wrap); margin-inline:auto; padding-inline:var(--pad); position:relative; }
+.argue h2{
+  font-family:var(--disp); font-weight:800;
+  font-size:clamp(32px, calc(var(--ka,8) * 1cqw), 150px);
+  line-height:.96; letter-spacing:-.034em;
+}
+.argue h2 em{ font-style:normal; color:var(--orange); }
+.argue .ink path{ stroke:var(--orange); }
+.argue-foot{
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--s5);
+  border-top:1px solid rgba(246,243,236,.3); padding-top:var(--s3); margin-top:var(--s6);
+}
+.argue-foot p{ color:#D2CEC4; font-size:17px; }
+@media (max-width:760px){ .argue-foot{ grid-template-columns:1fr; gap:var(--s3); } }
+
+/* ============================================================
+   QUESTIONS. Plan review comments and the answers to them
+   ============================================================ */
+.comments{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--s6) var(--s7); }
+.comments article{ border-top:2px solid var(--print); padding-top:var(--s3); }
+.comments h3{ margin-bottom:10px; }
+.comments p{ color:var(--print-soft); font-size:16.5px; }
+.comments .cno{
+  font-family:var(--disp); font-weight:800; font-size:12.5px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--mark-deep); display:block; margin-bottom:10px;
+}
+@media (max-width:880px){ .comments{ grid-template-columns:1fr; gap:var(--s5); } }
+
+/* ============================================================
+   CLOSING. The stamp
+   ============================================================ */
+/* the page opened with a print stamped UNDER REVIEW. It closes with
+   the stamp landed: one heavy orange block set off square, carrying
+   the statement inside it */
+.close{ background:var(--stock-2); color:var(--print); padding-block:var(--s8); overflow:hidden; }
+.close-in{
+  container-type:inline-size;
+  /* the rotation throws the corners out, so the block is held in far
+     enough that no width clips the stamp */
+  max-width:var(--wrap); width:calc(100% - clamp(32px, 5vw, 90px)); margin-inline:auto;
+  background:var(--orange); color:#150805; rotate:-1.4deg;
+  padding:clamp(34px,4.6vw,72px) clamp(26px,3.4vw,58px);
+  box-shadow:0 44px 86px -40px rgba(21,20,15,.55);
+  outline:4px solid var(--print); outline-offset:-18px;
+}
+@media (max-width:760px){ .close-in{ rotate:0deg; outline-offset:-10px; } }
+.close h2{
+  font-family:var(--disp); font-weight:800;
+  font-size:clamp(34px, calc(var(--kc,11) * 1cqw), 205px);
+  line-height:.88; letter-spacing:-.042em;
+}
+.close h2 span{ display:block; white-space:nowrap; }
+.close-sub{ margin-top:var(--s4); font-size:clamp(17px,1.35vw,20px); max-width:52ch; color:#2A0F07; }
+.close-acts{ display:flex; flex-wrap:wrap; align-items:center; gap:var(--s3); margin-top:var(--s5); }
+.close-areas{
+  display:flex; flex-wrap:wrap; gap:10px 0;
+  border-top:1px solid rgba(21,8,5,.34); margin-top:var(--s6); padding-top:var(--s3);
+}
+.close-areas span{
+  font-size:13px; letter-spacing:.14em; text-transform:uppercase; font-weight:700;
+  padding-right:22px; margin-right:22px; border-right:1px solid rgba(21,8,5,.34);
+}
+.close-areas span:last-child{ border-right:0; }
+
+/* ---------- foot ---------- */
+.foot{ background:var(--print); color:#C4C0B6; padding-block:var(--s6); font-size:15px; }
+.foot-in{ display:grid; grid-template-columns:minmax(0,1.5fr) repeat(2,minmax(0,1fr)); gap:var(--s5); }
+.foot h4{
+  font-family:var(--disp); font-weight:800; font-size:13px;
+  letter-spacing:.17em; text-transform:uppercase; color:var(--stock); margin-bottom:12px;
+}
+.foot a{ display:block; text-decoration:none; color:#C4C0B6; margin-bottom:7px; overflow-wrap:anywhere; }
+.foot a:hover{ color:var(--stock); }
+.foot-brand img{ height:30px; width:auto; margin-bottom:14px; background:var(--stock); padding:5px 8px; }
+.foot-brand p{ color:#96928A; max-width:34ch; }
+@media (max-width:760px){ .foot-in{ grid-template-columns:1fr; gap:var(--s4); } }
+
+/* ---------- reveals ---------- */
+.js .rv{ opacity:0; transform:translateY(16px); }
+.js .rv.in{ opacity:1; transform:none; transition:opacity .8s var(--ease), transform .8s var(--ease); }
+@media (prefers-reduced-motion: reduce){
+  .js .rv{ opacity:1 !important; transform:none !important; }
+  *{ animation-duration:.001ms !important; transition-duration:.001ms !important; }
+}
+</style>
+<script>if('IntersectionObserver' in window){document.documentElement.classList.add('js');}</script>
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar-in">
+    <a class="brand" href="#top"><img src="assets/logo.png" alt="Quest Drafting and Design"></a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="#about">About</a>
+      <a href="/blog">Blog</a>
+      <a href="#faq">FAQ</a>
+      <a href="#quote">Contact</a>
+      <a class="btn btn-mark btn-sm" href="#quote">Get a Quote</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ================= OPENER. The marked print ================= -->
+  <section class="hero">
+    <div class="hero-sheet">
+      <img src="assets/w-motorcourt.webp" alt="Contemporary stone estate designed around a motor court, shown at dusk" fetchpriority="high">
+      <span class="hero-veil"></span>
+      <svg class="ink" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+        <path style="--len:900" d="M690 108 L1046 108 L1046 300 L690 300 Z"/>
+        <path style="--len:340" d="M690 204 L560 246"/>
+        <ellipse style="--len:760" cx="250" cy="352" rx="118" ry="52"/>
+      </svg>
+      <span class="hero-stamp">Under review</span>
+      <span class="hero-tag">Motor court estate, dusk render</span>
+    </div>
+    <div class="hero-in">
+      <h1><span>From vision,</span><span>to model,</span><span>to <em>permit.</em></span></h1>
+      <div class="hero-side">
+        <p>We turn a property and an idea into a home that is resolved on paper, modeled, documented and permitted, before the first shovel hits the ground.</p>
+        <div class="hero-acts">
+          <a class="btn btn-print" href="#quote">Get a Quote</a>
+          <a class="tel" href="tel:+16023396455">(602) 339-6455</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SERVICES ================= -->
+  <section class="sec toner" id="services">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <h2 class="h2" style="--k:7.37">Four services, no hand-offs.</h2>
+        <p class="lede">Residential architectural drafting in Gilbert, Arizona. One studio carries the project from the first massing study to the stamped permit.</p>
+      </div>
+
+      <div class="clauses">
+        <article class="clause rv">
+          <span class="no">01</span>
+          <h3 class="h3">Architectural Design</h3>
+          <p>From first massing study to a resolved floor plan, shaped by your lot, your zoning, and how you actually live. Custom homes, hillside and desert estates, additions, casitas, guest houses and site structures.</p>
+        </article>
+        <article class="clause rv">
+          <span class="no">02</span>
+          <h3 class="h3">3D Visualization</h3>
+          <p>You approve the home itself, not a flat line drawing you have to imagine in three dimensions. A full 3D model and photoreal renderings, day and twilight, before a single construction sheet is final.</p>
+        </article>
+        <article class="clause rv">
+          <span class="no">03</span>
+          <h3 class="h3">Construction Documents</h3>
+          <p>The complete coordinated set your builder and your city both need, typically around 22 sheets across roughly six disciplines, drawn to the 2024 IBC / IRC / IECC code cycle.</p>
+        </article>
+        <article class="clause rv">
+          <span class="no">04</span>
+          <h3 class="h3">Permit Stewardship</h3>
+          <p>We do not hand you drawings and disappear. Submittals formatted to each jurisdiction's checklist, plan review comments answered, resubmittals managed until the permit is in hand.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PROCESS ================= -->
+  <section class="sec">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <h2 class="h2" style="--k:7.10">Six moves, in this order.</h2>
+        <p class="lede">Each one closes before the next one opens. That is the whole reason a project does not stall at plan review.</p>
+      </div>
+      <div class="route rv">
+        <div class="stop"><span class="no">01</span><h3 class="h3">Survey and setbacks</h3><p>What the lot and the zoning will actually let you build, settled before anything is drawn.</p></div>
+        <div class="stop"><span class="no">02</span><h3 class="h3">Design</h3><p>Massing and plan, resolved against how you live rather than against a catalogue.</p></div>
+        <div class="stop"><span class="no">03</span><h3 class="h3">3D model</h3><p>You approve the house while changes are still free.</p></div>
+        <div class="stop"><span class="no">04</span><h3 class="h3">Construction documents</h3><p>The coordinated set your builder builds from and your city reviews.</p></div>
+        <div class="stop"><span class="no">05</span><h3 class="h3">Permit submitted</h3><p>Formatted to the jurisdiction's own checklist, not to a generic template.</p></div>
+        <div class="stop"><span class="no">06</span><h3 class="h3">Permit in hand</h3><p>Comments answered, resubmittals managed, stamp issued.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= THE WORK. Marked up renders ================= -->
+  <section class="sec" id="work" style="padding-bottom:var(--s7)">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <h2 class="h2" style="--k:7.39">The studio's own work.</h2>
+        <p class="lede">Renders and models from live residential projects, shown the way the studio reviews them. Nothing here is stock photography.</p>
+      </div>
+    </div>
+
+    <div class="review">
+      <figure class="rv-item rv-a">
+        <span class="rv-sheet">
+          <img src="assets/w-pool.webp" alt="Twilight render of a modern estate above a pool terrace" loading="lazy">
+          <svg class="ink" viewBox="0 0 1200 517" preserveAspectRatio="none" aria-hidden="true">
+            <path style="--len:900" d="M96 318 L96 470 L520 470 L520 318 Z"/>
+            <path style="--len:320" d="M520 394 L676 330"/>
+            <path style="--len:250" d="M690 132 L690 250"/>
+          </svg>
+          <span class="rv-note">Terrace set one step below the interior floor, so the slider threshold stays flush and drains away from the house.</span>
+        </span>
+        <figcaption><em>Render</em><b>Pool terrace</b><span>An outdoor room drawn as a room, not as the space left over.</span></figcaption>
+      </figure>
+
+      <figure class="rv-item rv-b">
+        <div class="stage">
+          <span class="rv-sheet">
+            <img src="assets/w-night.webp" alt="Desert home glowing beneath a starry night sky" loading="lazy">
+            <svg class="ink" viewBox="0 0 880 587" preserveAspectRatio="none" aria-hidden="true">
+              <ellipse style="--len:900" cx="430" cy="322" rx="248" ry="74"/>
+              <path style="--len:260" d="M300 282 L196 210"/>
+            </svg>
+            <span class="rv-note">Interior light checked against a dark sky, because this elevation faces the approach.</span>
+          </span>
+          <span class="lay">
+            <img src="assets/w-greatroom.webp" alt="Great room interior with a glass wall onto the mountains at dusk" loading="lazy">
+          </span>
+        </div>
+        <figcaption><em>Render</em><b>Night elevation and great room</b><span>The same house judged from outside and from inside, in one review.</span></figcaption>
+      </figure>
+
+      <figure class="rv-item rv-c">
+        <span class="rv-sheet">
+          <img src="assets/model-cut.png" alt="White three dimensional massing model of a residence stepping down its slope" loading="lazy">
+          <svg class="ink" viewBox="0 0 1220 313" preserveAspectRatio="none" aria-hidden="true">
+            <path style="--len:520" d="M104 244 L1088 244"/>
+            <path style="--len:180" d="M104 226 L104 262"/>
+            <path style="--len:180" d="M1088 226 L1088 262"/>
+          </svg>
+          <span class="rv-note">Finished floor stepped three times so the mass follows the grade instead of cutting it.</span>
+        </span>
+        <figcaption><em>Model</em><b>White massing model</b><span>Form first. No materials, no distractions, just the shape of the house on its grade.</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ================= THE SET. The transmittal ================= -->
+  <section class="sec toner">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <h2 class="h2" style="--k:6.77">What a permit set holds.</h2>
+        <p class="lede">Four sheets from one real set, logged out the way a transmittal logs them, carrying their own numbers off the title block.</p>
+      </div>
+
+      <div class="trans">
+        <div class="trans-row rv">
+          <div class="meta">
+            <span class="num">CS</span>
+            <span class="what">Cover sheet, rendered elevation, sheet index and code list</span>
+            <span class="status">Issued</span>
+          </div>
+          <figure><img src="assets/sheet-cover-elevation-top.webp" alt="Cover sheet CS with the rendered elevation, sheet index and code list" loading="lazy"></figure>
+        </div>
+        <div class="trans-row rv">
+          <div class="meta">
+            <span class="num">A100</span>
+            <span class="what">Site plan, property lines, setbacks and the house on its lot</span>
+            <span class="status">Issued</span>
+          </div>
+          <figure><img src="assets/sheet-site-plan-top.webp" alt="Site plan A100 with property lines, dimensions and the house on its lot" loading="lazy"></figure>
+        </div>
+        <div class="trans-row rv">
+          <div class="meta">
+            <span class="num">A103</span>
+            <span class="what">Dimensional plan, every wall and room located</span>
+            <span class="status">Issued</span>
+          </div>
+          <figure><img src="assets/sheet-dimensional-plan-top.webp" alt="Dimensional floor plan A103 with every room and wall dimensioned" loading="lazy"></figure>
+        </div>
+        <div class="trans-row rv">
+          <div class="meta">
+            <span class="num">A201</span>
+            <span class="what">Elevations, materials and heights called out</span>
+            <span class="status">Issued</span>
+          </div>
+          <figure><img src="assets/sheet-elevations-top.webp" alt="Elevations A201 showing rear and right elevations with materials called out" loading="lazy"></figure>
+        </div>
+      </div>
+      <p class="trans-note">A full set runs to around 22 sheets across roughly six disciplines, drawn to the 2024 IBC / IRC / IECC code cycle.</p>
+    </div>
+  </section>
+
+  <!-- ================= THE ARGUMENT ================= -->
+  <section class="argue" id="about">
+    <div class="argue-in">
+      <h2 class="rv" style="--ka:7.41">Every hand-off is a chance for something to be <em>lost.</em></h2>
+      <svg class="ink" viewBox="0 0 1200 360" preserveAspectRatio="none" aria-hidden="true">
+        <path style="--len:1240" d="M18 276 L1182 276"/>
+        <path style="--len:180" d="M18 258 L18 294"/>
+        <path style="--len:180" d="M1182 258 L1182 294"/>
+      </svg>
+      <div class="argue-foot rv">
+        <p>Most residential projects pass through several hands before a permit is issued. A designer draws it, a drafter documents it, somebody else walks it through the city, and each seam is a place where an assumption quietly changes.</p>
+        <p>Quest takes a project the whole way, on one flat fee agreed before we start. The person who drew your house is the person who answers the plan reviewer.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= QUESTIONS ================= -->
+  <section class="sec" id="faq">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <h2 class="h2" style="--k:5.67">Asked before you ask.</h2>
+      </div>
+      <div class="comments">
+        <article class="rv">
+          <span class="cno">Comment 01</span>
+          <h3 class="h3">How much does a project cost?</h3>
+          <p>A flat fee agreed up front, based on the scope of your project. One fixed price and a defined timeline, with no hourly surprises.</p>
+        </article>
+        <article class="rv">
+          <span class="cno">Comment 02</span>
+          <h3 class="h3">What is in a construction document set?</h3>
+          <p>Around 22 sheets across roughly six disciplines: cover, site, floor plans, roof plans, elevations, sections and coordinated details, drawn to the 2024 code cycle.</p>
+        </article>
+        <article class="rv">
+          <span class="cno">Comment 03</span>
+          <h3 class="h3">Can you design an ADU, casita or guest house?</h3>
+          <p>Yes. Casitas, accessory dwelling units, guest houses, additions, remodels, RV garages and site structures. What you can build depends on your lot and your zoning.</p>
+        </article>
+        <article class="rv">
+          <span class="cno">Comment 04</span>
+          <h3 class="h3">Why build a 3D model before the drawings?</h3>
+          <p>Because it lets you approve the actual home while changes are still free.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CLOSING. The stamp ================= -->
+  <section class="close" id="quote">
+    <div class="close-in">
+      <h2 class="rv" style="--kc:10.0"><span>Put your project</span><span>on the board.</span></h2>
+      <p class="close-sub rv">Tell us the lot and the idea. You get a flat fee and a defined timeline before any drawing starts.</p>
+      <div class="close-acts rv">
+        <a class="btn btn-print" href="mailto:info@questdraftinganddesign.com">Get a Quote</a>
+        <a class="tel" href="tel:+16023396455">(602) 339-6455</a>
+      </div>
+      <div class="close-areas rv">
+        <span>Gilbert</span><span>Queen Creek</span><span>Mesa</span>
+        <span>Chandler</span><span>Phoenix</span><span>Scottsdale</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <div class="foot-brand">
+      <img src="assets/logo.png" alt="Quest Drafting and Design">
+      <p>Residential architectural drafting in Gilbert, Arizona.</p>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <a href="tel:+16023396455">(602) 339-6455</a>
+      <a href="mailto:info@questdraftinganddesign.com">info@questdraftinganddesign.com</a>
+    </div>
+    <div>
+      <h4>Studio</h4>
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="#about">About</a>
+      <a href="/blog">Blog</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  if (!('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
+  [].forEach.call(document.querySelectorAll('.rv'), function(el){ io.observe(el); });
+})();
+</script>
+</body>
+</html>

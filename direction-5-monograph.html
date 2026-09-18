@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quest Drafting &amp; Design | Residential architectural drafting in Gilbert, Arizona</title>
+<meta name="description" content="Quest Drafting and Design takes a house from first sketch through 3D, through a coordinated construction set, and through plan review until the city stamps the permit.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   MONOGRAPH
+   Every other direction in this set treats the studio as a
+   document producer. This one treats the finished house as
+   something worth publishing, and lays the page out like the
+   architecture monograph it would appear in.
+
+   Material  : paper tooth. A fine uncoated grain, on named
+               sections only, never on body
+   Depth     : the page edge. Every section is a leaf lying on
+               the one above it, and the plates pin and are
+               covered by the next
+   Motion    : turning to the next plate. Each figure holds the
+               screen, then the following page rises over it.
+               Driven by position:sticky, so there is no scroll
+               listener anywhere
+   Shape     : square. 0px radius, no exceptions
+   Colour    : the only direction in the set at full contrast.
+               True black and true white, one orange
+   ============================================================ */
+
+:root{
+  --page:#FFFFFF;
+  --page-2:#F4F3F0;
+  --ink:#0A0A0A;
+  --ink-soft:#56565A;
+  --ink-faint:#6A6A6E;
+  --rule:#DDDCD7;
+  --rule-hard:#0A0A0A;
+  --orange:#E8552B;
+  /* brand orange is 3.6 to 1 on white, so small type takes the deep cut */
+  --orange-deep:#B8350F;
+
+  --disp:'Bodoni Moda','Bodoni Moda Fallback',Georgia,'Times New Roman',serif;
+  --body:'Instrument Sans','Instrument Sans Fallback',Helvetica,Arial,sans-serif;
+
+  --wrap:1240px;
+  --pad:40px;
+  --nav:64px;
+
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:48px;
+  --s6:64px; --s7:96px; --s8:136px;
+
+  --ease:cubic-bezier(.32,.72,0,1);
+}
+@media (max-width:760px){ :root{ --pad:20px; --nav:56px; } }
+
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; overflow-x:clip; }
+body{
+  margin:0; background:var(--page); color:var(--ink);
+  font-family:var(--body); font-size:17px; line-height:1.6;
+  overflow-x:clip; -webkit-font-smoothing:antialiased;
+}
+img{ display:block; max-width:100%; }
+a{ color:inherit; }
+h1,h2,h3,h4{ margin:0; }
+p{ margin:0; }
+button{ font:inherit; color:inherit; background:none; border:0; padding:0; }
+:focus-visible{ outline:3px solid var(--orange); outline-offset:3px; }
+
+.wrap{ width:100%; max-width:var(--wrap); margin-inline:auto; padding-inline:var(--pad); }
+
+/* ---------- the depth device: a stack of leaves ----------
+   each section lies on the one above it and casts a short
+   shadow back up the page. Nothing here is a floating card */
+.leaf{ position:relative; background:var(--page); }
+.leaf + .leaf{ box-shadow:0 -22px 46px -34px rgba(10,10,10,.42); }
+.sec{ padding-block:var(--s8); }
+@media (max-width:880px){ .sec{ padding-block:var(--s7); } }
+
+/* ---------- the one material: paper tooth ----------
+   a fine uncoated grain with a faint laid line. Named
+   sections only, so most of the book stays plain white */
+.tooth{ position:relative; background:var(--page-2); }
+.tooth::before{
+  content:""; position:absolute; inset:0; pointer-events:none; z-index:0;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(10,10,10,.055) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(0deg,  rgba(10,10,10,.038) 0 1px, transparent 1px 4px);
+}
+.tooth > *{ position:relative; z-index:1; }
+
+/* ---------- type ---------- */
+.dh{
+  font-family:var(--disp); font-weight:500; font-style:normal;
+  font-size:clamp(30px, calc(var(--k,6) * var(--kx,1) * 1cqw), 190px);
+  line-height:.94; letter-spacing:-.018em;
+}
+.dh em{ font-style:italic; font-weight:400; }
+.lede{ color:var(--ink-soft); font-size:clamp(16px,1.25vw,19px); max-width:56ch; }
+.sec-head{
+  container-type:inline-size; --kx:1;
+  display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);
+  gap:var(--s5); align-items:end; margin-bottom:var(--s7);
+}
+@media (max-width:980px){ .sec-head{ grid-template-columns:1fr; gap:var(--s3); --kx:1.58; margin-bottom:var(--s6); } }
+
+/* ---------- controls ---------- */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:16px 30px; border:0; border-radius:0; cursor:pointer;
+  font-family:var(--body); font-weight:600; font-size:16px; text-decoration:none;
+  transition:transform .22s var(--ease), background-color .22s;
+}
+.btn:active{ transform:translateY(1px); }
+.btn-ink{ background:var(--ink); color:var(--page); }
+.btn-ink:hover{ background:#2A2A2C; }
+.btn-orange{ background:var(--orange); color:#120806; }
+.btn-orange:hover{ background:#FF6A3D; }
+.btn-line{ border:1px solid var(--rule-hard); color:var(--ink); }
+.btn-line:hover{ background:var(--ink); color:var(--page); }
+.btn-sm{ padding:11px 20px; font-size:15px; }
+.tel{ font-family:var(--disp); font-weight:600; font-size:clamp(19px,1.6vw,24px); text-decoration:none; letter-spacing:-.01em; }
+
+/* ============================================================
+   THE BINDING. A slim running head, the way a book carries one
+   ============================================================ */
+.bar{
+  position:sticky; top:0; z-index:70;
+  background:rgba(255,255,255,.94); backdrop-filter:blur(8px);
+  box-shadow:0 1px 0 var(--rule);
+}
+.bar-in{
+  max-width:var(--wrap); margin-inline:auto; padding-inline:var(--pad);
+  height:var(--nav); display:flex; align-items:center; gap:var(--s4);
+}
+.brand{ display:flex; align-items:center; margin-right:auto; text-decoration:none; line-height:0; }
+.brand img{ height:26px; width:auto; }
+.nav-links{ display:flex; align-items:center; gap:26px; }
+.nav-links a:not(.btn){
+  text-decoration:none; font-size:14px; font-weight:500; color:var(--ink-soft);
+  letter-spacing:.02em; transition:color .2s;
+}
+.nav-links a:not(.btn):hover{ color:var(--ink); }
+@media (max-width:1010px){ .nav-links a:not(.btn){ display:none; } }
+
+/* ============================================================
+   TITLE PAGE
+   One figure, the title beneath it, the imprint in the foot
+   ============================================================ */
+.title-page{
+  min-height:calc(100dvh - var(--nav)); max-height:1040px;
+  display:flex; flex-direction:column;
+  padding-bottom:var(--s5);
+}
+@media (max-height:720px){ .title-page{ min-height:640px; } }
+
+.title-fig{ position:relative; flex:0 0 auto; height:clamp(190px, 31vh, 360px); }
+.title-fig img{ width:100%; height:100%; object-fit:cover; object-position:50% 62%; }
+.title-fig figcaption{
+  position:absolute; right:var(--pad); bottom:0;
+  background:var(--ink); color:var(--page);
+  font-size:11.5px; letter-spacing:.17em; text-transform:uppercase; font-weight:600;
+  padding:8px 13px;
+}
+
+.title-in{
+  flex:1 1 auto; container-type:inline-size;
+  max-width:var(--wrap); width:100%; margin-inline:auto; padding-inline:var(--pad);
+  display:flex; flex-direction:column; justify-content:center; gap:var(--s4);
+  padding-top:var(--s4);
+}
+/* the vh term is what keeps a three line title inside the fold on a
+   short screen, instead of pushing the imprint below it */
+.title-in h1{
+  font-family:var(--disp); font-weight:500;
+  font-size:clamp(34px, min(calc(9.0 * 1cqw), 12.8vh), 170px);
+  line-height:.92; letter-spacing:-.024em;
+}
+.title-in h1 span{ display:block; white-space:nowrap; }
+.title-in h1 em{ font-style:italic; font-weight:400; }
+.title-foot{
+  display:grid; grid-template-columns:minmax(0,1fr) minmax(0,.86fr);
+  gap:var(--s5); align-items:end;
+  border-top:1px solid var(--rule-hard); padding-top:var(--s3);
+}
+.title-foot p{ color:var(--ink-soft); font-size:clamp(15px,1.2vw,18px); max-width:46ch; }
+.title-acts{ display:flex; flex-wrap:wrap; align-items:center; gap:var(--s3); justify-content:flex-end; }
+@media (max-width:880px){
+  .title-foot{ grid-template-columns:1fr; gap:var(--s3); }
+  .title-acts{ justify-content:flex-start; }
+  .title-in h1 span{ white-space:normal; }
+}
+
+/* ============================================================
+   CONTENTS. What a contents page actually looks like
+   ============================================================ */
+.contents{ border-top:1px solid var(--rule-hard); }
+.cn-row{
+  display:grid; grid-template-columns:auto minmax(0,1.05fr) minmax(0,1.35fr);
+  gap:var(--s3) var(--s5); align-items:baseline;
+  padding-block:clamp(22px,2.6vw,36px);
+  border-bottom:1px solid var(--rule);
+}
+.cn-row .folio{
+  font-family:var(--disp); font-weight:600; font-size:15px;
+  color:var(--orange-deep); font-variant-numeric:tabular-nums; letter-spacing:.04em;
+}
+.cn-row h3{
+  font-family:var(--disp); font-weight:500;
+  font-size:clamp(23px,2.5vw,36px); line-height:1.06; letter-spacing:-.018em;
+}
+.cn-row p{ color:var(--ink-soft); font-size:16px; }
+@media (max-width:880px){
+  .cn-row{ grid-template-columns:auto minmax(0,1fr); gap:var(--s2) var(--s3); }
+  .cn-row p{ grid-column:2; }
+}
+
+/* ============================================================
+   THE SEQUENCE. Six notes across the gutter
+   ============================================================ */
+.gutter{
+  column-count:2; column-gap:var(--s8); column-rule:1px solid var(--rule);
+}
+.note{ break-inside:avoid; padding-bottom:var(--s6); }
+.note .folio{
+  font-family:var(--disp); font-weight:600; font-size:14px; letter-spacing:.06em;
+  color:var(--orange-deep); display:block; margin-bottom:8px;
+}
+.note h3{
+  font-family:var(--disp); font-weight:500; font-size:clamp(21px,2vw,28px);
+  line-height:1.08; letter-spacing:-.014em; margin-bottom:8px;
+}
+.note p{ color:var(--ink-soft); font-size:16px; }
+@media (max-width:880px){ .gutter{ column-count:1; } }
+
+/* ============================================================
+   THE PLATES
+   A book gives a good photograph a whole page and puts the
+   caption in the margin. Each plate holds the screen, then the
+   following one rises over it. No scroll listener: that is
+   position:sticky doing the work
+   ============================================================ */
+.plates{ position:relative; background:var(--page); }
+.pl{
+  position:sticky; top:0; min-height:100dvh; margin:0;
+  background:var(--page);
+  display:grid; grid-template-rows:auto 1fr;
+  padding:calc(var(--nav) + var(--s3)) var(--pad) var(--s5);
+  border-top:1px solid var(--rule);
+}
+.pl-fig{
+  min-height:0; display:flex; align-items:center; justify-content:center;
+}
+.pl-fig img{
+  max-width:min(100%, 1240px); max-height:100%;
+  width:auto; height:auto; object-fit:contain;
+}
+.pl--model .pl-fig img{ max-height:52%; }
+.pl-cap{
+  max-width:var(--wrap); width:100%; margin-inline:auto;
+  display:grid; grid-template-columns:auto minmax(0,1fr) auto;
+  gap:var(--s2) var(--s4); align-items:baseline;
+  border-bottom:1px solid var(--rule-hard); padding-bottom:14px; margin-bottom:var(--s4);
+}
+.pl-cap .folio{
+  font-family:var(--disp); font-weight:600; font-size:13px;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--orange-deep);
+}
+.pl-cap b{ font-family:var(--disp); font-weight:600; font-size:20px; letter-spacing:-.012em; }
+.pl-cap span{ color:var(--ink-soft); font-size:15.5px; }
+.pl-cap .of{ color:var(--ink-faint); font-size:13px; letter-spacing:.14em; text-transform:uppercase; }
+@media (max-width:880px){
+  .pl{ min-height:auto; position:static; padding-block:var(--s6); }
+  .pl-fig img{ max-height:none; width:100%; }
+  .pl--model .pl-fig img{ max-height:none; }
+  .pl-cap{ grid-template-columns:auto minmax(0,1fr); }
+  .pl-cap .of{ grid-column:2; }
+}
+
+/* ============================================================
+   THE SIGNATURE. Four sheets from one set, laid open flat
+   ============================================================ */
+.sig{
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+  border-top:1px solid var(--rule-hard); border-left:1px solid var(--rule-hard);
+}
+.sig figure{
+  margin:0; position:relative;
+  border-right:1px solid var(--rule-hard); border-bottom:1px solid var(--rule-hard);
+  padding:clamp(14px,1.6vw,22px); background:var(--page);
+}
+.sig img{ width:100%; height:auto; }
+.sig figcaption{
+  display:flex; align-items:baseline; gap:12px;
+  margin-top:12px; font-size:14px; color:var(--ink-soft);
+}
+.sig figcaption b{
+  font-family:var(--disp); font-weight:600; font-size:17px; color:var(--ink); letter-spacing:.02em;
+}
+.sig-note{ margin-top:var(--s4); color:var(--ink-soft); font-size:16px; }
+@media (max-width:760px){ .sig{ grid-template-columns:1fr; } }
+
+/* ============================================================
+   THE ARGUMENT. The one black page in the book
+   ============================================================ */
+.argue{ background:var(--ink); color:var(--page); padding-block:var(--s8); }
+.argue-in{ container-type:inline-size; max-width:var(--wrap); margin-inline:auto; padding-inline:var(--pad); }
+.argue h2{
+  font-family:var(--disp); font-weight:500;
+  font-size:clamp(32px, calc(var(--ka,8) * 1cqw), 150px);
+  line-height:.98; letter-spacing:-.022em;
+}
+.argue h2 em{ font-style:italic; font-weight:400; color:var(--orange); }
+.argue-foot{
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--s5);
+  border-top:1px solid rgba(255,255,255,.28); padding-top:var(--s3); margin-top:var(--s6);
+}
+.argue-foot p{ color:#D6D6D8; font-size:17px; }
+@media (max-width:760px){ .argue-foot{ grid-template-columns:1fr; gap:var(--s3); } }
+
+/* ============================================================
+   QUESTIONS. Marginalia: the question ruled, the answer outside
+   ============================================================ */
+.marg{ border-top:1px solid var(--rule-hard); }
+.marg article{
+  display:grid; grid-template-columns:minmax(0,.86fr) minmax(0,1.4fr);
+  gap:var(--s3) var(--s6); align-items:start;
+  padding-block:clamp(24px,2.8vw,40px); border-bottom:1px solid var(--rule);
+}
+.marg h3{
+  font-family:var(--disp); font-weight:500;
+  font-size:clamp(21px,2.1vw,30px); line-height:1.08; letter-spacing:-.016em;
+}
+.marg p{ color:var(--ink-soft); font-size:16.5px; }
+@media (max-width:880px){ .marg article{ grid-template-columns:1fr; gap:var(--s2); } }
+
+/* ============================================================
+   COLOPHON. The last page
+   ============================================================ */
+.colo{ background:var(--orange); color:#120806; padding-block:var(--s8); }
+.colo-in{ container-type:inline-size; max-width:var(--wrap); margin-inline:auto; padding-inline:var(--pad); }
+.colo h2{
+  font-family:var(--disp); font-weight:500;
+  font-size:clamp(34px, calc(var(--kc,11) * 1cqw), 210px);
+  line-height:.9; letter-spacing:-.026em;
+}
+.colo h2 span{ display:block; white-space:nowrap; }
+.colo-sub{ margin-top:var(--s4); font-size:clamp(17px,1.35vw,20px); max-width:52ch; color:#2A0F07; }
+.colo-acts{ display:flex; flex-wrap:wrap; align-items:center; gap:var(--s3); margin-top:var(--s5); }
+.colo-areas{
+  display:flex; flex-wrap:wrap; gap:10px 0;
+  border-top:1px solid rgba(18,8,6,.34); margin-top:var(--s6); padding-top:var(--s3);
+}
+.colo-areas span{
+  font-size:13px; letter-spacing:.14em; text-transform:uppercase; font-weight:600;
+  padding-right:22px; margin-right:22px; border-right:1px solid rgba(18,8,6,.34);
+}
+.colo-areas span:last-child{ border-right:0; }
+
+/* ---------- foot ---------- */
+.foot{ background:var(--ink); color:#C9C9CC; padding-block:var(--s6); font-size:15px; }
+.foot-in{ display:grid; grid-template-columns:minmax(0,1.5fr) repeat(2,minmax(0,1fr)); gap:var(--s5); }
+.foot h4{
+  font-family:var(--disp); font-weight:600; font-size:13px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--page); margin-bottom:12px;
+}
+.foot a{ display:block; text-decoration:none; color:#C9C9CC; margin-bottom:7px; overflow-wrap:anywhere; }
+.foot a:hover{ color:var(--page); }
+.foot-brand img{ height:30px; width:auto; margin-bottom:14px; }
+.foot-brand p{ color:#9B9B9F; max-width:34ch; }
+@media (max-width:760px){ .foot-in{ grid-template-columns:1fr; gap:var(--s4); } }
+
+/* ---------- reveals. visible at rest unless JS and motion allow ---------- */
+.js .rv{ opacity:0; transform:translateY(16px); }
+.js .rv.in{ opacity:1; transform:none; transition:opacity .8s var(--ease), transform .8s var(--ease); }
+@media (prefers-reduced-motion: reduce){
+  .js .rv{ opacity:1 !important; transform:none !important; }
+  *{ animation-duration:.001ms !important; transition-duration:.001ms !important; }
+}
+</style>
+<script>if('IntersectionObserver' in window){document.documentElement.classList.add('js');}</script>
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar-in">
+    <a class="brand" href="#top"><img src="assets/logo.png" alt="Quest Drafting and Design"></a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="#about">About</a>
+      <a href="/blog">Blog</a>
+      <a href="#faq">FAQ</a>
+      <a href="#quote">Contact</a>
+      <a class="btn btn-ink btn-sm" href="#quote">Get a Quote</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ================= TITLE PAGE ================= -->
+  <section class="title-page leaf">
+    <figure class="title-fig">
+      <img src="assets/w-motorcourt.webp" alt="Contemporary stone estate designed around a motor court, shown at dusk" fetchpriority="high">
+      <figcaption>Motor court estate, dusk</figcaption>
+    </figure>
+    <div class="title-in">
+      <h1><span>From vision,</span><span>to model,</span><span>to <em>permit.</em></span></h1>
+      <div class="title-foot">
+        <p>We turn a property and an idea into a home that is resolved on paper, modeled, documented and permitted, before the first shovel hits the ground.</p>
+        <div class="title-acts">
+          <a class="tel" href="tel:+16023396455">(602) 339-6455</a>
+          <a class="btn btn-ink" href="#quote">Get a Quote</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONTENTS. Services ================= -->
+  <section class="sec leaf" id="services">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <h2 class="dh" style="--k:7.0">Four services, no hand-offs.</h2>
+        <p class="lede">Residential architectural drafting in Gilbert, Arizona. One studio carries the project from the first massing study to the stamped permit.</p>
+      </div>
+
+      <div class="contents">
+        <article class="cn-row rv">
+          <span class="folio">I</span>
+          <h3>Architectural Design</h3>
+          <p>From first massing study to a resolved floor plan, shaped by your lot, your zoning, and how you actually live. Custom homes, hillside and desert estates, additions, casitas, guest houses and site structures.</p>
+        </article>
+        <article class="cn-row rv">
+          <span class="folio">II</span>
+          <h3>3D Visualization</h3>
+          <p>You approve the home itself, not a flat line drawing you have to imagine in three dimensions. A full 3D model and photoreal renderings, day and twilight, before a single construction sheet is final.</p>
+        </article>
+        <article class="cn-row rv">
+          <span class="folio">III</span>
+          <h3>Construction Documents</h3>
+          <p>The complete coordinated set your builder and your city both need, typically around 22 sheets across roughly six disciplines, drawn to the 2024 IBC / IRC / IECC code cycle.</p>
+        </article>
+        <article class="cn-row rv">
+          <span class="folio">IV</span>
+          <h3>Permit Stewardship</h3>
+          <p>We do not hand you drawings and disappear. Submittals formatted to each jurisdiction's checklist, plan review comments answered, resubmittals managed until the permit is in hand.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= THE SEQUENCE. Process ================= -->
+  <section class="sec leaf tooth">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <h2 class="dh" style="--k:6.93">Six moves, in this order.</h2>
+        <p class="lede">Each one closes before the next one opens. That is the whole reason a project does not stall at plan review.</p>
+      </div>
+      <div class="gutter rv">
+        <div class="note"><span class="folio">01</span><h3>Survey and setbacks</h3><p>What the lot and the zoning will actually let you build, established before anything is drawn.</p></div>
+        <div class="note"><span class="folio">02</span><h3>Design</h3><p>Massing and plan, resolved against how you live rather than against a catalogue.</p></div>
+        <div class="note"><span class="folio">03</span><h3>3D model</h3><p>You approve the house while changes are still free.</p></div>
+        <div class="note"><span class="folio">04</span><h3>Construction documents</h3><p>The coordinated set your builder builds from and your city reviews.</p></div>
+        <div class="note"><span class="folio">05</span><h3>Permit submitted</h3><p>Formatted to the jurisdiction's own checklist, not to a generic template.</p></div>
+        <div class="note"><span class="folio">06</span><h3>Permit in hand</h3><p>Comments answered, resubmittals managed, stamp issued.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= THE PLATES. The work ================= -->
+  <section class="sec leaf" id="work" style="padding-bottom:0">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <h2 class="dh" style="--k:5.15">The studio's own work.</h2>
+        <p class="lede">Renders and models from live residential projects. Nothing here is stock photography. Each plate holds the page on its own.</p>
+      </div>
+    </div>
+
+    <div class="plates">
+      <figure class="pl">
+        <figcaption class="pl-cap">
+          <span class="folio">Plate I</span>
+          <span><b>Motor court estate.</b> <span>Stone and glass organised around the arrival court, drawn at dusk.</span></span>
+          <span class="of">Render</span>
+        </figcaption>
+        <div class="pl-fig"><img src="assets/w-motorcourt.webp" alt="Contemporary stone estate designed around a motor court at dusk" loading="lazy"></div>
+      </figure>
+
+      <figure class="pl">
+        <figcaption class="pl-cap">
+          <span class="folio">Plate II</span>
+          <span><b>Desert home at night.</b> <span>The elevation judged against a clear sky before it was framed.</span></span>
+          <span class="of">Render</span>
+        </figcaption>
+        <div class="pl-fig"><img src="assets/w-night.webp" alt="Desert home glowing beneath a starry night sky" loading="lazy"></div>
+      </figure>
+
+      <figure class="pl">
+        <figcaption class="pl-cap">
+          <span class="folio">Plate III</span>
+          <span><b>Great room.</b> <span>A glass wall onto the mountains, checked against the real view from the lot.</span></span>
+          <span class="of">Render</span>
+        </figcaption>
+        <div class="pl-fig"><img src="assets/w-greatroom.webp" alt="Great room interior with a glass wall onto the mountains at dusk" loading="lazy"></div>
+      </figure>
+
+      <figure class="pl">
+        <figcaption class="pl-cap">
+          <span class="folio">Plate IV</span>
+          <span><b>Pool terrace.</b> <span>An outdoor room drawn as a room, not as the space left over.</span></span>
+          <span class="of">Render</span>
+        </figcaption>
+        <div class="pl-fig"><img src="assets/w-pool.webp" alt="Twilight render of a modern estate above a pool terrace" loading="lazy"></div>
+      </figure>
+
+      <figure class="pl pl--model">
+        <figcaption class="pl-cap">
+          <span class="folio">Plate V</span>
+          <span><b>White massing model.</b> <span>Form first. No materials, no distractions, just the shape of the house on its grade.</span></span>
+          <span class="of">Model</span>
+        </figcaption>
+        <div class="pl-fig"><img src="assets/model-cut.png" alt="White three dimensional massing model of a residence stepping down its slope" loading="lazy"></div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ================= THE SIGNATURE. The set ================= -->
+  <section class="sec leaf tooth">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <h2 class="dh" style="--k:6.66">What a permit set holds.</h2>
+        <p class="lede">Four sheets from one real set, laid open flat and carrying their own numbers off the title block.</p>
+      </div>
+
+      <div class="sig rv">
+        <figure>
+          <img src="assets/sheet-cover-elevation-top.webp" alt="Cover sheet CS with the rendered elevation, sheet index and code list" loading="lazy">
+          <figcaption><b>CS</b>Cover sheet, rendered elevation and code list</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/sheet-site-plan-top.webp" alt="Site plan A100 with property lines, dimensions and the house on its lot" loading="lazy">
+          <figcaption><b>A100</b>Site plan, property lines and setbacks</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/sheet-dimensional-plan-top.webp" alt="Dimensional floor plan A103 with every room and wall dimensioned" loading="lazy">
+          <figcaption><b>A103</b>Dimensional plan, every wall located</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/sheet-elevations-top.webp" alt="Elevations A201 showing rear and right elevations with materials called out" loading="lazy">
+          <figcaption><b>A201</b>Elevations, materials called out</figcaption>
+        </figure>
+      </div>
+      <p class="sig-note">A full set runs to around 22 sheets across roughly six disciplines, drawn to the 2024 IBC / IRC / IECC code cycle.</p>
+    </div>
+  </section>
+
+  <!-- ================= THE ARGUMENT ================= -->
+  <section class="argue leaf" id="about">
+    <div class="argue-in">
+      <h2 class="rv" style="--ka:6.9">Every hand-off is a chance for something to be <em>lost.</em></h2>
+      <div class="argue-foot rv">
+        <p>Most residential projects pass through several hands before a permit is issued. A designer draws it, a drafter documents it, somebody else walks it through the city, and each seam is a place where an assumption quietly changes.</p>
+        <p>Quest takes a project the whole way, on one flat fee agreed before we start. The person who drew your house is the person who answers the plan reviewer.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= QUESTIONS ================= -->
+  <section class="sec leaf" id="faq">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <h2 class="dh" style="--k:6.63">Asked before you ask.</h2>
+      </div>
+      <div class="marg">
+        <article class="rv">
+          <h3>How much does a project cost?</h3>
+          <p>A flat fee agreed up front, based on the scope of your project. One fixed price and a defined timeline, with no hourly surprises.</p>
+        </article>
+        <article class="rv">
+          <h3>What is in a construction document set?</h3>
+          <p>Around 22 sheets across roughly six disciplines: cover, site, floor plans, roof plans, elevations, sections and coordinated details, drawn to the 2024 code cycle.</p>
+        </article>
+        <article class="rv">
+          <h3>Can you design an ADU, casita or guest house?</h3>
+          <p>Yes. Casitas, accessory dwelling units, guest houses, additions, remodels, RV garages and site structures. What you can build depends on your lot and your zoning.</p>
+        </article>
+        <article class="rv">
+          <h3>Why build a 3D model before the drawings?</h3>
+          <p>Because it lets you approve the actual home while changes are still free.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= COLOPHON ================= -->
+  <section class="colo leaf" id="quote">
+    <div class="colo-in">
+      <h2 class="rv" style="--kc:10.1"><span>Put your project</span><span>on the board.</span></h2>
+      <p class="colo-sub rv">Tell us the lot and the idea. You get a flat fee and a defined timeline before any drawing starts.</p>
+      <div class="colo-acts rv">
+        <a class="btn btn-ink" href="mailto:info@questdraftinganddesign.com">Get a Quote</a>
+        <a class="tel" href="tel:+16023396455">(602) 339-6455</a>
+      </div>
+      <div class="colo-areas rv">
+        <span>Gilbert</span><span>Queen Creek</span><span>Mesa</span>
+        <span>Chandler</span><span>Phoenix</span><span>Scottsdale</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <div class="foot-brand">
+      <img src="assets/logo.png" alt="Quest Drafting and Design">
+      <p>Residential architectural drafting in Gilbert, Arizona.</p>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <a href="tel:+16023396455">(602) 339-6455</a>
+      <a href="mailto:info@questdraftinganddesign.com">info@questdraftinganddesign.com</a>
+    </div>
+    <div>
+      <h4>Studio</h4>
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="#about">About</a>
+      <a href="/blog">Blog</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ---- reveals. One observer, transform and opacity only ---- */
+(function(){
+  if (!('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
+  [].forEach.call(document.querySelectorAll('.rv'), function(el){ io.observe(el); });
+})();
+</script>
+</body>
+</html>
