@@ -272,6 +272,37 @@ button{ font:inherit; color:inherit; background:none; border:0; padding:0; }
 .pl-cap b{ font-family:var(--disp); font-weight:600; font-size:20px; letter-spacing:-.012em; }
 .pl-cap span{ color:var(--ink-soft); font-size:15.5px; }
 .pl-cap .of{ color:var(--ink-faint); font-size:13px; letter-spacing:.14em; text-transform:uppercase; }
+/* the plate index. A book's plate section carries one, and this one
+   is live: it names the plate you are on and takes you to any other.
+   Sticky near the foot of the screen, so it holds for the whole
+   section without a scroll listener and never crosses a caption */
+.plate-nav{ position:sticky; top:calc(100dvh - 78px); height:0; z-index:9; }
+.plate-nav ol{
+  position:absolute; left:50%; translate:-50% 0;
+  display:flex; margin:0; padding:0; list-style:none;
+  background:var(--ink); box-shadow:0 22px 48px -22px rgba(10,10,10,.6);
+  max-width:calc(100vw - var(--pad) * 2);
+}
+.plate-nav button{
+  display:flex; align-items:baseline; gap:8px;
+  padding:13px 16px; cursor:pointer; background:none; border:0;
+  font-family:var(--disp); font-weight:500; font-size:12.5px; letter-spacing:.14em;
+  color:#8E8E92; text-transform:uppercase; white-space:nowrap;
+  transition:color .25s, background-color .25s;
+}
+.plate-nav li + li button{ box-shadow:inset 1px 0 0 rgba(255,255,255,.16); }
+.plate-nav button:hover{ color:var(--page); background:rgba(255,255,255,.08); }
+.plate-nav button[aria-current="true"]{ color:var(--page); background:rgba(255,255,255,.12); }
+.plate-nav button[aria-current="true"] .rn{ color:var(--orange); }
+.plate-nav .rn{ font-weight:600; font-size:11.5px; color:#86868A; }
+@media (max-width:820px){
+  .plate-nav{ display:none; }
+}
+@media (max-width:1060px){
+  .plate-nav .nm{ display:none; }
+  .plate-nav button{ padding:13px 18px; }
+}
+
 @media (max-width:880px){
   .pl{ min-height:auto; position:static; padding-block:var(--s6); }
   .pl-fig img{ max-height:none; width:100%; }
@@ -338,9 +369,13 @@ button{ font:inherit; color:inherit; background:none; border:0; padding:0; }
 @media (max-width:880px){ .marg article{ grid-template-columns:1fr; gap:var(--s2); } }
 
 /* ============================================================
-   COLOPHON. The last page
+   COLOPHON. The last page, and the press bar under it
+   A printed book carries a colour bar along the trimmed edge of the
+   press sheet: solid patches the printer reads to check the ink. It
+   is the one place a book shows its colour at full strength, so it
+   is where this page puts the orange
    ============================================================ */
-.colo{ background:var(--orange); color:#120806; padding-block:var(--s8); }
+.colo{ background:var(--page); color:var(--ink); padding-top:var(--s8); }
 .colo-in{ container-type:inline-size; max-width:var(--wrap); margin-inline:auto; padding-inline:var(--pad); }
 .colo h2{
   font-family:var(--disp); font-weight:500;
@@ -348,18 +383,26 @@ button{ font:inherit; color:inherit; background:none; border:0; padding:0; }
   line-height:.9; letter-spacing:-.026em;
 }
 .colo h2 span{ display:block; white-space:nowrap; }
-.colo-sub{ margin-top:var(--s4); font-size:clamp(17px,1.35vw,20px); max-width:52ch; color:#2A0F07; }
+.colo-sub{ margin-top:var(--s4); font-size:clamp(17px,1.35vw,20px); max-width:52ch; color:var(--ink-soft); }
 .colo-acts{ display:flex; flex-wrap:wrap; align-items:center; gap:var(--s3); margin-top:var(--s5); }
-.colo-areas{
-  display:flex; flex-wrap:wrap; gap:10px 0;
-  border-top:1px solid rgba(18,8,6,.34); margin-top:var(--s6); padding-top:var(--s3);
-}
-.colo-areas span{
-  font-size:13px; letter-spacing:.14em; text-transform:uppercase; font-weight:600;
-  padding-right:22px; margin-right:22px; border-right:1px solid rgba(18,8,6,.34);
-}
-.colo-areas span:last-child{ border-right:0; }
 
+/* the imprint: set small and precise, the way a colophon is */
+.imprint{
+  display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:var(--s5);
+  border-top:1px solid var(--rule-hard); margin-top:var(--s7); padding:var(--s3) 0 var(--s7);
+}
+.imprint h4{
+  font-family:var(--disp); font-weight:600; font-size:12px;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:10px;
+}
+.imprint p, .imprint a{ font-size:15.5px; color:var(--ink); text-decoration:none; display:block; overflow-wrap:anywhere; }
+.imprint a:hover{ color:var(--orange-deep); }
+.imprint .areas span{ display:block; font-size:15.5px; }
+@media (max-width:760px){ .imprint{ grid-template-columns:1fr; gap:var(--s4); } }
+
+/* the press bar */
+.press{ display:flex; height:clamp(54px,7.4vh,96px); }
+.press span{ flex:var(--f); background:var(--c); }
 /* ---------- foot ---------- */
 .foot{ background:var(--ink); color:#C9C9CC; padding-block:var(--s6); font-size:15px; }
 .foot-in{ display:grid; grid-template-columns:minmax(0,1.5fr) repeat(2,minmax(0,1fr)); gap:var(--s5); }
@@ -480,7 +523,16 @@ button{ font:inherit; color:inherit; background:none; border:0; padding:0; }
       </div>
     </div>
 
-    <div class="plates">
+    <div class="plates" id="plates">
+      <nav class="plate-nav" aria-label="Plates in this section">
+        <ol id="plateNav">
+          <li><button type="button" data-i="0" aria-current="true"><span class="rn">I</span><span class="nm">Motor court</span></button></li>
+          <li><button type="button" data-i="1" aria-current="false"><span class="rn">II</span><span class="nm">Night</span></button></li>
+          <li><button type="button" data-i="2" aria-current="false"><span class="rn">III</span><span class="nm">Great room</span></button></li>
+          <li><button type="button" data-i="3" aria-current="false"><span class="rn">IV</span><span class="nm">Terrace</span></button></li>
+          <li><button type="button" data-i="4" aria-current="false"><span class="rn">V</span><span class="nm">Model</span></button></li>
+        </ol>
+      </nav>
       <figure class="pl">
         <figcaption class="pl-cap">
           <span class="folio">Plate I</span>
@@ -605,10 +657,31 @@ button{ font:inherit; color:inherit; background:none; border:0; padding:0; }
         <a class="btn btn-ink" href="mailto:info@questdraftinganddesign.com">Get a Quote</a>
         <a class="tel" href="tel:+16023396455">(602) 339-6455</a>
       </div>
-      <div class="colo-areas rv">
-        <span>Gilbert</span><span>Queen Creek</span><span>Mesa</span>
-        <span>Chandler</span><span>Phoenix</span><span>Scottsdale</span>
+      <div class="imprint rv">
+        <div>
+          <h4>Studio</h4>
+          <p>Quest Drafting and Design LLC</p>
+          <p>Residential architectural drafting, Gilbert, Arizona</p>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <a href="tel:+16023396455">(602) 339-6455</a>
+          <a href="mailto:info@questdraftinganddesign.com">info@questdraftinganddesign.com</a>
+        </div>
+        <div class="areas">
+          <h4>Service area</h4>
+          <span>Gilbert, Queen Creek, Mesa</span>
+          <span>Chandler, Phoenix, Scottsdale</span>
+        </div>
       </div>
+    </div>
+    <div class="press" aria-hidden="true">
+      <span style="--c:#E8552B;--f:44"></span>
+      <span style="--c:#0A0A0A;--f:16"></span>
+      <span style="--c:#56565A;--f:12"></span>
+      <span style="--c:#9A9A9E;--f:12"></span>
+      <span style="--c:#C9C8C4;--f:8"></span>
+      <span style="--c:#F4F3F0;--f:8"></span>
     </div>
   </section>
 
@@ -645,6 +718,32 @@ button{ font:inherit; color:inherit; background:none; border:0; padding:0; }
     });
   }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
   [].forEach.call(document.querySelectorAll('.rv'), function(el){ io.observe(el); });
+})();
+
+/* ---- the plate index. Jumps to a plate, and follows which one is up ---- */
+(function(){
+  var nav = document.getElementById('plateNav');
+  var plates = [].slice.call(document.querySelectorAll('.pl'));
+  if (!nav || !plates.length) return;
+  var btns = [].slice.call(nav.querySelectorAll('button'));
+  function mark(i){ btns.forEach(function(b, n){ b.setAttribute('aria-current', n === i ? 'true' : 'false'); }); }
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){
+      var i = parseInt(b.getAttribute('data-i'), 10);
+      var top = plates[i].getBoundingClientRect().top + window.scrollY;
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: top + 2, behavior: reduce ? 'auto' : 'smooth' });
+      mark(i);
+    });
+  });
+  if ('IntersectionObserver' in window) {
+    var io2 = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) mark(plates.indexOf(e.target));
+      });
+    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+    plates.forEach(function(pl){ io2.observe(pl); });
+  }
 })();
 </script>
 </body>

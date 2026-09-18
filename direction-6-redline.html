@@ -99,31 +99,64 @@ button{ font:inherit; color:inherit; background:none; border:0; padding:0; }
 }
 @media (max-width:980px){ .sec-head{ grid-template-columns:1fr; gap:var(--s3); --kx:1.56; margin-bottom:var(--s6); } }
 
-/* ---------- the mark. One shared drawing layer ----------
-   strokes draw themselves as the block they annotate rides up
-   the screen. Reduced motion and no support both land on a
-   fully drawn mark, never on a blank one */
-.ink{ position:absolute; inset:0; pointer-events:none; overflow:visible; }
-.ink path, .ink circle, .ink line, .ink ellipse{
-  fill:none; stroke:var(--mark); stroke-width:2.4;
-  stroke-linecap:round; stroke-linejoin:round;
-  vector-effect:non-scaling-stroke;
+/* ---------- the callout ----------
+   A mark on a drawing is never decoration: it is a number, a region
+   and a note, and somebody put it there on purpose. So nothing is
+   drawn on these renders until the reader opens it. The pin sits on
+   the top left corner of the region it marks, and opening it draws
+   that region and prints the note. One open at a time
+   ---------------------------------------------------------------- */
+.sheet-hint{
+  position:absolute; left:0; bottom:0; z-index:4;
+  background:var(--print); color:var(--stock);
+  font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; font-weight:600;
+  padding:9px 14px;
 }
-@supports (animation-timeline: view()){
-  @media (prefers-reduced-motion: no-preference){
-    /* the timeline is declared on the sheet the marks are made on. An SVG
-       geometry element cannot establish a view timeline of its own, so the
-       paths look the named one up through their ancestors */
-    .hero-sheet, .rv-sheet, .argue-in{ view-timeline:--markline block; }
-    .ink path, .ink circle, .ink ellipse{
-      stroke-dasharray:var(--len,1200);
-      animation:draw linear both;
-      animation-timeline:--markline;
-      animation-range:entry 14% cover 46%;
-    }
-  }
+.pin{
+  position:absolute; z-index:5; left:var(--x); top:var(--y);
+  width:34px; height:34px; padding:0; border:0; cursor:pointer;
+  background:var(--mark); color:#150805;
+  font-family:var(--disp); font-weight:800; font-size:16px; line-height:34px;
+  text-align:center; font-variant-numeric:tabular-nums;
+  box-shadow:0 10px 24px -10px rgba(10,9,6,.9);
+  transition:background-color .2s, transform .2s var(--ease);
 }
-@keyframes draw{ from{ stroke-dashoffset:var(--len,1200); } to{ stroke-dashoffset:0; } }
+.pin:hover{ transform:translateY(-2px); }
+.pin[aria-pressed="true"]{ background:var(--print); color:var(--mark); }
+.pin:focus-visible{ outline:3px solid var(--stock); outline-offset:3px; }
+
+/* the region the pin refers to, drawn from the pin outward */
+.pin-box{
+  position:absolute; left:0; top:0; pointer-events:none;
+  width:calc(var(--bw) * 1cqw); height:calc(var(--bh) * 1cqh);
+  border:2.5px solid var(--mark);
+  opacity:0; transform:scale(.94); transform-origin:0 0;
+  transition:opacity .3s, transform .4s var(--ease);
+}
+.pin[aria-pressed="true"] .pin-box{ opacity:1; transform:none; }
+
+.pin-note{
+  position:absolute; left:0; top:calc(var(--bh) * 1cqh + 16px);
+  width:max(210px, min(300px, 30vw));
+  background:var(--stock); color:var(--print);
+  font-family:var(--body); font-weight:500; font-size:14px; line-height:1.4;
+  text-align:left; letter-spacing:0; text-transform:none;
+  padding:11px 14px; border-left:3px solid var(--mark);
+  box-shadow:0 20px 44px -20px rgba(10,9,6,.75);
+  opacity:0; visibility:hidden; transform:translateY(8px);
+  transition:opacity .3s, transform .4s var(--ease), visibility 0s .4s;
+  pointer-events:none;
+}
+.pin[aria-pressed="true"] .pin-note{
+  opacity:1; visibility:visible; transform:none; transition:opacity .3s .05s, transform .4s .05s var(--ease), visibility 0s;
+}
+/* pins near an edge hang their note the other way */
+.pin--l .pin-note{ left:auto; right:0; }
+.pin--up .pin-note{ top:auto; bottom:calc(var(--bh) * 1cqh + 16px); }
+@media (max-width:700px){
+  .pin{ width:28px; height:28px; font-size:14px; line-height:28px; }
+  .pin-note{ width:min(230px, 62vw); font-size:13px; }
+}
 
 /* ---------- controls ---------- */
 .btn{
@@ -172,6 +205,7 @@ button{ font:inherit; color:inherit; background:none; border:0; padding:0; }
 @media (max-height:720px){ .hero{ min-height:660px; } }
 .hero-sheet{
   position:relative; overflow:hidden; background:var(--print);
+  container-type:size;
   margin-inline:var(--pad); min-height:0;
 }
 /* absolute, so the render's own intrinsic height cannot inflate the
@@ -273,17 +307,10 @@ button{ font:inherit; color:inherit; background:none; border:0; padding:0; }
 .rv-item{ position:relative; margin:0; }
 .rv-sheet{
   position:relative; display:block; overflow:hidden; background:var(--print);
+  container-type:size;
 }
 .rv-sheet img{ width:100%; height:100%; object-fit:cover; }
 .rv-sheet .ink{ z-index:2; }
-.rv-note{
-  position:absolute; z-index:3;
-  background:var(--stock); color:var(--print);
-  font-family:var(--body); font-weight:600; font-size:14px; line-height:1.35;
-  padding:10px 14px; max-width:270px;
-  box-shadow:0 18px 40px -20px rgba(21,20,15,.55);
-  border-left:3px solid var(--mark);
-}
 .rv-item figcaption{
   display:flex; flex-wrap:wrap; align-items:baseline; gap:6px var(--s3);
   border-top:1px solid var(--print); padding-top:12px; margin-top:14px;
@@ -298,8 +325,7 @@ button{ font:inherit; color:inherit; background:none; border:0; padding:0; }
 /* A. runs the full page width */
 .rv-a .rv-sheet{ aspect-ratio:2.32; }
 .rv-a figcaption{ margin-inline:var(--pad); }
-.rv-a .rv-note{ left:6%; bottom:14%; }
-
+.rv-a 
 /* B. two sheets in review, the marked one lying across the clean one */
 .rv-b{ max-width:var(--wrap); margin-inline:auto; padding-inline:var(--pad); }
 .rv-b .stage{ position:relative; padding-bottom:var(--s6); }
@@ -310,14 +336,12 @@ button{ font:inherit; color:inherit; background:none; border:0; padding:0; }
   box-shadow:-28px -16px 52px -22px rgba(21,20,15,.5);
 }
 .rv-b .lay img{ width:100%; height:100%; object-fit:cover; }
-.rv-b .rv-note{ left:4%; top:8%; }
-
+.rv-b 
 /* C. the model, marked for grade */
 .rv-c{ max-width:var(--wrap); margin-inline:auto; padding-inline:var(--pad); }
 .rv-c .rv-sheet{ aspect-ratio:3.9; background:var(--stock-2); }
 .rv-c .rv-sheet img{ object-fit:contain; }
-.rv-c .rv-note{ right:3%; top:12%; }
-
+.rv-c 
 @media (max-width:880px){
   .review{ gap:var(--s7); }
   .rv-a .rv-sheet{ aspect-ratio:1.7; }
@@ -325,8 +349,7 @@ button{ font:inherit; color:inherit; background:none; border:0; padding:0; }
   .rv-b .lay{ position:static; width:72%; margin:calc(-1 * var(--s5)) 0 0 auto; }
   .rv-b .stage{ padding-bottom:0; }
   .rv-c .rv-sheet{ aspect-ratio:2.4; }
-  .rv-note{ max-width:200px; font-size:13px; }
-}
+  }
 
 /* ============================================================
    THE SET. The transmittal, four sheets logged out
@@ -386,40 +409,56 @@ button{ font:inherit; color:inherit; background:none; border:0; padding:0; }
 @media (max-width:880px){ .comments{ grid-template-columns:1fr; gap:var(--s5); } }
 
 /* ============================================================
-   CLOSING. The stamp
+   CLOSING. The submittal slip
+   A transmittal is the form that goes on top of a set when it is
+   sent in. So the page closes on one: an orange header carrying the
+   statement, and a body you actually fill in. Choosing a project
+   type rewrites the subject line of the email that leaves
    ============================================================ */
-/* the page opened with a print stamped UNDER REVIEW. It closes with
-   the stamp landed: one heavy orange block set off square, carrying
-   the statement inside it */
-.close{ background:var(--stock-2); color:var(--print); padding-block:var(--s8); overflow:hidden; }
-.close-in{
+.close{ background:var(--stock-2); padding-block:var(--s8); }
+.close-in{ max-width:var(--wrap); margin-inline:auto; padding-inline:var(--pad); }
+.slip{ background:var(--stock); box-shadow:0 44px 90px -44px rgba(21,20,15,.5); }
+.slip-hd{
   container-type:inline-size;
-  /* the rotation throws the corners out, so the block is held in far
-     enough that no width clips the stamp */
-  max-width:var(--wrap); width:calc(100% - clamp(32px, 5vw, 90px)); margin-inline:auto;
-  background:var(--orange); color:#150805; rotate:-1.4deg;
-  padding:clamp(34px,4.6vw,72px) clamp(26px,3.4vw,58px);
-  box-shadow:0 44px 86px -40px rgba(21,20,15,.55);
-  outline:4px solid var(--print); outline-offset:-18px;
+  background:var(--orange); color:#150805;
+  padding:clamp(30px,3.8vw,58px) clamp(24px,3vw,48px);
 }
-@media (max-width:760px){ .close-in{ rotate:0deg; outline-offset:-10px; } }
-.close h2{
+.slip-hd h2{
   font-family:var(--disp); font-weight:800;
-  font-size:clamp(34px, calc(var(--kc,11) * 1cqw), 205px);
-  line-height:.88; letter-spacing:-.042em;
+  font-size:clamp(34px, calc(var(--kc,11) * 1cqw), 190px);
+  line-height:.9; letter-spacing:-.042em;
 }
-.close h2 span{ display:block; white-space:nowrap; }
-.close-sub{ margin-top:var(--s4); font-size:clamp(17px,1.35vw,20px); max-width:52ch; color:#2A0F07; }
-.close-acts{ display:flex; flex-wrap:wrap; align-items:center; gap:var(--s3); margin-top:var(--s5); }
-.close-areas{
+.slip-hd h2 span{ display:block; white-space:nowrap; }
+.slip-hd p{ margin-top:var(--s3); font-size:clamp(16px,1.3vw,19px); max-width:52ch; color:#2A0F07; }
+.slip-bd{ padding:clamp(26px,3vw,44px) clamp(24px,3vw,48px) clamp(30px,3.4vw,52px); }
+.slip-q{
+  font-size:12.5px; letter-spacing:.17em; text-transform:uppercase;
+  font-weight:700; color:var(--print-faint); display:block; margin-bottom:14px;
+}
+.chips{ display:flex; flex-wrap:wrap; gap:12px; margin:0 0 var(--s5); padding:0; border:0; }
+.chip{
+  padding:13px 20px; cursor:pointer; border:0; border-radius:0;
+  background:none; box-shadow:inset 0 0 0 1.5px var(--print);
+  font-family:var(--body); font-weight:600; font-size:15.5px; color:var(--print);
+  transition:background-color .2s, color .2s, box-shadow .2s;
+}
+.chip:hover{ background:rgba(21,20,15,.07); }
+.chip[aria-pressed="true"]{ background:var(--print); color:var(--stock); box-shadow:none; }
+.slip-acts{
+  display:flex; flex-wrap:wrap; align-items:center; gap:var(--s3);
+  border-top:2px solid var(--print); padding-top:var(--s4);
+}
+.slip-areas{
   display:flex; flex-wrap:wrap; gap:10px 0;
-  border-top:1px solid rgba(21,8,5,.34); margin-top:var(--s6); padding-top:var(--s3);
+  border-top:1px solid var(--rule); margin-top:var(--s4); padding-top:var(--s3);
 }
-.close-areas span{
-  font-size:13px; letter-spacing:.14em; text-transform:uppercase; font-weight:700;
-  padding-right:22px; margin-right:22px; border-right:1px solid rgba(21,8,5,.34);
+.slip-areas span{
+  font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; font-weight:700;
+  color:var(--print-soft);
+  padding-right:20px; margin-right:20px; border-right:1px solid var(--rule);
 }
-.close-areas span:last-child{ border-right:0; }
+.slip-areas span:last-child{ border-right:0; }
+@media (max-width:760px){ .slip-hd h2 span{ white-space:normal; } }
 
 /* ---------- foot ---------- */
 .foot{ background:var(--print); color:#C4C0B6; padding-block:var(--s6); font-size:15px; }
@@ -468,13 +507,10 @@ button{ font:inherit; color:inherit; background:none; border:0; padding:0; }
     <div class="hero-sheet">
       <img src="assets/w-motorcourt.webp" alt="Contemporary stone estate designed around a motor court, shown at dusk" fetchpriority="high">
       <span class="hero-veil"></span>
-      <svg class="ink" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
-        <path style="--len:900" d="M690 108 L1046 108 L1046 300 L690 300 Z"/>
-        <path style="--len:340" d="M690 204 L560 246"/>
-        <ellipse style="--len:760" cx="250" cy="352" rx="118" ry="52"/>
-      </svg>
-      <span class="hero-stamp">Under review</span>
-      <span class="hero-tag">Motor court estate, dusk render</span>
+          <button class="pin pin--l" type="button" aria-pressed="false" style="--x:63%;--y:20%;--bw:21;--bh:30">1<span class="pin-box" aria-hidden="true"></span><span class="pin-note">Head height held across the whole upper floor, so the balcony line reads as one plane rather than three openings.</span></button>
+          <button class="pin" type="button" aria-pressed="false" style="--x:41%;--y:42%;--bw:15;--bh:34">2<span class="pin-box" aria-hidden="true"></span><span class="pin-note">Entry recessed a full bay. That is what keeps the front door out of the weather without adding a porch roof.</span></button>
+          <button class="pin" type="button" aria-pressed="false" style="--x:13%;--y:62%;--bw:27;--bh:24">3<span class="pin-box" aria-hidden="true"></span><span class="pin-note">Court graded to fall away from the garage slab, so water never stands at the door.</span></button>
+      <span class="sheet-hint">Motor court estate. Tap a number</span>
     </div>
     <div class="hero-in">
       <h1><span>From vision,</span><span>to model,</span><span>to <em>permit.</em></span></h1>
@@ -552,12 +588,9 @@ button{ font:inherit; color:inherit; background:none; border:0; padding:0; }
       <figure class="rv-item rv-a">
         <span class="rv-sheet">
           <img src="assets/w-pool.webp" alt="Twilight render of a modern estate above a pool terrace" loading="lazy">
-          <svg class="ink" viewBox="0 0 1200 517" preserveAspectRatio="none" aria-hidden="true">
-            <path style="--len:900" d="M96 318 L96 470 L520 470 L520 318 Z"/>
-            <path style="--len:320" d="M520 394 L676 330"/>
-            <path style="--len:250" d="M690 132 L690 250"/>
-          </svg>
-          <span class="rv-note">Terrace set one step below the interior floor, so the slider threshold stays flush and drains away from the house.</span>
+          <button class="pin" type="button" aria-pressed="false" style="--x:8%;--y:56%;--bw:32;--bh:30">1<span class="pin-box" aria-hidden="true"></span><span class="pin-note">Terrace set one step below the interior floor, so the slider threshold stays flush and still drains away from the house.</span></button>
+          <button class="pin pin--l" type="button" aria-pressed="false" style="--x:56%;--y:24%;--bw:26;--bh:34">2<span class="pin-box" aria-hidden="true"></span><span class="pin-note">Roof line carried past the glass to shade the west face through the worst of the afternoon.</span></button>
+          <span class="sheet-hint">Two notes on this drawing</span>
         </span>
         <figcaption><em>Render</em><b>Pool terrace</b><span>An outdoor room drawn as a room, not as the space left over.</span></figcaption>
       </figure>
@@ -566,11 +599,8 @@ button{ font:inherit; color:inherit; background:none; border:0; padding:0; }
         <div class="stage">
           <span class="rv-sheet">
             <img src="assets/w-night.webp" alt="Desert home glowing beneath a starry night sky" loading="lazy">
-            <svg class="ink" viewBox="0 0 880 587" preserveAspectRatio="none" aria-hidden="true">
-              <ellipse style="--len:900" cx="430" cy="322" rx="248" ry="74"/>
-              <path style="--len:260" d="M300 282 L196 210"/>
-            </svg>
-            <span class="rv-note">Interior light checked against a dark sky, because this elevation faces the approach.</span>
+            <button class="pin pin--up" type="button" aria-pressed="false" style="--x:22%;--y:40%;--bw:46;--bh:26">1<span class="pin-box" aria-hidden="true"></span><span class="pin-note">Interior light checked against a dark sky, because this is the elevation you see on the approach.</span></button>
+            <span class="sheet-hint">One note on this drawing</span>
           </span>
           <span class="lay">
             <img src="assets/w-greatroom.webp" alt="Great room interior with a glass wall onto the mountains at dusk" loading="lazy">
@@ -582,12 +612,8 @@ button{ font:inherit; color:inherit; background:none; border:0; padding:0; }
       <figure class="rv-item rv-c">
         <span class="rv-sheet">
           <img src="assets/model-cut.png" alt="White three dimensional massing model of a residence stepping down its slope" loading="lazy">
-          <svg class="ink" viewBox="0 0 1220 313" preserveAspectRatio="none" aria-hidden="true">
-            <path style="--len:520" d="M104 244 L1088 244"/>
-            <path style="--len:180" d="M104 226 L104 262"/>
-            <path style="--len:180" d="M1088 226 L1088 262"/>
-          </svg>
-          <span class="rv-note">Finished floor stepped three times so the mass follows the grade instead of cutting it.</span>
+          <button class="pin pin--up" type="button" aria-pressed="false" style="--x:10%;--y:58%;--bw:78;--bh:22">1<span class="pin-box" aria-hidden="true"></span><span class="pin-note">Finished floor stepped three times, so the mass follows the grade instead of cutting into it.</span></button>
+          <span class="sheet-hint">One note on this model</span>
         </span>
         <figcaption><em>Model</em><b>White massing model</b><span>Form first. No materials, no distractions, just the shape of the house on its grade.</span></figcaption>
       </figure>
@@ -644,11 +670,6 @@ button{ font:inherit; color:inherit; background:none; border:0; padding:0; }
   <section class="argue" id="about">
     <div class="argue-in">
       <h2 class="rv" style="--ka:7.41">Every hand-off is a chance for something to be <em>lost.</em></h2>
-      <svg class="ink" viewBox="0 0 1200 360" preserveAspectRatio="none" aria-hidden="true">
-        <path style="--len:1240" d="M18 276 L1182 276"/>
-        <path style="--len:180" d="M18 258 L18 294"/>
-        <path style="--len:180" d="M1182 258 L1182 294"/>
-      </svg>
       <div class="argue-foot rv">
         <p>Most residential projects pass through several hands before a permit is issued. A designer draws it, a drafter documents it, somebody else walks it through the city, and each seam is a place where an assumption quietly changes.</p>
         <p>Quest takes a project the whole way, on one flat fee agreed before we start. The person who drew your house is the person who answers the plan reviewer.</p>
@@ -687,18 +708,31 @@ button{ font:inherit; color:inherit; background:none; border:0; padding:0; }
     </div>
   </section>
 
-  <!-- ================= CLOSING. The stamp ================= -->
+  <!-- ================= CLOSING. The submittal slip ================= -->
   <section class="close" id="quote">
     <div class="close-in">
-      <h2 class="rv" style="--kc:10.0"><span>Put your project</span><span>on the board.</span></h2>
-      <p class="close-sub rv">Tell us the lot and the idea. You get a flat fee and a defined timeline before any drawing starts.</p>
-      <div class="close-acts rv">
-        <a class="btn btn-print" href="mailto:info@questdraftinganddesign.com">Get a Quote</a>
-        <a class="tel" href="tel:+16023396455">(602) 339-6455</a>
-      </div>
-      <div class="close-areas rv">
-        <span>Gilbert</span><span>Queen Creek</span><span>Mesa</span>
-        <span>Chandler</span><span>Phoenix</span><span>Scottsdale</span>
+      <div class="slip rv">
+        <div class="slip-hd">
+          <h2 style="--kc:11.2"><span>Put your project</span><span>on the board.</span></h2>
+          <p>Tell us the lot and the idea. You get a flat fee and a defined timeline before any drawing starts.</p>
+        </div>
+        <div class="slip-bd">
+          <fieldset class="chips" id="slipChips">
+            <legend class="slip-q">What are you building?</legend>
+            <button class="chip" type="button" aria-pressed="true"  data-v="New home">New home</button>
+            <button class="chip" type="button" aria-pressed="false" data-v="Addition or remodel">Addition or remodel</button>
+            <button class="chip" type="button" aria-pressed="false" data-v="ADU, casita or guest house">ADU, casita or guest house</button>
+            <button class="chip" type="button" aria-pressed="false" data-v="Something else">Something else</button>
+          </fieldset>
+          <div class="slip-acts">
+            <a class="btn btn-mark" id="slipCta" href="mailto:info@questdraftinganddesign.com?subject=New%20home">Get a Quote</a>
+            <a class="tel" href="tel:+16023396455">(602) 339-6455</a>
+          </div>
+          <div class="slip-areas">
+            <span>Gilbert</span><span>Queen Creek</span><span>Mesa</span>
+            <span>Chandler</span><span>Phoenix</span><span>Scottsdale</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -735,6 +769,36 @@ button{ font:inherit; color:inherit; background:none; border:0; padding:0; }
     });
   }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
   [].forEach.call(document.querySelectorAll('.rv'), function(el){ io.observe(el); });
+})();
+
+/* ---- the callouts. Nothing is drawn on a render until it is opened ---- */
+(function(){
+  var pins = [].slice.call(document.querySelectorAll('.pin'));
+  if (!pins.length) return;
+  pins.forEach(function(p){
+    p.addEventListener('click', function(){
+      var open = p.getAttribute('aria-pressed') === 'true';
+      pins.forEach(function(o){ o.setAttribute('aria-pressed', 'false'); });
+      p.setAttribute('aria-pressed', open ? 'false' : 'true');
+    });
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') pins.forEach(function(o){ o.setAttribute('aria-pressed', 'false'); });
+  });
+})();
+
+/* ---- the slip. The project type writes the subject line ---- */
+(function(){
+  var box = document.getElementById('slipChips');
+  var cta = document.getElementById('slipCta');
+  if (!box || !cta) return;
+  var chips = [].slice.call(box.querySelectorAll('.chip'));
+  chips.forEach(function(c){
+    c.addEventListener('click', function(){
+      chips.forEach(function(o){ o.setAttribute('aria-pressed', o === c ? 'true' : 'false'); });
+      cta.href = 'mailto:info@questdraftinganddesign.com?subject=' + encodeURIComponent(c.dataset.v);
+    });
+  });
 })();
 </script>
 </body>

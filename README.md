@@ -31,7 +31,7 @@ document and the model, not from a generic template.
 | Plan line-work is the studio's own visual language | Blueprint's ground is drafting line-work on deep ink | An index that brings a plate up |
 | A drafter works in overlays, in register | Trace is milky film laid on a graphite board | Four sheets landing in register, and film panning behind a mat |
 | Finished architecture gets published | Monograph treats the house as a book plate | Turning to the next plate |
-| What the studio sells is a permit, not a drawing | Redline is the marked up print that comes back from review | Every mark on the page draws itself |
+| What the studio sells is a permit, not a drawing | Redline is the marked up print that comes back from review | Nothing is marked until the reader opens a callout |
 | The work exists three times: massed, rendered, drawn | The same house as model, render and sheet | Each direction pairs them differently |
 
 ## How the photographs are handled
@@ -64,11 +64,11 @@ columns.
 | Opener | Full bleed render with a draggable cut revealing the elevation | Full bleed render with three hours you can move the light through | Full bleed render, statement crossing it, copy card over it | Headline printed on a sheet of film laid over the render | Title page. One wide figure, the title set beneath it | The render under review, boxed, circled and stamped |
 | Services | Four mirrored bleed bands, number crossing the edge | Four tall columns on one mirrored offset | Accordion strip, the panel you point at opens | Four strips of film laid across one plate | Contents page, ruled rows with roman folios | Four clauses on a checklist |
 | Process | Strata, full width rows stepping deeper | Pinned track, six stations travelling sideways | Ruled timeline with drawn dimension connectors | Six overlays, each laid over the last | Six notes across a two column gutter | A route of six ruled stops |
-| The work | Plates run to the page edges, each cut open from the left | A pile of prints under one lamp, pick one up | A drawing index beside one plate running off the right edge | A graphite mat with the film panning behind its windows | Full page plates, each pinned then covered by the next | Renders carrying the studio's own marks at full size |
+| The work | Plates run to the page edges, each cut open from the left | A pile of prints under one lamp, pick one up | A drawing index beside one plate running off the right edge | A graphite mat with the film panning behind its windows | Full page plates with a live plate index riding alongside | Full size renders with numbered callouts you open |
 | The set | Light table, pick a number and that sheet comes up | Four sheets fanned out, straightening into a stack | Sheet viewer, tab list by number, on the rest of the set | Pinned register, four sheets landing one at a time | The signature, four sheets laid open flat | A transmittal logging four sheets out |
-| The argument | Pine field, the heading crossing the top edge | Night ground with the stars render behind it | Statement full bleed over the night render | One sheet of film, printed, with registration crosses | The one black page in the book | Ink field with the mark drawn through it |
+| The argument | Pine field, the heading crossing the top edge | Night ground with the stars render behind it | Statement full bleed over the night render | One sheet of film, printed, with registration crosses | The one black page in the book | Ink field, statement set against it |
 | Questions | Sticky index on the left, answers on the right | Two by two on night | Ruled rows that expand in place | Two by two on graphite, heavy rules | Marginalia. Question ruled, answer in the outer column | Plan review comments, numbered |
-| Closing | Huge two line statement over an orange strip | Deep night, then an orange strip | Orange band with the render behind it | Statement, then an orange strip | Colophon. The last page, a full orange field | The stamp. One heavy orange block set off square |
+| Closing | Huge two line statement over an orange strip | Deep night, then an orange strip | Orange band with the render behind it | Statement, then an orange strip | Colophon and a printer's colour bar along the trimmed edge | A submittal slip with an orange header, and a project type that writes the email |
 
 Type, material and depth, one set each:
 
@@ -95,8 +95,8 @@ them uses a scroll event listener.
 | Cut Line | Plates cut open from the left as they ride up | `animation-timeline: view()` on a `clip-path` |
 | Sun Study | Six process steps pinned and travelling sideways | `view-timeline` on the track |
 | Trace | Four sheets landing in register, pinned. Film panning behind the mat | `view-timeline` on the stack and the mat |
-| Monograph | Each plate holds the screen, the next page rises over it | `position: sticky` |
-| Redline | Every rule and circle draws itself | `stroke-dashoffset` on `animation-timeline: view()` |
+| Monograph | Each plate holds the screen, the next page rises over it | `position: sticky`, with a sticky plate index |
+| Redline | Callouts open on click, one at a time | No scroll motion. The marks are an interaction |
 
 Each one is behind `@supports (animation-timeline: view())` and
 `@media (prefers-reduced-motion: no-preference)`. A browser without support,
@@ -118,9 +118,9 @@ goes live anywhere public.
   cycle year with the client.
 - `SWAP:` **Service area list** (Gilbert, Queen Creek, Mesa, Chandler, Phoenix,
   Scottsdale). Taken from the current site.
-- `SWAP:` **The review notes in Redline's work section.** The three annotations
-  are plausible drafting comments written for the layout, not real review
-  comments off these projects. Either replace them with real ones or cut them.
+- `SWAP:` **The seven callout notes in Redline.** They are plausible drafting
+  comments written for the layout, not real review comments off these projects.
+  Either replace them with real ones from the studio or cut the callouts.
 - `SWAP:` **Street address, licence number, years in business, pricing.** Not
   supplied, so they appear nowhere on any page.
 
