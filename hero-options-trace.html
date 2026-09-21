@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Trace, three heroes</title>
+<meta name="description" content="Three alternative opening screens for the Trace direction, Quest Drafting and Design.">
+<link rel="icon" href="assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@75..110,500..900&family=Chivo:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ===========================================================================
+   TRACE, THREE HEROES.
+
+   One diagnosis, three answers. Trace's material is tracing film, which is
+   translucent by definition. The shipped hero sets that film at 95% opacity
+   and pulls it over the render with a negative margin, so the sheet stops
+   being an overlay and becomes a wall across half the photograph. The render
+   is what the studio sells and it was getting half a screen, cropped, with a
+   slab on top of it.
+
+   All three below keep Trace's own vocabulary: Anybody with Chivo, film on
+   graphite, one orange, registration crosses only where sheets meet. Same
+   headline, same subtext, same two actions in all three, so the only thing
+   that changes between them is the design.
+   ======================================================================== */
+:root{
+  --graphite:#1E2628;
+  --graphite-2:#151B1D;
+  --film:#EDEDE7;
+  --film-ink:#171C1C;
+  --film-ink-soft:#434D4B;
+  --chalk:#E6EAE8;
+  --chalk-dim:#A9B4B2;
+  --orange:#E8552B;
+  --orange-lite:#F5865E;
+  --rule:rgba(230,234,232,.20);
+
+  --disp:'Anybody','Chivo',Helvetica,sans-serif;
+  --body:'Chivo',Helvetica,sans-serif;
+
+  --pad:32px;
+  --nav:68px;
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:48px; --s6:64px; --s7:96px;
+  --ease:cubic-bezier(.32,.72,0,1);
+  --lift:0 34px 66px -36px rgba(3,7,7,.9);
+}
+@media (max-width:760px){ :root{ --pad:20px; --nav:60px; } }
+*,*::before,*::after{ box-sizing:border-box; }
+body{
+  margin:0; background:var(--graphite); color:var(--chalk);
+  font-family:var(--body); font-size:17px; line-height:1.62; overflow-x:clip;
+}
+img{ display:block; max-width:100%; }
+a{ color:inherit; }
+h1,h2{ margin:0; }
+p{ margin:0; }
+:focus-visible{ outline:3px solid var(--orange); outline-offset:3px; }
+
+/* the grain sits on one fixed layer, never on a scrolling container */
+body::after{
+  content:''; position:fixed; inset:0; z-index:90; pointer-events:none; opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.btn{
+  display:inline-flex; align-items:center; gap:10px;
+  padding:16px 28px; border:0; border-radius:0; cursor:pointer; text-decoration:none;
+  font-family:var(--disp); font-weight:700; font-variation-settings:'wdth' 88;
+  font-size:15px; letter-spacing:.06em; text-transform:uppercase;
+  transition:background .28s var(--ease);
+}
+.btn-orange{ background:var(--orange); color:#140E0C; }
+.btn-orange:hover{ background:#FF6A3D; }
+
+/* a registration cross is a drafting mark. It appears only where two sheets
+   are actually being put in register, never as decoration. */
+.reg{ position:absolute; width:22px; height:22px; pointer-events:none; }
+.reg::before,.reg::after{ content:""; position:absolute; background:var(--orange); }
+.reg::before{ left:50%; top:0; width:1.5px; height:100%; transform:translateX(-50%); }
+.reg::after{ top:50%; left:0; height:1.5px; width:100%; transform:translateY(-50%); }
+
+/* ── the nav, shared ─────────────────────────────────────────────────────── */
+.bar{ height:var(--nav); background:var(--graphite-2); border-bottom:1px solid var(--rule); }
+.bar-in{ height:100%; max-width:1300px; margin:0 auto; padding:0 var(--pad);
+  display:flex; align-items:center; justify-content:space-between; gap:var(--s4); }
+.bar img{ height:30px; width:auto; background:#fff; padding:5px 8px; }
+.nav-links{ display:flex; align-items:center; gap:22px; font-size:14px; }
+.nav-links a{ text-decoration:none; color:var(--chalk-dim); white-space:nowrap; }
+.nav-links a:hover{ color:var(--chalk); }
+.nav-links .btn{ padding:11px 18px; font-size:13px; color:#140E0C; }
+@media (max-width:980px){ .nav-links a:not(.btn){ display:none; } }
+
+/* ── the label between options ───────────────────────────────────────────── */
+.opt-label{ max-width:1300px; margin:0 auto; padding:var(--s6) var(--pad) var(--s3);
+  display:flex; align-items:baseline; gap:var(--s3); flex-wrap:wrap; }
+.opt-label .tag{ font-family:var(--disp); font-weight:800; font-variation-settings:'wdth' 86;
+  font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--orange-lite); }
+.opt-label h2{ font-family:var(--disp); font-weight:900; font-variation-settings:'wdth' 84;
+  font-size:clamp(26px,3.4vw,44px); line-height:.96; letter-spacing:-.03em; text-transform:uppercase; }
+.opt-label p{ color:var(--chalk-dim); font-size:15.5px; flex:1 1 400px; max-width:74ch; }
+.opt-label p b{ color:var(--chalk); font-weight:500; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SHARED HERO SHELL
+   The hero ends at the fold. One floor, one ceiling, and a short window
+   query that steps the whole thing down together.
+   ══════════════════════════════════════════════════════════════════════════ */
+.hero{
+  position:relative; min-height:calc(100dvh - var(--nav)); max-height:980px;
+  overflow:hidden; background:var(--graphite-2); isolation:isolate;
+}
+@media (max-height:700px){ .hero{ min-height:620px; } }
+
+/* the render, laid the same way in all three so the crop never changes */
+.ground{
+  position:absolute; inset:0; z-index:0;
+  background:url("assets/render-motorcourt.webp") 56% 56%/cover no-repeat;
+}
+.hero-cap{
+  position:absolute; right:var(--pad); bottom:var(--s4); z-index:6;
+  font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; font-weight:500;
+  color:var(--chalk); background:rgba(10,14,15,.66); padding:8px 12px;
+}
+.h1{
+  font-family:var(--disp); font-weight:900; font-variation-settings:'wdth' 82;
+  line-height:.88; letter-spacing:-.035em; text-transform:uppercase;
+}
+.h1 span{ display:block; white-space:nowrap; }
+.h1 em{ font-style:normal; color:var(--orange); }
+.acts{ display:flex; flex-wrap:wrap; gap:14px; align-items:center; }
+.tel{
+  font-family:var(--disp); font-weight:800; font-variation-settings:'wdth' 86;
+  font-size:clamp(19px,1.7vw,24px); letter-spacing:-.01em; text-decoration:none;
+  border-bottom:3px solid var(--orange); padding-bottom:2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   A. THROUGH THE FILM
+   The render runs the whole width, uncropped by any panel. The sheet lies
+   over the left of it at the opacity real trace film actually has, so the
+   house reads through the sheet the way a drafter sees the board through it.
+   The concept was always right. It was the alpha value that was wrong.
+   ══════════════════════════════════════════════════════════════════════════ */
+.a-sheet{
+  position:absolute; z-index:3; top:var(--s5); bottom:var(--s5); left:var(--pad);
+  width:min(56%, 760px);
+  padding:clamp(30px,3.6vw,60px);
+  display:flex; flex-direction:column; justify-content:center; gap:var(--s3);
+  color:var(--film-ink);
+  /* genuine film: you can see the drawing under it */
+  background:rgba(237,237,231,.82);
+  backdrop-filter:blur(3px) saturate(.9);
+  -webkit-backdrop-filter:blur(3px) saturate(.9);
+  /* one hairline, top face only, because light comes from above */
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.78), var(--lift);
+}
+.a-sheet .reg{ top:13px; right:13px; }
+.a-sheet .reg.b{ top:auto; right:auto; bottom:13px; left:13px; }
+.a-sheet .h1{ font-size:clamp(34px,calc(6.01vw + 16.5px),104px); }  /* solved from 1440 and 1024 */
+.a-rule{ height:2px; background:var(--film-ink); opacity:.26; }
+.a-sheet p{ color:var(--film-ink-soft); font-size:clamp(15.5px,1.15vw,18px); max-width:44ch; }
+.a-sheet .tel{ color:var(--film-ink); }
+/* the sheet is laid onto the board */
+.a-sheet{ animation:layon 1.05s var(--ease) both; }
+@keyframes layon{ from{ opacity:0; transform:translate3d(0,-22px,0); } to{ opacity:1; transform:none; } }
+@media (max-width:980px){
+  .a-sheet{ position:relative; inset:auto; width:auto; margin:var(--s6) var(--pad) var(--s5);
+    top:auto; bottom:auto; }
+  .hero.a{ display:flex; flex-direction:column; justify-content:flex-end; min-height:calc(100dvh - var(--nav)); }
+  .a-sheet .h1{ font-size:clamp(32px,9.4vw,60px); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   B. CUT THROUGH THE TYPE
+   The sheet covers the opening, and the headline is cut out of it, so the
+   building shows through the letterforms. It is the studio's whole job in
+   one move: the drawing is what lets you see the house. The knockout box is
+   the same box as the render behind it, so the crop inside the letters lines
+   up exactly with the crop around them.
+   ══════════════════════════════════════════════════════════════════════════ */
+.b-sheet{
+  position:absolute; inset:0; z-index:3;
+  background:rgba(237,237,231,.93);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7);
+  clip-path:inset(0 0 0 0);
+  animation:wipe 1.15s var(--ease) both;
+}
+@keyframes wipe{ from{ clip-path:inset(0 100% 0 0); } to{ clip-path:inset(0 0 0 0); } }
+.b-knock{
+  position:absolute; inset:0; z-index:4;
+  display:flex; align-items:center;
+  /* the foot is absolutely placed at the bottom, so its height is reserved
+     here and the headline centres in what is left. Nothing can collide. */
+  padding:clamp(24px,4.6vh,48px) var(--pad) 150px;
+  /* the darkening pass is what guarantees the letters stay legible against
+     the light sheet, whatever the render happens to be doing behind them */
+  background-image:linear-gradient(rgba(8,12,12,.52),rgba(8,12,12,.52)),
+                   url("assets/render-motorcourt.webp");
+  background-position:56% 56%; background-size:cover; background-repeat:no-repeat;
+  -webkit-background-clip:text; background-clip:text;
+  color:transparent;
+  animation:knockin 1.15s var(--ease) both;
+}
+@keyframes knockin{ from{ opacity:0; } to{ opacity:1; } }
+.b-inner{ max-width:1300px; margin:0 auto; width:100%; }
+.b-knock .h1{ font-size:clamp(38px,calc(13.22vw + 13.6px),206px); } /* solved from 1440 and 1024 */
+/* everything that is not the knockout sits on the sheet in ink */
+.b-foot{
+  position:absolute; z-index:5; left:var(--pad); right:var(--pad); bottom:var(--s5);
+  display:flex; align-items:flex-end; justify-content:space-between; gap:var(--s4); flex-wrap:wrap;
+  color:var(--film-ink);
+}
+.b-foot .in{ max-width:1300px; margin:0 auto; width:100%;
+  display:flex; align-items:flex-end; justify-content:space-between; gap:var(--s4); flex-wrap:wrap; }
+.b-foot p{ color:var(--film-ink-soft); font-size:clamp(15.5px,1.15vw,18px); max-width:46ch; }
+.b-foot .tel{ color:var(--film-ink); }
+.b-sheet .reg{ top:16px; left:16px; }
+.b-sheet .reg.b{ top:16px; left:auto; right:16px; }
+.b-cap{ color:var(--film-ink-soft); background:none; left:auto; }
+@media (max-width:980px){
+  .b-knock{ align-items:flex-start; padding-top:var(--s6); }
+  .b-foot{ position:absolute; bottom:var(--s4); }
+  .b-knock .h1{ font-size:clamp(36px,11.4vw,76px); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   C. ON THE BOARD
+   No panel at all. The render gets the whole screen and the type is set
+   straight onto it, the way a title is lettered on a drawing. One small
+   film chip carries the two actions, held in register at the bottom right.
+   This is the one that spends the most pixels on the photograph.
+   ══════════════════════════════════════════════════════════════════════════ */
+.c-scrim{
+  position:absolute; inset:0; z-index:1;
+  background:linear-gradient(180deg, rgba(8,12,12,.42) 0%, rgba(8,12,12,.10) 34%,
+                                     rgba(8,12,12,.58) 72%, rgba(8,12,12,.86) 100%);
+}
+.c-in{
+  position:absolute; z-index:4; inset:auto var(--pad) var(--s6) var(--pad);
+  max-width:1300px; margin:0 auto;
+  display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:end; gap:var(--s5);
+}
+.c-in .h1{ font-size:clamp(36px,calc(12.5vw - 20px),162px); color:var(--chalk);
+  text-shadow:0 2px 26px rgba(4,8,8,.72), 0 1px 3px rgba(4,8,8,.9); }
+.c-copy{ margin-top:var(--s3); color:#DCE2E0; font-size:clamp(15.5px,1.15vw,18px); max-width:46ch;
+  text-shadow:0 1px 14px rgba(4,8,8,.9); }
+.c-chip{
+  position:relative; background:rgba(237,237,231,.94); color:var(--film-ink);
+  padding:var(--s4) var(--s4) calc(var(--s4) - 4px);
+  display:flex; flex-direction:column; gap:var(--s2); align-items:flex-start;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.78), var(--lift);
+  animation:chipin 1s var(--ease) .22s both;
+}
+@keyframes chipin{ from{ opacity:0; transform:translate3d(0,20px,0); } to{ opacity:1; transform:none; } }
+.c-chip .reg{ top:11px; right:11px; }
+.c-chip .tel{ color:var(--film-ink); }
+.c-chip .lab{ font-family:var(--disp); font-weight:800; font-variation-settings:'wdth' 86;
+  font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--film-ink-soft); }
+.c-in .h1{ animation:settle 1s var(--ease) both; }
+/* the bottom of C is busy with the copy and the chip, so the plate name goes
+   to the top edge where the sky is even and nothing else is competing */
+.hero.c .hero-cap{ bottom:auto; top:var(--s4); right:var(--pad); }
+@keyframes settle{ from{ opacity:0; transform:translate3d(0,18px,0); } to{ opacity:1; transform:none; } }
+@media (max-width:980px){
+  .c-in{ grid-template-columns:1fr; gap:var(--s4); bottom:var(--s4); }
+  .c-in .h1{ font-size:clamp(34px,10.2vw,64px); }
+  .c-chip{ width:100%; }
+}
+
+/* Every reveal above collapses to its FINISHED state for anyone who asked not
+   to be moved. Note the `animation:none` rather than a near-zero duration: a
+   .01ms duration still runs the animation, and these keyframes start at
+   opacity 0, so a reduced-motion visitor was being served an empty hero.
+   Removing the animation outright leaves each element at its natural state,
+   which is the state we actually want. */
+@media (prefers-reduced-motion:reduce){
+  *{ animation:none !important; transition-duration:.01ms !important; }
+  .b-sheet{ clip-path:inset(0 0 0 0) !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar-in">
+    <a class="brand" href="#top"><img src="assets/logo.png" alt="Quest Drafting and Design"></a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="#about">About</a>
+      <a href="#faq">FAQ</a>
+      <a href="#quote">Contact</a>
+      <a class="btn btn-orange" href="#quote">Get a Quote</a>
+    </nav>
+  </div>
+</header>
+
+<div class="opt-label">
+  <span class="tag">Option A</span>
+  <h2>Through the film</h2>
+  <p>The render runs the full width with nothing cutting it off, and the sheet lies over the left of it at the opacity real tracing film actually has. <b>You can see the house through the sheet.</b> The concept was always right. It was the alpha value that was wrong.</p>
+</div>
+
+<section class="hero a">
+  <div class="ground"></div>
+  <div class="a-sheet">
+    <span class="reg" aria-hidden="true"></span>
+    <span class="reg b" aria-hidden="true"></span>
+    <h1 class="h1"><span>From vision,</span><span>to model,</span><span>to <em>permit.</em></span></h1>
+    <div class="a-rule"></div>
+    <p>We turn a property and an idea into a home that is resolved on paper, modeled, documented and permitted, before the first shovel hits the ground.</p>
+    <div class="acts">
+      <a class="btn btn-orange" href="#quote">Get a Quote</a>
+      <a class="tel" href="tel:+16023396455">(602) 339-6455</a>
+    </div>
+  </div>
+  <span class="hero-cap">Motor court estate, dusk render</span>
+</section>
+
+<div class="opt-label">
+  <span class="tag">Option B</span>
+  <h2>Cut through the type</h2>
+  <p>The sheet covers the opening and the headline is cut out of it, so the building shows through the letterforms. <b>It is the studio's whole job in one move:</b> the drawing is what lets you see the house. The crop inside the letters lines up exactly with the crop around them.</p>
+</div>
+
+<section class="hero b">
+  <div class="ground"></div>
+  <div class="b-sheet">
+    <span class="reg" aria-hidden="true"></span>
+    <span class="reg b" aria-hidden="true"></span>
+  </div>
+  <div class="b-knock">
+    <div class="b-inner">
+      <h1 class="h1"><span>From vision,</span><span>to model,</span><span>to permit.</span></h1>
+    </div>
+  </div>
+  <div class="b-foot">
+    <div class="in">
+      <p>We turn a property and an idea into a home that is resolved on paper, modeled, documented and permitted, before the first shovel hits the ground.</p>
+      <div class="acts">
+        <a class="btn btn-orange" href="#quote">Get a Quote</a>
+        <a class="tel" href="tel:+16023396455">(602) 339-6455</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="opt-label">
+  <span class="tag">Option C</span>
+  <h2>On the board</h2>
+  <p>No panel at all. The render gets the whole screen and the type is set straight onto it, the way a title is lettered on a drawing. One small film chip holds the two actions, in register at the bottom right. <b>This is the one that spends the most pixels on the photograph.</b></p>
+</div>
+
+<section class="hero c">
+  <div class="ground"></div>
+  <div class="c-scrim"></div>
+  <div class="c-in">
+    <div>
+      <h1 class="h1"><span>From vision,</span><span>to model,</span><span>to <em>permit.</em></span></h1>
+      <p class="c-copy">We turn a property and an idea into a home that is resolved on paper, modeled, documented and permitted, before the first shovel hits the ground.</p>
+    </div>
+    <div class="c-chip">
+      <span class="reg" aria-hidden="true"></span>
+      <span class="lab">Start a set</span>
+      <a class="btn btn-orange" href="#quote">Get a Quote</a>
+      <a class="tel" href="tel:+16023396455">(602) 339-6455</a>
+    </div>
+  </div>
+  <span class="hero-cap">Motor court estate, dusk render</span>
+</section>
+
+<div class="opt-label" style="padding-bottom:var(--s7)">
+  <span class="tag">To decide</span>
+  <h2>Pick one</h2>
+  <p>Say A, B or C and it replaces the opener in <b>direction-4-trace.html</b>. Nothing else on that page changes. All three carry the same headline, the same sentence and the same two actions, so what you are choosing between is the design.</p>
+</div>
+
+</body>
+</html>
