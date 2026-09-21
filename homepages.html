@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quest Drafting, three homepages</title>
+<meta name="description" content="Three complete homepages for Quest Drafting and Design, built from the hero you chose. Same language, three different structures.">
+<link rel="icon" href="assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=JetBrains+Mono:wght@400;700&family=Public+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+/* The chooser runs each homepage live at a real desktop width, scaled down
+   with a transform, so what you see is the page itself and not a picture of
+   it. A veil swallows the first click so scrolling this page never scrolls a
+   preview by accident. */
+:root{
+  --paper:#F6F6F3; --ink:#0F1216; --ink-2:#3C444C; --ink-3:#69727A;
+  --blue:#1F3FCC; --hair:rgba(15,18,22,.09); --hair-2:rgba(15,18,22,.2);
+  --pad:40px; --ease:cubic-bezier(.16,1,.3,1);
+}
+@media (max-width:768px){ :root{ --pad:22px; } }
+*,*::before,*::after{ box-sizing:border-box; }
+body{ margin:0; background:var(--paper); color:var(--ink);
+  font-family:'Public Sans',system-ui,sans-serif; font-size:16px; line-height:1.62;
+  overflow-x:clip; -webkit-font-smoothing:antialiased; }
+img{ display:block; max-width:100%; }
+a{ color:inherit; }
+h1,h2{ margin:0; font-family:'Archivo',sans-serif; font-weight:800;
+  font-variation-settings:'wdth' 118; letter-spacing:-.032em; line-height:.94; }
+p{ margin:0; }
+:focus-visible{ outline:3px solid var(--blue); outline-offset:3px; }
+.wrap{ max-width:1560px; margin:0 auto; padding-inline:var(--pad); }
+
+header{ padding-block:clamp(40px,7vh,86px) clamp(22px,4vh,40px);
+  border-bottom:1px solid var(--hair-2); }
+.hbar{ display:flex; align-items:center; gap:14px; margin-bottom:clamp(22px,4vh,38px); }
+.hbar img{ height:30px; width:auto; }
+.hbar b{ display:block; font-size:15px; font-weight:600; }
+.hbar span{ display:block; font-size:13.5px; color:var(--ink-3); }
+h1{ font-size:clamp(30px,calc(6.3vw - 6px),86px); }
+h1 em{ font-style:normal; color:var(--blue); }
+.lead{ margin-top:clamp(18px,3vh,28px); max-width:70ch; color:var(--ink-2); font-size:17px; }
+.lead b{ color:var(--ink); font-weight:600; }
+.lead + .lead{ margin-top:14px; }
+.seg{ display:inline-flex; margin-top:clamp(20px,3vh,30px); border:1px solid var(--hair-2); }
+.seg button{ appearance:none; background:0; border:0; cursor:pointer; font:inherit;
+  font-size:13.5px; padding:10px 22px; color:var(--ink-3);
+  transition:background .25s ease,color .25s ease; }
+.seg button + button{ border-left:1px solid var(--hair-2); }
+.seg button.on{ background:var(--blue); color:#fff; font-weight:600; }
+
+.cards{ display:grid; grid-template-columns:1fr; gap:clamp(22px,3vw,38px);
+  padding-block:clamp(26px,4vh,48px); }
+@media (min-width:1100px){ .cards{ grid-template-columns:repeat(3,minmax(0,1fr)); } }
+.card{ border:1px solid var(--hair-2); background:#fff; display:flex; flex-direction:column;
+  opacity:0; translate:0 22px; transition:opacity .7s var(--ease), translate .7s var(--ease); }
+.card.in{ opacity:1; translate:0 0; }
+.card:nth-child(2){ transition-delay:.08s } .card:nth-child(3){ transition-delay:.16s }
+.chd{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; padding:16px 18px 13px;
+  border-bottom:1px solid var(--hair); }
+.chd h2{ font-size:21px; }
+.code{ font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700;
+  letter-spacing:.12em; color:var(--blue); }
+.chd .open{ margin-left:auto; font-size:13px; color:var(--ink-3); text-decoration:none;
+  white-space:nowrap; }
+.chd .open:hover{ color:var(--ink); }
+.stage{ position:relative; background:#EDEDE9; overflow:hidden; aspect-ratio:16/11;
+  border-bottom:1px solid var(--hair); }
+.stage.mobile{ aspect-ratio:16/11; display:flex; justify-content:center; padding-top:12px; }
+.holder{ position:absolute; top:0; left:0; transform-origin:top left; }
+.stage.mobile .holder{ position:relative; transform-origin:top center; }
+.holder iframe{ border:0; display:block; background:#F6F6F3; }
+.veil{ position:absolute; inset:0; z-index:5; background:rgba(15,18,22,.14);
+  display:flex; align-items:flex-end; justify-content:center; padding-bottom:16px;
+  cursor:pointer; transition:opacity .35s var(--ease); }
+.veil span{ font-size:12.5px; font-weight:600; background:#fff; color:var(--ink);
+  border:1px solid var(--hair-2); padding:8px 16px; }
+.stage.live .veil{ opacity:0; pointer-events:none; }
+.loading{ position:absolute; inset:0; display:grid; place-items:center; z-index:2;
+  color:var(--ink-3); font-size:13px; }
+.cbd{ padding:17px 18px 20px; display:flex; flex-direction:column; gap:13px; flex:1; }
+.cbd p{ font-size:14.5px; color:var(--ink-2); line-height:1.58; }
+.cbd p b{ color:var(--ink); font-weight:600; }
+.spec{ list-style:none; margin:0; padding:13px 0 0; display:grid; gap:7px;
+  border-top:1px solid var(--hair); }
+.spec li{ font-size:13px; color:var(--ink-2); display:flex; gap:11px; align-items:baseline; }
+.spec li i{ flex:0 0 74px; font-style:normal; font-family:'JetBrains Mono',monospace;
+  font-size:10px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-3); }
+footer{ border-top:1px solid var(--hair-2); padding-block:24px; font-size:13.5px;
+  color:var(--ink-3); display:flex; gap:18px; justify-content:space-between; flex-wrap:wrap; }
+@media (prefers-reduced-motion:reduce){ *{ transition-duration:.01ms !important; }
+  .card{ opacity:1; translate:none; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header>
+  <div class="hbar">
+    <img src="assets/logo.png" alt="Quest Drafting and Design">
+    <div><b>Quest Drafting &amp; Design LLC</b><span>Residential architectural drafting in Gilbert, Arizona</span></div>
+  </div>
+  <h1>One hero, three <em>homepages.</em></h1>
+  <p class="lead">These are the three you picked, built out into complete pages. They share the white sheet, the ink blue, Archivo Expanded over Public Sans and the twelve column hairlines, because that is the look you chose. <b>What differs is the structure.</b></p>
+  <p class="lead">Every section carries the same verified facts in the same order, and <b>no two sections inside a page share a layout.</b> Click a preview once to use it.</p>
+  <div class="seg" id="seg">
+    <button class="on" data-mode="desktop">Desktop</button>
+    <button data-mode="mobile">Mobile</button>
+  </div>
+</header>
+
+<div class="cards" id="cards">
+
+  <article class="card">
+    <div class="chd">
+      <span class="code">C1</span><h2>Band</h2>
+      <a class="open" href="homepage-c1-band.html" target="_blank" rel="noopener">Open full page</a>
+    </div>
+    <div class="stage" data-src="homepage-c1-band.html">
+      <div class="loading">Loading</div><div class="holder"></div>
+      <div class="veil"><span>Click to interact</span></div>
+    </div>
+    <div class="cbd">
+      <p><b>Read in strips.</b> The reel runs across the foot of the opener and every section below is a full width band, the way a drawing set is read sheet by sheet. The services are four ruled bands with the numbers set large, the process is one horizontal rail, and the argument is a single band of the accent colour.</p>
+      <ul class="spec">
+        <li><i>Opener</i>Type field, reel across the foot</li>
+        <li><i>Services</i>Four ruled bands, alternating indent</li>
+        <li><i>Process</i>One horizontal rail, six stops</li>
+        <li><i>The work</i>Asymmetric grid, six plates</li>
+        <li><i>The set</i>Tabs by sheet number</li>
+        <li><i>Questions</i>Rows that open in place</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="card">
+    <div class="chd">
+      <span class="code">C2</span><h2>Plate</h2>
+      <a class="open" href="homepage-c2-plate.html" target="_blank" rel="noopener">Open full page</a>
+    </div>
+    <div class="stage" data-src="homepage-c2-plate.html">
+      <div class="loading">Loading</div><div class="holder"></div>
+      <div class="veil"><span>Click to interact</span></div>
+    </div>
+    <div class="cbd">
+      <p><b>Held against moving.</b> The opener pairs a still plate with the reel, and every section below pairs something fixed with something you move through. The services are an accordion strip that opens on the one you point at, the work is a filmstrip you drag, and the argument is held over the night render.</p>
+      <ul class="spec">
+        <li><i>Opener</i>Type, a still plate, reel beneath</li>
+        <li><i>Services</i>Accordion strip, opens in place</li>
+        <li><i>Process</i>Stepped list, each offset further</li>
+        <li><i>The work</i>Filmstrip you drag</li>
+        <li><i>The set</i>Index beside one large sheet</li>
+        <li><i>Questions</i>Two ruled columns, all open</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="card">
+    <div class="chd">
+      <span class="code">C3</span><h2>Column</h2>
+      <a class="open" href="homepage-c3-column.html" target="_blank" rel="noopener">Open full page</a>
+    </div>
+    <div class="stage" data-src="homepage-c3-column.html">
+      <div class="loading">Loading</div><div class="holder"></div>
+      <div class="veil"><span>Click to interact</span></div>
+    </div>
+    <div class="cbd">
+      <p><b>Built on standing columns.</b> The reel is stood on end down the right edge of the opener, and every section below stands on a column of its own: an index beside a panel, a timeline running down one rule, and the four sheets stacked one over the next.</p>
+      <ul class="spec">
+        <li><i>Opener</i>Type field, reel stood on end</li>
+        <li><i>Services</i>Standing index, one detail panel</li>
+        <li><i>Process</i>Timeline down a single rule</li>
+        <li><i>The work</i>Alternating standing plates</li>
+        <li><i>The set</i>Four sheets stacked over each other</li>
+        <li><i>Questions</i>Ruled list read down the numbers</li>
+      </ul>
+    </div>
+  </article>
+
+</div>
+
+<footer>
+  <span>Quest Drafting &amp; Design LLC, Gilbert Arizona. (602) 339-6455</span>
+  <span>Say C1, C2 or C3</span>
+</footer>
+</div>
+
+<script>
+var DESKTOP=1440, MOBILE=390;
+var stages=[].slice.call(document.querySelectorAll('.stage'));
+var mode='desktop';
+function build(st){
+  var holder=st.querySelector('.holder');
+  var w=mode==='mobile'?MOBILE:DESKTOP;
+  var h=mode==='mobile'?Math.round(w*16/9):Math.round(w*11/16);
+  var f=holder.querySelector('iframe');
+  if(!f){
+    f=document.createElement('iframe');
+    f.setAttribute('loading','lazy'); f.setAttribute('title','Preview');
+    f.src=st.dataset.src;
+    f.addEventListener('load',function(){var l=st.querySelector('.loading'); if(l)l.style.display='none';});
+    holder.appendChild(f);
+  }
+  f.style.width=w+'px'; f.style.height=h+'px';
+  fit(st);
+}
+function fit(st){
+  var holder=st.querySelector('.holder'), f=holder.querySelector('iframe');
+  if(!f) return;
+  var w=parseInt(f.style.width,10), h=parseInt(f.style.height,10);
+  var scale=st.clientWidth/w;
+  if(mode==='mobile') scale=Math.min(st.clientHeight/h, st.clientWidth/w);
+  holder.style.transform='scale('+scale+')';
+  holder.style.width=w+'px'; holder.style.height=h+'px';
+}
+stages.forEach(function(st){
+  st.querySelector('.veil').addEventListener('click',function(){ st.classList.add('live'); });
+});
+var pio=new IntersectionObserver(function(es,o){
+  es.forEach(function(e){ if(e.isIntersecting){ build(e.target); o.unobserve(e.target); } });
+},{rootMargin:'320px'});
+stages.forEach(function(st){ pio.observe(st); });
+document.getElementById('seg').addEventListener('click',function(e){
+  var b=e.target.closest('button'); if(!b) return;
+  mode=b.dataset.mode;
+  this.querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x===b); });
+  stages.forEach(function(st){
+    st.classList.remove('live');
+    st.classList.toggle('mobile', mode==='mobile');
+    if(st.querySelector('iframe')) build(st);
+  });
+});
+addEventListener('resize',function(){ stages.forEach(fit); });
+var cio=new IntersectionObserver(function(es){
+  es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); cio.unobserve(e.target); } });
+},{threshold:.05});
+document.querySelectorAll('.card').forEach(function(c){ cio.observe(c); });
+</script>
+</body>
+</html>

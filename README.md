@@ -18,6 +18,66 @@ assets/                         the studio's own renders, models, sheets, logo
 All assets are self hosted in `assets/`. Nothing hotlinks. These are six
 alternative designs of the same homepage, not a price ladder.
 
+## The three homepages
+
+The chooser is `homepages.html`. These are the three heroes you picked, built
+out into complete pages.
+
+```
+homepages.html              the chooser, all three side by side
+homepage-c1-band.html       "Band"
+homepage-c2-plate.html      "Plate"
+homepage-c3-column.html     "Column"
+```
+
+They share the white sheet, the ink blue accent, Archivo Expanded over Public
+Sans and the twelve column hairlines, because that is the look that was
+chosen. The logo keeps the studio's orange and is the only place it appears.
+What differs between them is the structure.
+
+### Furniture matrix
+
+No cell repeats inside a column, so no two sections in one page share a
+layout family.
+
+| Section | C1 Band | C2 Plate | C3 Column |
+|---|---|---|---|
+| Opener | Type field, the reel across the foot | Type, a still plate, the reel beneath both | Type field, the reel stood on end down the edge |
+| Services | Four ruled bands, alternating indent, numbers set large | Accordion strip, the open panel takes a third, each showing that service's own output | A standing index beside one detail panel |
+| Process | One horizontal rail, six stops along a rule | A stepped list, each step offset further than the last | A timeline running down a single rule |
+| The work | Asymmetric twelve column grid, six plates at five sizes | A filmstrip you drag, slides of three widths | Alternating standing plates, each crossing the measure |
+| The set | Tabs across the top by sheet number | An index down the left beside one large sheet | Four sheets stacked, each laid over the last |
+| The argument | One full bleed band of the accent | Held over the night render behind a veil | One narrow centred measure on a plain sheet |
+| Questions | Ruled rows that open in place | Two ruled columns, nothing hidden | A ruled list read down its numbers |
+| Closing | Left aligned, service area in six columns | One ink band | Centred on the sheet |
+
+### What was measured before shipping
+
+Every one of the three, at 505, 780, 880, 1024, 1280, 1440 and 1907 pixels:
+
+- Zero horizontal overflow at every width.
+- The opener ends exactly at the fold at every width. The next section never
+  peeks in on load.
+- Every heading fills at least 84 percent of its row, most between 89 and 93.
+  Each carries its own measured constants rather than a cap in `ch`.
+- Contrast on every text and button pairing: worst case 4.52:1, most above 7.
+- The sheet tabs, the services index and the accordion all verified by a real
+  click and by the keyboard, not by forcing the state.
+
+### One thing to know about the drawings
+
+Every original permit sheet carries a real client street address in its title
+block. Four cropped fields were made that hold only the drawing, and those are
+the only sheet images these pages use, so the address cannot appear:
+
+```
+sheet-cover-field.webp   sheet-plan-field.webp
+sheet-dim-field.webp     sheet-elev-field.webp
+```
+
+The uncropped originals are still in `assets/` and are used by the six earlier
+directions, which is worth a decision separately.
+
 ## The two earlier directions
 
 The chooser ends with a second group, "Before these six", holding the two
