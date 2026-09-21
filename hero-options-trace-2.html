@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Trace, five more heroes</title>
+<meta name="description" content="Five further opening screens for the Trace direction, Quest Drafting and Design, each built on a different piece of the studio's own work.">
+<link rel="icon" href="assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@75..110,500..900&family=Chivo:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ===========================================================================
+   TRACE, FIVE MORE HEROES.
+
+   The first three were one composition with the panel treated three ways, all
+   built on the same single render. That is a skin, not a design, which is why
+   none of them landed.
+
+   These five are built the other way round. The studio's work exists three
+   times over, massed, rendered and drawn, and it has four real permit sheets
+   with their own title blocks and sheet numbers sitting unused in the asset
+   folder. Each hero below starts from a different one of those and gets its
+   own composition, its own use of type and its own reason to exist.
+
+   Still Trace's vocabulary: Anybody with Chivo, film and graphite, one
+   orange, registration marks only where sheets meet.
+   ======================================================================== */
+:root{
+  --graphite:#1E2628;
+  --graphite-2:#151B1D;
+  --graphite-3:#0E1213;
+  --film:#EDEDE7;
+  --film-ink:#171C1C;
+  --film-ink-soft:#434D4B;
+  --chalk:#E6EAE8;
+  --chalk-dim:#A9B4B2;
+  --orange:#E8552B;
+  --orange-lite:#F5865E;
+  --rule:rgba(230,234,232,.20);
+
+  --disp:'Anybody','Chivo',Helvetica,sans-serif;
+  --body:'Chivo',Helvetica,sans-serif;
+
+  --pad:32px;
+  --nav:68px;
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:48px; --s6:64px; --s7:96px;
+  --ease:cubic-bezier(.32,.72,0,1);
+  --lift:0 34px 66px -36px rgba(3,7,7,.9);
+}
+@media (max-width:760px){ :root{ --pad:20px; --nav:60px; } }
+*,*::before,*::after{ box-sizing:border-box; }
+body{
+  margin:0; background:var(--graphite); color:var(--chalk);
+  font-family:var(--body); font-size:17px; line-height:1.62; overflow-x:clip;
+}
+img{ display:block; max-width:100%; }
+a{ color:inherit; }
+h1,h2{ margin:0; }
+p{ margin:0; }
+:focus-visible{ outline:3px solid var(--orange); outline-offset:3px; }
+body::after{
+  content:''; position:fixed; inset:0; z-index:90; pointer-events:none; opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.btn{
+  display:inline-flex; align-items:center; gap:10px;
+  padding:16px 28px; border:0; border-radius:0; cursor:pointer; text-decoration:none;
+  font-family:var(--disp); font-weight:700; font-variation-settings:'wdth' 88;
+  font-size:15px; letter-spacing:.06em; text-transform:uppercase;
+  transition:background .28s var(--ease);
+}
+.btn-orange{ background:var(--orange); color:#140E0C; }
+.btn-orange:hover{ background:#FF6A3D; }
+.tel{
+  font-family:var(--disp); font-weight:800; font-variation-settings:'wdth' 86;
+  font-size:clamp(19px,1.7vw,24px); letter-spacing:-.01em; text-decoration:none;
+  border-bottom:3px solid var(--orange); padding-bottom:2px; white-space:nowrap;
+}
+.acts{ display:flex; flex-wrap:wrap; gap:16px; align-items:center; }
+.reg{ position:absolute; width:22px; height:22px; pointer-events:none; }
+.reg::before,.reg::after{ content:""; position:absolute; background:var(--orange); }
+.reg::before{ left:50%; top:0; width:1.5px; height:100%; transform:translateX(-50%); }
+.reg::after{ top:50%; left:0; height:1.5px; width:100%; transform:translateY(-50%); }
+
+.bar{ height:var(--nav); background:var(--graphite-2); border-bottom:1px solid var(--rule); position:relative; z-index:20; }
+.bar-in{ height:100%; max-width:1300px; margin:0 auto; padding:0 var(--pad);
+  display:flex; align-items:center; justify-content:space-between; gap:var(--s4); }
+.bar img{ height:30px; width:auto; background:#fff; padding:5px 8px; }
+.nav-links{ display:flex; align-items:center; gap:22px; font-size:14px; }
+.nav-links a{ text-decoration:none; color:var(--chalk-dim); white-space:nowrap; }
+.nav-links a:hover{ color:var(--chalk); }
+.nav-links .btn{ padding:11px 18px; font-size:13px; }
+@media (max-width:980px){ .nav-links a:not(.btn){ display:none; } }
+
+.opt-label{ max-width:1300px; margin:0 auto; padding:var(--s6) var(--pad) var(--s3);
+  display:flex; align-items:baseline; gap:var(--s3); flex-wrap:wrap; }
+.opt-label .tag{ font-family:var(--disp); font-weight:800; font-variation-settings:'wdth' 86;
+  font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--orange-lite); }
+.opt-label h2{ font-family:var(--disp); font-weight:900; font-variation-settings:'wdth' 84;
+  font-size:clamp(26px,3.4vw,44px); line-height:.96; letter-spacing:-.03em; text-transform:uppercase; }
+.opt-label p{ color:var(--chalk-dim); font-size:15.5px; flex:1 1 400px; max-width:74ch; }
+.opt-label p b{ color:var(--chalk); font-weight:500; }
+
+.hero{ position:relative; min-height:calc(100dvh - var(--nav)); max-height:980px;
+  overflow:hidden; background:var(--graphite-2); isolation:isolate; }
+@media (max-height:700px){ .hero{ min-height:620px; } }
+.h1{ font-family:var(--disp); font-weight:900; font-variation-settings:'wdth' 82;
+  line-height:.88; letter-spacing:-.035em; text-transform:uppercase; }
+.h1 span{ display:block; white-space:nowrap; }
+.h1 em{ font-style:normal; color:var(--orange); }
+.lede{ font-size:clamp(15.5px,1.15vw,18px); max-width:46ch; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   D. THE SHEET
+   No render at all. The hero is one of the studio's real permit sheets, shown
+   large enough to read the elevations, with the page banded horizontally
+   instead of split down the middle: drawing above, a dark title strip below
+   carrying the words. What the studio sells is the sheet, so the sheet is
+   what opens the page.
+   ══════════════════════════════════════════════════════════════════════════ */
+.hero.d{ display:grid; grid-template-rows:minmax(0,1fr) auto; background:var(--graphite-3); }
+.d-field{ position:relative; overflow:hidden;
+  background:url("assets/sheet-elev-field.webp") center 74%/cover no-repeat; }
+.d-field::after{ content:''; position:absolute; inset:0;
+  background:linear-gradient(180deg,rgba(14,18,19,.28) 0%,rgba(14,18,19,0) 22%,rgba(14,18,19,.20) 100%); }
+.d-field .reg{ top:16px; left:16px; }
+.d-field .reg.b{ top:16px; left:auto; right:16px; }
+.d-strip{
+  position:relative; z-index:3; background:var(--graphite-3);
+  border-top:2px solid var(--orange);
+  padding:clamp(22px,2.6vw,38px) var(--pad) clamp(24px,2.8vw,40px);
+}
+.d-in{ max-width:1300px; margin:0 auto;
+  display:grid; grid-template-columns:minmax(0,1fr) auto; gap:var(--s5); align-items:end; }
+.d-in .h1{ font-size:clamp(30px,calc(10.48vw - 34.5px),117px); color:var(--chalk); }
+.d-meta{ display:flex; gap:var(--s5); flex-wrap:wrap; align-items:flex-end; }
+.d-cell{ display:flex; flex-direction:column; gap:3px; }
+.d-cell i{ font-style:normal; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--chalk-dim); font-weight:700; }
+.d-cell b{ font-family:var(--disp); font-weight:800; font-variation-settings:'wdth' 88;
+  font-size:17px; letter-spacing:.01em; }
+.d-strip .acts{ margin-top:var(--s3); }
+@media (max-width:900px){
+  .d-in{ grid-template-columns:1fr; gap:var(--s3); }
+  .d-in .h1{ font-size:clamp(28px,8.4vw,48px); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   E. THREE STATES
+   The studio's work exists three times: as a mass, as a render and as a
+   drawing. The first attempt ran these as full height columns, which meant
+   every plate was a hard zoom into a wide building. They are landscape plates
+   now, because the subjects are landscape. The headline sits above them and
+   its baseline crosses their top edge, so the type is in front of the work.
+   Nothing claims the three are the same house, because they are not, so each
+   plate is labelled for what it actually is.
+   ══════════════════════════════════════════════════════════════════════════ */
+.hero.e{ background:var(--graphite-3); display:grid; align-content:center;
+  padding:var(--s5) var(--pad) var(--s5); }
+.e-in{ max-width:1300px; margin:0 auto; width:100%; position:relative; }
+.e-in .h1{ font-size:clamp(28px,calc(6.39vw + 5.9px),98px); color:var(--chalk);
+  position:relative; z-index:3; margin-bottom:-.16em; }
+.e-plates{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(8px,1vw,16px);
+  position:relative; z-index:1; }
+.e-plate{ position:relative; overflow:hidden; aspect-ratio:4/3; background:#232B2D;
+  box-shadow:inset 0 1px 0 rgba(239,238,235,.14), 0 20px 44px -22px rgba(3,7,7,.9); }
+.e-1{ background:#242C2E url("assets/model-terrain-neutral.webp") center 48%/cover no-repeat; }
+.e-2{ background:url("assets/s-motorcourt.webp") center 58%/cover no-repeat; }
+.e-3{ background:#F2F2EE url("assets/sheet-elev-field.webp") center 40%/cover no-repeat; }
+.e-labels{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(8px,1vw,16px);
+  margin-top:14px; }
+.e-labels i{ font-style:normal; font-size:11.5px; letter-spacing:.2em; text-transform:uppercase;
+  font-weight:700; color:var(--chalk-dim); }
+.e-foot{ margin-top:var(--s5); display:flex; gap:var(--s5);
+  align-items:flex-end; justify-content:space-between; flex-wrap:wrap; }
+.e-foot p{ color:var(--chalk-dim); }
+@media (max-width:900px){
+  .e-plates,.e-labels{ grid-template-columns:1fr; }
+  .e-plate:nth-child(n+2){ display:none; }
+  .e-labels i:nth-child(n+2){ display:none; }
+  .e-in .h1{ font-size:clamp(28px,8.6vw,46px); margin-bottom:var(--s3); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   F. THE MASS
+   No photograph and no rectangle. The massing model is knocked out of its
+   background, so it can sit on the page as an object rather than as a
+   screenshot in a box. It stands in front of the headline and cuts the
+   bottom off it, and that occlusion is the depth. This is the only one of
+   the set with no picture frame anywhere in it.
+   ══════════════════════════════════════════════════════════════════════════ */
+.hero.f{
+  background:
+    radial-gradient(120% 90% at 50% 8%, rgba(72,88,92,.42) 0%, rgba(21,27,29,0) 62%),
+    var(--graphite-2);
+  display:grid; align-content:center; overflow:hidden;
+}
+/* the board under it: drafting rules, the one place this hero is patterned */
+.hero.f::before{
+  content:''; position:absolute; inset:0; z-index:0; pointer-events:none;
+  background-image:linear-gradient(rgba(230,234,232,.075) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(230,234,232,.075) 1px,transparent 1px),
+                   linear-gradient(rgba(230,234,232,.16) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(230,234,232,.16) 1px,transparent 1px);
+  background-size:26px 26px,26px 26px,130px 130px,130px 130px;
+  mask-image:radial-gradient(120% 80% at 50% 40%,#000 30%,transparent 78%);
+}
+.f-type{ position:relative; z-index:2; max-width:1300px; margin:0 auto; width:100%;
+  padding:0 var(--pad); margin-bottom:clamp(56px,11.1vh,120px); }
+.f-type .h1{ font-size:clamp(34px,calc(12.04vw + 39.9px),214px); color:var(--chalk); }
+.f-model{
+  position:absolute; z-index:3; left:50%; bottom:0; width:min(128%,1900px);
+  transform:translateX(-50%);
+  filter:drop-shadow(0 26px 44px rgba(3,7,7,.85));
+  animation:rise 1.2s var(--ease) both;
+}
+@keyframes rise{ from{ opacity:0; transform:translate(-50%,40px); } to{ opacity:1; transform:translate(-50%,0); } }
+.f-foot{ position:absolute; z-index:6; left:var(--pad); right:var(--pad); top:var(--s6); }
+.f-foot-in{ max-width:1300px; margin:0 auto; display:flex; gap:var(--s5);
+  align-items:flex-start; justify-content:space-between; flex-wrap:wrap; }
+.f-foot p{ color:var(--chalk-dim); }
+.f-cap{ position:absolute; z-index:6; left:var(--pad); right:auto; bottom:var(--s3);
+  font-size:11px; letter-spacing:.2em; text-transform:uppercase; font-weight:700; color:var(--chalk-dim); }
+@media (max-width:900px){
+  .f-type .h1{ font-size:clamp(32px,10.8vw,58px); }
+  .f-model{ width:170%; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   G. NIGHT
+   The quiet one. The night render is the studio's most atmospheric asset and
+   nothing had used it. Almost all of this screen is sky. The type is small,
+   set low and wide, and there is one thing to press. A page that is confident
+   enough to be nearly empty reads as expensive, and it is the opposite of
+   every other option here.
+   ══════════════════════════════════════════════════════════════════════════ */
+.hero.g{ background:#05070C; }
+.g-ground{ position:absolute; inset:0;
+  background:url("assets/render-night-stars.webp") center 62%/cover no-repeat; }
+.g-ground::after{ content:''; position:absolute; inset:0;
+  background:linear-gradient(180deg,rgba(3,5,9,.55) 0%,rgba(3,5,9,.10) 40%,rgba(3,5,9,.78) 100%); }
+.g-in{ position:absolute; z-index:4; left:var(--pad); right:var(--pad); bottom:var(--s7);
+  max-width:1300px; margin:0 auto; }
+.g-in .h1{ font-size:clamp(28px,calc(5.5vw + 0.8px),80px); font-variation-settings:'wdth' 92;
+  font-weight:800; letter-spacing:-.02em; line-height:1.02; color:#F2F5F4;
+  text-shadow:0 2px 30px rgba(2,4,8,.9); }
+.g-in .lede{ margin-top:var(--s3); color:#C9D2D4; text-shadow:0 1px 16px rgba(2,4,8,.95); }
+.g-in .acts{ margin-top:var(--s4); }
+.g-cap{ position:absolute; z-index:4; left:var(--pad); top:var(--s5);
+  font-size:11px; letter-spacing:.24em; text-transform:uppercase; font-weight:700;
+  color:rgba(233,238,240,.62); }
+@media (max-width:900px){ .g-in{ bottom:var(--s5); } }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   H. THE TITLE BLOCK
+   The whole opening screen is drawn as a sheet. A border inset from the edge
+   with corner marks, the render sitting in the drawing field, and a real
+   title block ruled along the foot with the headline in the largest cell.
+   Every field in that block is either true or marked, and the fields that
+   would need the studio to confirm a number are simply not there.
+   ══════════════════════════════════════════════════════════════════════════ */
+.hero.h{ background:var(--graphite-2); padding:clamp(16px,1.9vw,28px);
+  height:calc(100dvh - var(--nav)); }
+.h-sheet{ position:relative; height:100%; min-height:0;
+  border:1px solid rgba(230,234,232,.42);
+  display:grid; grid-template-rows:minmax(0,1fr) auto; overflow:hidden;
+  background:var(--graphite-3); }
+.h-sheet .reg{ top:10px; left:10px; }
+.h-sheet .reg.b{ top:10px; left:auto; right:10px; }
+.h-sheet .reg.c{ top:auto; bottom:10px; left:10px; }
+.h-sheet .reg.d{ top:auto; bottom:10px; left:auto; right:10px; }
+.h-field{ position:relative; overflow:hidden;
+  background:url("assets/w-pool.webp") center 56%/cover no-repeat; }
+.h-field::after{ content:''; position:absolute; inset:0;
+  background:linear-gradient(180deg,rgba(10,14,15,.22),rgba(10,14,15,0) 40%); }
+.h-block{ border-top:1px solid rgba(230,234,232,.42);
+  display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:stretch; }
+.h-title{ padding:clamp(18px,2.1vw,30px) clamp(18px,2.2vw,32px); }
+.h-title .h1{ font-size:clamp(26px,calc(8.27vw - 30.9px),89px); color:var(--chalk); }
+.h-title p{ margin-top:12px; color:var(--chalk-dim); font-size:15px; max-width:52ch; }
+.h-cells{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+  border-left:1px solid rgba(230,234,232,.42); }
+.h-cell{ padding:14px 20px; display:flex; flex-direction:column; gap:3px; justify-content:center;
+  border-bottom:1px solid rgba(230,234,232,.28); }
+.h-cell:nth-child(odd){ border-right:1px solid rgba(230,234,232,.28); }
+.h-cell:nth-last-child(-n+2){ border-bottom:0; }
+.h-cell i{ font-style:normal; font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--chalk-dim); font-weight:700; }
+.h-cell b{ font-family:var(--disp); font-weight:800; font-variation-settings:'wdth' 88;
+  font-size:15.5px; white-space:nowrap; }
+.h-cell.go{ grid-column:1 / -1; border-bottom:0; padding:0; }
+.h-cell.go .btn{ width:100%; justify-content:center; padding:18px 24px; }
+@media (max-width:900px){
+  .h-block{ grid-template-columns:1fr; }
+  .h-cells{ border-left:0; border-top:1px solid rgba(230,234,232,.42); }
+  .h-title .h1{ font-size:clamp(26px,8.2vw,44px); }
+}
+
+/* Finished state for anyone who asked not to be moved. animation:none, not a
+   near-zero duration: these keyframes start at opacity 0, and a .01ms
+   duration still runs them, which serves an empty hero. */
+@media (prefers-reduced-motion:reduce){
+  *{ animation:none !important; transition-duration:.01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar-in">
+    <a class="brand" href="#top"><img src="assets/logo.png" alt="Quest Drafting and Design"></a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#work">Work</a><a href="#services">Services</a><a href="#about">About</a>
+      <a href="#faq">FAQ</a><a href="#quote">Contact</a>
+      <a class="btn btn-orange" href="#quote">Get a Quote</a>
+    </nav>
+  </div>
+</header>
+
+<div class="opt-label">
+  <span class="tag">Option D</span>
+  <h2>The sheet</h2>
+  <p>No render anywhere. The opener is one of the studio's <b>real permit sheets</b>, big enough to read the elevations on it, and the screen is banded across instead of split down the middle: the drawing above, a dark title strip below carrying the words. What the studio actually sells is the sheet.</p>
+</div>
+
+<section class="hero d">
+  <div class="d-field">
+    <span class="reg" aria-hidden="true"></span>
+    <span class="reg b" aria-hidden="true"></span>
+  </div>
+  <div class="d-strip">
+    <div class="d-in">
+      <div>
+        <h1 class="h1"><span>Drawings a city</span><span>will <em>stamp.</em></span></h1>
+        <div class="acts">
+          <a class="btn btn-orange" href="#quote">Get a Quote</a>
+          <a class="tel" href="tel:+16023396455">(602) 339-6455</a>
+        </div>
+      </div>
+      <div class="d-meta">
+        <span class="d-cell"><i>Sheet</i><b>A201</b></span>
+        <span class="d-cell"><i>Drawn by</i><b>QD&amp;D</b></span>
+        <span class="d-cell"><i>Issued for</i><b>Permit</b></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="opt-label">
+  <span class="tag">Option E</span>
+  <h2>Three states</h2>
+  <p>The same job exists three times over: as a <b>mass</b>, as a <b>render</b> and as a <b>drawing</b>. Three plates, one for each, and the headline runs on one line straight across all three so the type crosses the plate edges. The crossing is what gives it depth.</p>
+</div>
+
+<section class="hero e">
+  <div class="e-in">
+    <h1 class="h1"><span>Massed, rendered, <em>drawn.</em></span></h1>
+    <div class="e-plates">
+      <div class="e-plate e-1"></div>
+      <div class="e-plate e-2"></div>
+      <div class="e-plate e-3"></div>
+    </div>
+    <div class="e-labels"><i>Massing model</i><i>Render</i><i>Permit sheet</i></div>
+    <div class="e-foot">
+      <p class="lede">Every project is resolved three times before it reaches a plan reviewer, so nothing is discovered on site.</p>
+      <div class="acts">
+        <a class="btn btn-orange" href="#quote">Get a Quote</a>
+        <a class="tel" href="tel:+16023396455">(602) 339-6455</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="opt-label">
+  <span class="tag">Option F</span>
+  <h2>The mass</h2>
+  <p>No photograph and no rectangle anywhere. The massing model is <b>knocked out of its background</b>, so it stands on the page as an object instead of a screenshot in a box. It sits in front of the headline and cuts the bottom off it, and that overlap is the depth.</p>
+</div>
+
+<section class="hero f">
+  <div class="f-foot">
+    <div class="f-foot-in">
+      <p class="lede">We turn a property and an idea into a home that is resolved on paper, modeled, documented and permitted.</p>
+      <div class="acts">
+        <a class="btn btn-orange" href="#quote">Get a Quote</a>
+        <a class="tel" href="tel:+16023396455">(602) 339-6455</a>
+      </div>
+    </div>
+  </div>
+  <div class="f-type">
+    <h1 class="h1"><span>Built twice.</span><span>Once <em>here.</em></span></h1>
+  </div>
+  <img class="f-model" src="assets/model-cut.png" alt="Massing model of a multi level residence, shown as a white volume study">
+  <span class="f-cap">Massing study</span>
+</section>
+
+<div class="opt-label">
+  <span class="tag">Option G</span>
+  <h2>Night</h2>
+  <p>The quiet one. The night render is the studio's most atmospheric asset and nothing had used it. <b>Almost all of this screen is sky.</b> Small type set low, one thing to press. It is the opposite of every other option here, which is the point of having it in the set.</p>
+</div>
+
+<section class="hero g">
+  <div class="g-ground"></div>
+  <span class="g-cap">Desert home, night render</span>
+  <div class="g-in">
+    <h1 class="h1"><span>The drawings are finished</span><span>long before the <em>lights go on.</em></span></h1>
+    <p class="lede">Residential architectural drafting in Gilbert, Arizona. Permit sets, as builts, additions and custom homes.</p>
+    <div class="acts">
+      <a class="btn btn-orange" href="#quote">Get a Quote</a>
+      <a class="tel" href="tel:+16023396455">(602) 339-6455</a>
+    </div>
+  </div>
+</section>
+
+<div class="opt-label">
+  <span class="tag">Option H</span>
+  <h2>The title block</h2>
+  <p>The whole screen is drawn as a sheet: a border inset from the edge with corner marks, the render sitting in the drawing field, and a <b>real title block ruled along the foot</b> with the headline in the largest cell. The navigation sits outside the border, the way it would on a real sheet.</p>
+</div>
+
+<section class="hero h">
+  <div class="h-sheet">
+    <span class="reg" aria-hidden="true"></span><span class="reg b" aria-hidden="true"></span>
+    <div class="h-field"></div>
+    <div class="h-block">
+      <div class="h-title">
+        <h1 class="h1"><span>From vision, to model,</span><span>to <em>permit.</em></span></h1>
+        <p>A property and an idea, resolved on paper and permitted before the first shovel hits the ground.</p>
+      </div>
+      <div class="h-cells">
+        <span class="h-cell"><i>Studio</i><b>Quest Drafting</b></span>
+        <span class="h-cell"><i>Located</i><b>Gilbert, AZ</b></span>
+        <span class="h-cell"><i>Issued for</i><b>Permit</b></span>
+        <span class="h-cell"><i>Call</i><b>(602) 339-6455</b></span>
+        <span class="h-cell go"><a class="btn btn-orange" href="#quote">Get a Quote</a></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="opt-label" style="padding-bottom:var(--s7)">
+  <span class="tag">To decide</span>
+  <h2>Any of these, or none again</h2>
+  <p>Say the letter and it replaces the opener in <b>direction-4-trace.html</b>. If none of these are right either, say which part is wrong, the asset, the composition or the words, and the next set starts from that instead of guessing again.</p>
+</div>
+
+</body>
+</html>
