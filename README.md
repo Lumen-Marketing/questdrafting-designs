@@ -18,6 +18,30 @@ assets/                         the studio's own renders, models, sheets, logo
 All assets are self hosted in `assets/`. Nothing hotlinks. These are six
 alternative designs of the same homepage, not a price ladder.
 
+## The two earlier directions
+
+The chooser ends with a second group, "Before these six", holding the two
+homepages drawn for the studio before this set. They are previewed the same
+way but live in their own repositories, so those two cards are the only
+things on the page that point outside it:
+
+| Card | Built | Lives at |
+|---|---|---|
+| Homepage Mockup | 4 Aug 2026 | `Lumen-Marketing/quest-drafting-mockup` |
+| Cream Sheet | 12 Aug 2026 | `ShanIngrid1207/quest-cream-sheet` |
+
+They are grouped and labelled apart from the six on purpose. The six share one
+section order so they can be compared like for like; these two predate that
+decision and each runs its own. Their cards say so, so nobody reads them as a
+seventh and eighth option on the same page.
+
+Two things to know before sending the link. Both are served from GitHub Pages,
+so if either repository goes private or loses Pages, that card turns into an
+empty frame while the rest of the page is fine. And neither has been through
+the current house rules: both still carry em dashes in their copy,
+16 in `quest-drafting-mockup` and 23 in `quest-cream-sheet`, plus middle dot
+chains in the Cream Sheet title block. Worth fixing before a client reads them closely.
+
 ## The trade, worked out before any design
 
 Residential architectural drafting. The studio sells drawings that a builder can
