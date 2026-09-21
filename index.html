@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Quest Drafting and Design, homepage directions</title>
-<meta name="description" content="Six homepage design directions for Quest Drafting &amp; Design, residential architectural drafting in Gilbert, Arizona.">
+<meta name="description" content="Eight homepage design directions for Quest Drafting &amp; Design, residential architectural drafting in Gilbert, Arizona.">
 <link rel="icon" href="assets/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,7 +52,7 @@ img{display:block;max-width:100%}
 h1,h2{font-weight:800;letter-spacing:-.03em;line-height:.94;font-stretch:112%}
 
 .wrap{max-width:1680px;margin-inline:auto;padding-inline:var(--gut);position:relative;z-index:2}
-header,footer,.grouphd{text-shadow:0 2px 10px rgba(6,8,9,.9),0 2px 32px rgba(6,8,9,.8)}
+header,footer{text-shadow:0 2px 10px rgba(6,8,9,.9),0 2px 32px rgba(6,8,9,.8)}
 .card,.card *{text-shadow:none}
 
 /* ── the panel material: a drawn sheet, not glass ─────────────────────────
@@ -76,7 +76,7 @@ header{padding-block:clamp(34px,6vw,76px) clamp(22px,4vw,42px)}
    ch cap sets the measure by a ratio nobody checked; this one is the rendered
    width of the longest line at 96% fill, in em so it holds at every step of
    the clamp. Re-measure it if the wording changes. */
-h1{font-size:clamp(2.1rem,6.4vw,5rem);max-width:11em}
+h1{font-size:clamp(2.1rem,6.4vw,5rem);max-width:10.3em}
 h1 em{font-style:normal;color:var(--orange)}
 .lead{margin-top:clamp(18px,3vw,30px);max-width:66ch;color:#C8C7C1}
 .lead b{color:var(--paper);font-weight:600}
@@ -99,6 +99,8 @@ h1 em{font-style:normal;color:var(--orange)}
 .card:nth-child(4){transition-delay:.24s}
 .card:nth-child(5){transition-delay:.32s}
 .card:nth-child(6){transition-delay:.40s}
+.card:nth-child(7){transition-delay:.48s}
+.card:nth-child(8){transition-delay:.56s}
 
 .card-hd{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding:16px 18px 14px}
 .card-hd h2{font-size:24px}
@@ -131,17 +133,9 @@ h1 em{font-style:normal;color:var(--orange)}
 .tag{font-size:12px;color:var(--mute);border:1px solid rgba(239,238,235,.16);padding:5px 12px}
 .tag.key{color:var(--paper);border-color:rgba(232,85,43,.62)}
 
-/* ── the earlier group ───────────────────────────────────────────────────
-   Two directions drawn before the six. They are shown in the same component
-   so the page stays one system, but under their own rule and heading,
-   because they do not carry the six's shared section order and comparing
-   them like for like against the six would be comparing two different pages.
-   The label carries the difference, not a second card style. */
-.grouphd{display:flex;align-items:baseline;gap:clamp(14px,2.5vw,34px);flex-wrap:wrap;
-  padding-top:clamp(30px,5vw,62px);margin-top:clamp(8px,1.6vw,18px);border-top:1px solid var(--line)}
-.grouphd h2{font-size:clamp(1.45rem,3.1vw,2.35rem)}
-.grouphd p{font-size:14.5px;color:#C8C7C1;flex:1 1 340px;max-width:70ch}
-.grouphd p b{color:var(--paper);font-weight:600}
+/* The two earlier directions run on in the same grid. They carry their own
+   date and a note in the spec list, so the cards say what they are without
+   a separate heading above them. */
 .card.arch .tierlab{color:var(--mute)}
 
 footer{padding-block:26px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;
@@ -161,9 +155,9 @@ footer{padding-block:26px;display:flex;flex-wrap:wrap;gap:16px;align-items:cente
     <img src="assets/logo.png" alt="Quest Drafting and Design logo">
     <div><b>Quest Drafting &amp; Design LLC</b><span>Residential architectural drafting in Gilbert, Arizona</span></div>
   </div>
-  <h1>Six homepages, six <em>looks.</em></h1>
+  <h1>Eight homepages, eight <em>looks.</em></h1>
   <p class="lead">Every one uses the <b>same real work</b>: the studio's own renders, its 3D massing models and four sheets from a real permit set, with the sheet numbers printed on them. <b>What you see on each card is that design's homepage, running live.</b> Click a preview once to use it.</p>
-  <p class="lead">All six run the <b>same sections in the same order</b>, and no two of them lay a single section out the same way. Each one owns its own typefaces, its own material, its own way of building depth and its own piece of motion. So what you are choosing between is the design, nothing else.</p>
+  <p class="lead">The first six run the <b>same sections in the same order</b>, and no two of them lay a single section out the same way. Each one owns its own typefaces, its own material, its own way of building depth and its own piece of motion. So what you are choosing between is the design, nothing else. The last two were drawn earlier and each runs its own order, which their cards note.</p>
   <div class="seg" id="seg">
     <button class="on" data-mode="desktop">Desktop</button>
     <button data-mode="mobile">Mobile</button>
@@ -315,15 +309,6 @@ footer{padding-block:26px;display:flex;flex-wrap:wrap;gap:16px;align-items:cente
       </div>
     </div>
   </article>
-
-</div>
-
-<div class="grouphd">
-  <h2>Before these six</h2>
-  <p>Two earlier directions, kept here so you can see the whole run of work in one place. They came first, so they do <b>not</b> share the section order the six above hold in common. Read them as where the thinking started, not as a seventh and eighth option on the same page.</p>
-</div>
-
-<div class="cards" id="cards-arch">
 
   <article class="card sheet arch">
     <div class="card-hd">
