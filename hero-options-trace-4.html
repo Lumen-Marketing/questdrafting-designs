@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Swiss Sheet with the reel, three ways</title>
+<meta name="description" content="The Swiss Sheet hero for Quest Drafting and Design combined with the moving reel of work, in three arrangements.">
+<link rel="icon" href="assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=JetBrains+Mono:wght@400;700&family=Public+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+/* ===========================================================================
+   SWISS SHEET + THE REEL.
+
+   You picked two things: the white and ink blue typographic hero, and the
+   band of work that keeps moving. These are the three honest ways to put
+   them together, and they differ in where the moving work sits.
+
+   One change to the reel itself. In the version you saw it looped a single
+   render twice, so nothing new ever arrived. Here it runs the studio's four
+   renders in sequence, doubled so the loop is seamless, which means the band
+   is actually a reel of work rather than one picture sliding past.
+
+   Everything else is held constant across the three: same white, same ink
+   blue, same Archivo Expanded over Public Sans, same twelve column hairlines,
+   same words. So what you are choosing between is where the motion lives.
+   ======================================================================== */
+:root{
+  --paper:#F6F6F3;
+  --ink:#0F1216;
+  --ink-2:#3C444C;
+  --blue:#1F3FCC;
+  --blue-2:#1833A8;
+  --hair:rgba(15,18,22,.07);
+  --pad:40px;
+  --nav:64px;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+@media (max-width:760px){ :root{ --pad:22px; --nav:58px; } }
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; }
+body{ margin:0; background:#0B0D0E; overflow-x:clip; }
+img{ display:block; max-width:100%; }
+a{ color:inherit; }
+h1,h2{ margin:0; }
+p{ margin:0; }
+:focus-visible{ outline:3px solid var(--blue); outline-offset:3px; }
+
+/* ── the chooser's own furniture ─────────────────────────────────────────── */
+.lab{ max-width:1320px; margin:0 auto; padding:62px 32px 20px; color:#8E9A9E;
+  font-family:'Public Sans',system-ui,sans-serif; display:flex; gap:22px;
+  align-items:baseline; flex-wrap:wrap; }
+.lab .k{ font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.14em;
+  text-transform:uppercase; color:#5F6B6F; }
+.lab h2{ font-family:'Archivo',sans-serif; font-variation-settings:'wdth' 118;
+  font-weight:700; font-size:clamp(22px,3vw,34px); color:#E8EDEE; letter-spacing:-.02em; }
+.lab p{ font-size:15px; line-height:1.6; flex:1 1 380px; max-width:70ch; }
+.lab b{ color:#CBD4D6; font-weight:600; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE SHARED HERO
+   White sheet, twelve column hairlines, the type field on the left. The only
+   thing that changes between C1, C2 and C3 is where the work goes.
+   ══════════════════════════════════════════════════════════════════════════ */
+.hero{
+  position:relative; overflow:hidden; isolation:isolate;
+  height:calc(100dvh - var(--nav)); max-height:1000px; min-height:600px;
+  background:var(--paper); color:var(--ink);
+  font-family:'Archivo',system-ui,sans-serif;
+}
+/* the sheet's own ruling, the one patterned thing on the page */
+.rules{ position:absolute; inset:0; z-index:0; pointer-events:none;
+  background-image:linear-gradient(90deg,var(--hair) 1px,transparent 1px);
+  background-size:calc(100% / 12) 100%; }
+
+.field{ position:relative; z-index:3; display:flex; flex-direction:column; justify-content:center;
+  padding-left:clamp(22px,5vw,88px); padding-right:clamp(22px,3vw,48px); }
+.kick{ font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--blue); margin-bottom:26px; }
+.h1{ font-weight:800; font-variation-settings:'wdth' 118; letter-spacing:-.035em; line-height:.92; }
+.h1 > span{ display:block; white-space:nowrap; }
+.h1 em{ font-style:normal; color:var(--blue); }
+.rule{ height:2px; background:var(--ink); margin:26px 0 22px; transform-origin:left;
+  animation:draw 1.1s var(--ease) .25s both; }
+@keyframes draw{ from{ transform:scaleX(0); } to{ transform:scaleX(1); } }
+.lede{ font-family:'Public Sans',sans-serif; font-size:17px; line-height:1.62;
+  color:var(--ink-2); max-width:44ch; }
+.acts{ display:flex; gap:18px; align-items:center; margin-top:32px; flex-wrap:wrap; }
+.cta{ display:inline-flex; align-items:center; justify-content:center; text-decoration:none;
+  background:var(--blue); color:#fff; padding:17px 30px; font-weight:700; font-size:14.5px;
+  letter-spacing:.06em; text-transform:uppercase; font-variation-settings:'wdth' 110;
+  border:0; cursor:pointer;
+  transition:background .25s ease, transform .25s var(--ease); }
+.cta:hover{ background:var(--blue-2); }
+.cta:active{ transform:translateY(1px); }
+.tel{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:16px;
+  text-decoration:none; border-bottom:2px solid var(--blue); padding-bottom:3px; white-space:nowrap; }
+
+/* ── the reel ────────────────────────────────────────────────────────────
+   Four renders in sequence, doubled, so translating the track by exactly
+   half its width returns it to the start and the loop never shows a seam.
+   It communicates one thing: this is the studio's work, and there is more
+   of it than fits on the screen. */
+.reel{ position:relative; overflow:hidden; background:#E6E6E1; }
+.reel .track{ display:flex; width:max-content; height:100%;
+  animation:reelx 64s linear infinite; will-change:transform; }
+.reel .track img{ height:100%; width:auto; flex:0 0 auto; }
+@keyframes reelx{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+/* the band reads as a strip of film on the sheet, so it gets edges, not a fade
+   into nothing, and one hairline along its top */
+.reel::before{ content:''; position:absolute; inset:0; z-index:2; pointer-events:none;
+  box-shadow:inset 0 1px 0 rgba(15,18,22,.22); }
+.reel-cap{ position:absolute; z-index:3; right:clamp(14px,2vw,26px); bottom:10px;
+  font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.16em;
+  text-transform:uppercase; color:rgba(246,246,243,.82);
+  background:rgba(15,18,22,.52); padding:5px 9px; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   C1 · THE REEL ALONG THE FOOT
+   The type field gets the whole sheet, and the work runs as a band across the
+   bottom. Closest to what you were looking at, and the calmest of the three.
+   ══════════════════════════════════════════════════════════════════════════ */
+.hero.c1{ display:grid; grid-template-rows:minmax(0,1fr) auto; }
+.hero.c1 .field{ padding-right:clamp(22px,8vw,140px); }
+.hero.c1 .h1{ font-size:clamp(30px,calc(7.55vw - 3.2px),106px); }
+.hero.c1 .reel{ height:clamp(132px,23vh,224px); }
+.hero.c1 .meta{ position:absolute; z-index:3; left:clamp(22px,5vw,88px); bottom:calc(clamp(132px,23vh,224px) + 22px);
+  font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:#69727A; }
+@media (max-width:900px){
+  .hero.c1 .h1{ font-size:clamp(30px,7.7vw,66px); }
+  .hero.c1 .meta{ display:none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   C2 · THE COLUMN AND THE REEL
+   The still plate you already liked stays on the right, and the reel runs
+   underneath both of them. Two pictures doing different jobs: one holds
+   still so you can look at it, one keeps bringing the next project along.
+   ══════════════════════════════════════════════════════════════════════════ */
+.hero.c2{ display:grid; grid-template-rows:minmax(0,1fr) auto;
+  grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); }
+.hero.c2 .field{ grid-row:1; grid-column:1; }
+.hero.c2 .plate{ grid-row:1; grid-column:2; position:relative; z-index:1;
+  overflow:hidden; background:var(--ink); margin-top:-6%; height:106%;
+  will-change:transform; transition:transform .5s cubic-bezier(.2,.8,.2,1); }
+.hero.c2 .plate img{ width:100%; height:100%; object-fit:cover; object-position:56% 52%; }
+.hero.c2 .reel{ grid-row:2; grid-column:1 / -1; height:clamp(112px,18vh,178px); }
+.hero.c2 .h1{ font-size:clamp(28px,calc(5.79vw - 2.1px),82px); }
+@media (max-width:900px){
+  .hero.c2{ grid-template-columns:1fr; grid-template-rows:minmax(0,1fr) auto; }
+  .hero.c2 .plate{ display:none; }
+  .hero.c2 .h1{ font-size:clamp(28px,calc(10.53vw + 1.3px),88px); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   C3 · THE COLUMN IS THE REEL
+   The layout you liked, unchanged, except the tall column on the right is no
+   longer one photograph. It is the reel stood on end, running slowly down the
+   edge of the sheet. Nothing is added to the page and the work still moves.
+   ══════════════════════════════════════════════════════════════════════════ */
+.hero.c3{ display:grid; grid-template-columns:minmax(0,1.32fr) minmax(0,1fr); align-items:center; }
+.hero.c3 .h1{ font-size:clamp(30px,calc(5.79vw - 2.1px),82px); }
+.vreel{ position:relative; z-index:1; overflow:hidden; background:#E6E6E1;
+  height:112%; margin-top:-6%; }
+.vreel .track{ display:flex; flex-direction:column; height:max-content; width:100%;
+  animation:reely 72s linear infinite; will-change:transform; }
+.vreel .track img{ width:100%; height:auto; flex:0 0 auto; }
+@keyframes reely{ from{ transform:translateY(0); } to{ transform:translateY(-50%); } }
+.vreel::before{ content:''; position:absolute; inset:0; z-index:2; pointer-events:none;
+  box-shadow:inset 1px 0 0 rgba(15,18,22,.22); }
+.hero.c3 .meta{ position:absolute; z-index:3; left:clamp(22px,5vw,88px); bottom:34px;
+  font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:#69727A; }
+@media (max-width:900px){
+  .hero.c3{ grid-template-columns:1fr; grid-template-rows:minmax(0,1fr) auto; }
+  .vreel{ height:34dvh; margin-top:0; }
+  .vreel .track{ flex-direction:row; width:max-content; height:100%;
+    animation:reelx 64s linear infinite; }
+  .vreel .track img{ height:100%; width:auto; }
+  .hero.c3 .h1{ font-size:clamp(30px,calc(10.53vw + 1.3px),88px); }
+  .hero.c3 .meta{ display:none; }
+}
+
+/* Reduced motion: the reel stops with real work on screen rather than
+   vanishing, and the rule is simply drawn. animation:none, never a near zero
+   duration, because the rule's keyframes start at scaleX(0). */
+@media (prefers-reduced-motion:reduce){
+  *{ animation:none !important; transition-duration:.01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="lab">
+  <span class="k">Combination 01</span>
+  <h2>The reel along the foot</h2>
+  <p>The type field gets the whole sheet and the work runs as a band across the bottom. <b>Closest to the screenshot you sent</b>, and the calmest of the three.</p>
+</div>
+<section class="hero c1">
+  <div class="rules"></div>
+  <div class="field">
+    <div class="kick">Residential architectural drafting, Gilbert AZ</div>
+    <h1 class="h1"><span>Drawings that</span><span>survive <em>plan review.</em></span></h1>
+    <div class="rule"></div>
+    <p class="lede">We turn a property and an idea into a home that is resolved on paper, modeled and documented, before the first shovel hits the ground.</p>
+    <div class="acts">
+      <a class="cta" href="#quote">Get a Quote</a>
+      <a class="tel" href="tel:+16023396455">(602) 339-6455</a>
+    </div>
+  </div>
+  <span class="meta">Selected work</span>
+  <div class="reel">
+    <div class="track">
+      <img src="assets/w-motorcourt.webp" alt="Contemporary stone residence around a motor court, evening render">
+      <img src="assets/w-pool.webp" alt="Pool terrace of a contemporary residence at dusk">
+      <img src="assets/w-greatroom.webp" alt="Great room with a full height window wall over the valley">
+      <img src="assets/w-night.webp" alt="Low desert residence lit from within at night">
+      <img src="assets/w-motorcourt.webp" alt="">
+      <img src="assets/w-pool.webp" alt="">
+      <img src="assets/w-greatroom.webp" alt="">
+      <img src="assets/w-night.webp" alt="">
+    </div>
+  </div>
+</section>
+
+<div class="lab">
+  <span class="k">Combination 02</span>
+  <h2>The column and the reel</h2>
+  <p>The still plate stays on the right and the reel runs underneath both. <b>Two pictures doing different jobs:</b> one holds still so you can look at it, one keeps bringing the next project along.</p>
+</div>
+<section class="hero c2" data-parallax>
+  <div class="rules"></div>
+  <div class="field">
+    <div class="kick">Residential architectural drafting, Gilbert AZ</div>
+    <h1 class="h1"><span>Drawings that</span><span>survive</span><span><em>plan review.</em></span></h1>
+    <div class="rule"></div>
+    <p class="lede">We turn a property and an idea into a home that is resolved on paper, modeled and documented, before the first shovel hits the ground.</p>
+    <div class="acts">
+      <a class="cta" href="#quote">Get a Quote</a>
+      <a class="tel" href="tel:+16023396455">(602) 339-6455</a>
+    </div>
+  </div>
+  <div class="plate" data-plane="0.5">
+    <img src="assets/t-pool.webp" alt="Contemporary stone residence with pool terrace, evening render">
+  </div>
+  <div class="reel">
+    <div class="track">
+      <img src="assets/w-motorcourt.webp" alt="Contemporary stone residence around a motor court, evening render">
+      <img src="assets/w-greatroom.webp" alt="Great room with a full height window wall over the valley">
+      <img src="assets/w-night.webp" alt="Low desert residence lit from within at night">
+      <img src="assets/w-pool.webp" alt="Pool terrace of a contemporary residence at dusk">
+      <img src="assets/w-motorcourt.webp" alt="">
+      <img src="assets/w-greatroom.webp" alt="">
+      <img src="assets/w-night.webp" alt="">
+      <img src="assets/w-pool.webp" alt="">
+    </div>
+  </div>
+</section>
+
+<div class="lab">
+  <span class="k">Combination 03</span>
+  <h2>The column is the reel</h2>
+  <p>Your layout unchanged, except the tall column on the right is no longer one photograph. <b>It is the reel stood on end</b>, running slowly down the edge of the sheet. Nothing is added to the page and the work still moves.</p>
+</div>
+<section class="hero c3">
+  <div class="rules"></div>
+  <div class="field">
+    <div class="kick">Residential architectural drafting, Gilbert AZ</div>
+    <h1 class="h1"><span>Drawings that</span><span>survive</span><span><em>plan review.</em></span></h1>
+    <div class="rule"></div>
+    <p class="lede">We turn a property and an idea into a home that is resolved on paper, modeled and documented, before the first shovel hits the ground.</p>
+    <div class="acts">
+      <a class="cta" href="#quote">Get a Quote</a>
+      <a class="tel" href="tel:+16023396455">(602) 339-6455</a>
+    </div>
+  </div>
+  <div class="vreel">
+    <div class="track">
+      <img src="assets/t-motorcourt.webp" alt="Contemporary stone residence around a motor court, evening render">
+      <img src="assets/t-pool.webp" alt="Pool terrace of a contemporary residence at dusk">
+      <img src="assets/t-greatroom.webp" alt="Great room with a full height window wall over the valley">
+      <img src="assets/t-night.webp" alt="Low desert residence lit from within at night">
+      <img src="assets/t-motorcourt.webp" alt="">
+      <img src="assets/t-pool.webp" alt="">
+      <img src="assets/t-greatroom.webp" alt="">
+      <img src="assets/t-night.webp" alt="">
+    </div>
+  </div>
+  <span class="meta">Selected work</span>
+</section>
+
+<div class="lab" style="padding-bottom:92px">
+  <span class="k">To decide</span>
+  <h2>C1, C2 or C3</h2>
+  <p>All three hold the same white, the same ink blue, the same typefaces, the same hairlines and the same words. <b>The only difference is where the moving work sits.</b> Say the code and it becomes the opener.</p>
+</div>
+
+<script>
+/* The reel is pure CSS. This only adds the plane response you liked in the
+   original: pointermove coalesced into one animation frame, transforms only,
+   no scroll listeners. */
+(function(){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var queued = false, jobs = [];
+  function flush(){ queued = false; jobs.forEach(function(f){ f(); }); jobs.length = 0; }
+  function schedule(fn){ jobs.push(fn); if(!queued){ queued = true; requestAnimationFrame(flush); } }
+
+  document.querySelectorAll('[data-parallax]').forEach(function(hero){
+    var planes = hero.querySelectorAll('[data-plane]');
+    if (!planes.length) return;
+    hero.addEventListener('pointermove', function(e){
+      var r = hero.getBoundingClientRect();
+      var nx = (e.clientX - r.left) / r.width - 0.5;
+      var ny = (e.clientY - r.top) / r.height - 0.5;
+      schedule(function(){
+        planes.forEach(function(p){
+          var k = parseFloat(p.dataset.plane) || 0.4;
+          p.style.transform = 'translate3d(' + (-nx * 26 * k).toFixed(2) + 'px,' +
+                                               (-ny * 18 * k).toFixed(2) + 'px,0)';
+        });
+      });
+    });
+    hero.addEventListener('pointerleave', function(){
+      schedule(function(){
+        planes.forEach(function(p){ p.style.transform = ''; });
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>
